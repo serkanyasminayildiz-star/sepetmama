@@ -24,16 +24,28 @@ export default function AutoScrollRow({ children }: { children: React.ReactNode 
 
     animId = requestAnimationFrame(scroll)
 
-    el.addEventListener('mouseenter', () => { paused = true })
-    el.addEventListener('mouseleave', () => { paused = false })
-    el.addEventListener('touchstart', () => { paused = true })
-    el.addEventListener('touchend', () => { paused = false })
+    const pause = () => { paused = true }
+    const resume = () => { paused = false }
 
-    return () => cancelAnimationFrame(animId)
+    el.addEventListener('mouseenter', pause)
+    el.addEventListener('mouseleave', resume)
+    el.addEventListener('touchstart', pause, { passive: true })
+    el.addEventListener('touchend', resume, { passive: true })
+
+    return () => {
+      cancelAnimationFrame(animId)
+      el.removeEventListener('mouseenter', pause)
+      el.removeEventListener('mouseleave', resume)
+      el.removeEventListener('touchstart', pause)
+      el.removeEventListener('touchend', resume)
+    }
   }, [])
 
   return (
-    <div ref={ref} className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+    <div
+      ref={ref}
+      style={{ display: 'flex', gap: '12px', overflowX: 'auto', paddingBottom: '8px', scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}
+    >
       {children}
       {children}
     </div>

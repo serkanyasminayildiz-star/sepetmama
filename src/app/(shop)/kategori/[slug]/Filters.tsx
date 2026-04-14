@@ -6,12 +6,14 @@ import { useState } from 'react'
 interface Props {
   searchParams: any
   brands: string[]
+  mobile?: boolean
 }
 
-export default function Filters({ searchParams, brands }: Props) {
+export default function Filters({ searchParams, brands, mobile }: Props) {
   const router = useRouter()
   const [min, setMin] = useState(searchParams.min || '')
   const [max, setMax] = useState(searchParams.max || '')
+  const [acik, setAcik] = useState(false)
 
   const apply = (newParams: Record<string, string>) => {
     const params = new URLSearchParams()
@@ -21,10 +23,14 @@ export default function Filters({ searchParams, brands }: Props) {
     router.push(`?${params.toString()}`)
   }
 
-  return (
-    <div className="bg-white rounded-2xl border border-orange-100 p-4 space-y-5">
-      <h3 className="font-extrabold text-gray-800 text-sm">Filtreler</h3>
+  const temizle = () => {
+    setMin('')
+    setMax('')
+    router.push('?')
+  }
 
+  const filterContent = (
+    <div className="space-y-4">
       {/* Fiyat */}
       <div>
         <p className="text-xs font-extrabold text-gray-500 uppercase mb-2">Fiyat Aralığı</p>
@@ -34,14 +40,16 @@ export default function Filters({ searchParams, brands }: Props) {
             placeholder="Min ₺"
             value={min}
             onChange={(e) => setMin(e.target.value)}
-            className="w-full border border-orange-100 rounded-xl px-2 py-1.5 text-sm outline-none focus:border-orange-400"
+            className="w-full border border-orange-100 rounded-xl px-2 py-2 text-sm outline-none focus:border-orange-400"
+            style={{ color: '#000' }}
           />
           <input
             type="number"
             placeholder="Max ₺"
             value={max}
             onChange={(e) => setMax(e.target.value)}
-            className="w-full border border-orange-100 rounded-xl px-2 py-1.5 text-sm outline-none focus:border-orange-400"
+            className="w-full border border-orange-100 rounded-xl px-2 py-2 text-sm outline-none focus:border-orange-400"
+            style={{ color: '#000' }}
           />
         </div>
         <button
@@ -72,15 +80,44 @@ export default function Filters({ searchParams, brands }: Props) {
         </div>
       )}
 
-      {/* Sıfırla */}
+      {/* Temizle */}
       {(searchParams.min || searchParams.max || searchParams.marka) && (
         <button
-          onClick={() => router.push('?')}
+          onClick={temizle}
           className="w-full border border-orange-200 text-orange-500 text-xs font-extrabold py-2 rounded-xl hover:bg-orange-50 transition-colors"
         >
           Filtreleri Temizle
         </button>
       )}
+    </div>
+  )
+
+  if (mobile) {
+    return (
+      <div>
+        <button
+          onClick={() => setAcik(!acik)}
+          className="flex items-center gap-2 bg-white border-2 border-orange-200 text-orange-500 font-extrabold text-sm px-4 py-2 rounded-xl"
+        >
+          🔧 Filtrele
+          {(searchParams.min || searchParams.max || searchParams.marka) && (
+            <span className="bg-orange-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">!</span>
+          )}
+          <span>{acik ? '▲' : '▼'}</span>
+        </button>
+        {acik && (
+          <div className="mt-2 bg-white rounded-2xl border border-orange-100 p-4">
+            {filterContent}
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  return (
+    <div className="bg-white rounded-2xl border border-orange-100 p-4">
+      <h3 className="font-extrabold text-gray-800 text-sm mb-4">Filtreler</h3>
+      {filterContent}
     </div>
   )
 }

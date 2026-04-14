@@ -35,3 +35,8 @@ body {
 @utility animate-scroll-track {
   animation: scrollTrack 22s linear infinite;
 }
+
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
