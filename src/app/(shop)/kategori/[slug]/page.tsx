@@ -11,28 +11,32 @@ interface PageProps {
   searchParams: Promise<{ min?: string; max?: string; sayfa?: string; marka?: string }>
 }
 
-async function getAllCategoryIds(parentId: string): Promise<string[]> {
-  const children = await prisma.category.findMany({ where: { parentId } })
-  const ids = [parentId]
-  for (const child of children) {
-    const childIds = await getAllCategoryIds(child.id)
-    ids.push(...childIds)
-  }
-  return ids
-}
-
 export default async function KategoriPage({ params, searchParams }: PageProps) {
   const { slug } = await params
   const sp = await searchParams
 
-  const category = await prisma.category.findUnique({
-    where: { slug },
-    include: { children: true, parent: true },
-  })
+  // Tüm kategorileri tek sorguda çek
+  const [category, allCategories] = await Promise.all([
+    prisma.category.findUnique({
+      where: { slug },
+      include: { children: true, parent: true },
+    }),
+    prisma.category.findMany({ select: { id: true, parentId: true } }),
+  ])
 
   if (!category) notFound()
 
-  const categoryIds = await getAllCategoryIds(category.id)
+  // Recursive ID toplama - DB'ye gitmeden memory'de yap
+  const getAllIds = (parentId: string): string[] => {
+    const ids = [parentId]
+    const children = allCategories.filter(c => c.parentId === parentId)
+    for (const child of children) {
+      ids.push(...getAllIds(child.id))
+    }
+    return ids
+  }
+
+  const categoryIds = getAllIds(category.id)
   const page = parseInt(sp.sayfa || '1')
   const perPage = 24
   const skip = (page - 1) * perPage
@@ -69,8 +73,7 @@ export default async function KategoriPage({ params, searchParams }: PageProps) 
       <Header />
       <div className="max-w-7xl mx-auto px-3 md:px-4 py-4 md:py-6">
 
-        {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-xs md:text-sm text-gray-400 mb-3 md:mb-4 overflow-x-auto whitespace-nowrap scrollbar-hide">
+        <div className="flex items-center gap-2 text-xs md:text-sm text-gray-400 mb-3 overflow-x-auto whitespace-nowrap scrollbar-hide">
           <Link href="/" className="hover:text-orange-500 flex-shrink-0">Ana Sayfa</Link>
           <span>/</span>
           {category.parent && (
@@ -82,12 +85,11 @@ export default async function KategoriPage({ params, searchParams }: PageProps) 
           <span className="text-orange-500 font-semibold flex-shrink-0">{category.name}</span>
         </div>
 
-        <div className="mb-3 md:mb-4">
+        <div className="mb-3">
           <h1 className="text-lg md:text-2xl font-extrabold text-gray-800">{category.name}</h1>
           <p className="text-xs md:text-sm text-gray-400 mt-1">{total} ürün bulundu</p>
         </div>
 
-        {/* Alt kategoriler - mobil yatay scroll */}
         {category.children.length > 0 && (
           <div className="flex gap-2 overflow-x-auto pb-2 mb-3 scrollbar-hide">
             {category.children.map((sub) => (
@@ -100,17 +102,13 @@ export default async function KategoriPage({ params, searchParams }: PageProps) 
         )}
 
         <div className="flex gap-4 md:gap-6">
-          {/* Filtreler - Desktop sidebar */}
           <div className="hidden md:block w-56 flex-shrink-0">
             <Filters searchParams={sp} brands={brands} />
           </div>
-
           <div className="flex-1 min-w-0">
-            {/* Filtreler - Mobil */}
             <div className="md:hidden mb-3">
               <Filters searchParams={sp} brands={brands} mobile={true} />
             </div>
-
             <ProductGrid products={products} total={total} page={page} totalPages={totalPages} slug={slug} />
           </div>
         </div>
