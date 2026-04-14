@@ -6,7 +6,7 @@ import Image from 'next/image'
 const campaigns = [
   { title: '🎉 İlk Siparişe %10', sub: 'SEPETMAMA10 kodunu kullan' },
   { title: '🐱 Kedi Maması -20%', sub: 'Royal Canin & Hills seçili ürünler' },
-  { title: '🚚 150₺ Üzeri Bedava', sub: 'Tüm siparişlerde ücretsiz kargo' },
+  { title: '🚚 1000₺ Üzeri Bedava', sub: 'Tüm siparişlerde ücretsiz kargo' },
 ]
 
 export default function HeroBanner() {

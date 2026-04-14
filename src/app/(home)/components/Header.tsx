@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
+import CartIcon from './CartIcon'
 
 export default async function Header() {
   const categories = await prisma.category.findMany({
@@ -29,10 +30,7 @@ export default async function Header() {
       <div className="flex items-center gap-2">
         <button className="w-9 h-9 rounded-xl border border-orange-100 bg-white flex items-center justify-center text-base hover:bg-orange-50 transition-colors">🔍</button>
         <button className="w-9 h-9 rounded-xl border border-orange-100 bg-white flex items-center justify-center text-base hover:bg-orange-50 transition-colors">❤️</button>
-        <button className="relative w-9 h-9 rounded-xl border border-orange-100 bg-white flex items-center justify-center text-base hover:bg-orange-50 transition-colors">
-          🛒
-          <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[9px] font-extrabold w-4 h-4 rounded-full flex items-center justify-center">3</span>
-        </button>
+        <CartIcon />
       </div>
     </header>
   )

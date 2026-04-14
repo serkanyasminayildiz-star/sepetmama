@@ -5,6 +5,7 @@ import Footer from '@/app/(home)/components/Footer'
 import Image from 'next/image'
 import Link from 'next/link'
 import ProductGrid from '@/app/(shop)/kategori/[slug]/ProductGrid'
+import AddToCartButton from './AddToCartButton'
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -160,9 +161,13 @@ export default async function UrunPage({ params }: PageProps) {
 
               {/* Sepete ekle */}
               <div className="flex gap-3 mt-2">
-                <button className="flex-1 bg-orange-500 hover:bg-orange-600 active:scale-95 transition-all text-white font-extrabold py-3.5 rounded-2xl text-base">
-                  🛒 Sepete Ekle
-                </button>
+                <AddToCartButton
+                  id={product.id}
+                  slug={product.slug}
+                  name={product.name}
+                  price={displayPrice}
+                  image={product.images[0]?.url}
+                 />
                 <button className="w-14 h-14 rounded-2xl border-2 border-orange-200 bg-white flex items-center justify-center text-xl hover:bg-orange-50 transition-colors">
                   ❤️
                 </button>
