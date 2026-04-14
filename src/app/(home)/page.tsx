@@ -7,55 +7,77 @@ import AutoScrollRow from './components/AutoScrollRow'
 import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
 
-async function ProductSection({ title, categorySlug, href, autoScroll = false }: { title: string; categorySlug: string; href: string; autoScroll?: boolean }) {
+async function getProducts(categorySlug: string, take = 10) {
   const category = await prisma.category.findUnique({
     where: { slug: categorySlug },
     include: { children: true },
   })
-
-  if (!category) return null
-
+  if (!category) return []
   const categoryIds = [category.id, ...category.children.map((c) => c.id)]
-
-  const products = await prisma.product.findMany({
+  return prisma.product.findMany({
     where: { isActive: true, categories: { some: { categoryId: { in: categoryIds } } } },
     include: { images: { orderBy: { order: 'asc' }, take: 1 } },
     orderBy: { createdAt: 'desc' },
-    take: 10,
+    take,
   })
+}
 
+function ProductCards({ products }: { products: any[] }) {
+  return (
+    <>
+      {products.map((product) => {
+        const price = parseFloat(product.price.toString())
+        const salePrice = product.salePrice ? parseFloat(product.salePrice.toString()) : null
+        return (
+          <HomeProductCard
+            key={product.id}
+            id={product.id}
+            slug={product.slug}
+            name={product.name}
+            price={price}
+            salePrice={salePrice ?? undefined}
+            image={product.images[0]?.url}
+          />
+        )
+      })}
+    </>
+  )
+}
+
+async function ProductSection({ title, categorySlug, href, autoScroll = false }: {
+  title: string; categorySlug: string; href: string; autoScroll?: boolean
+}) {
+  const products = await getProducts(categorySlug)
   if (products.length === 0) return null
 
-  const cards = products.map((product) => {
-    const price = parseFloat(product.price.toString())
-    const salePrice = product.salePrice ? parseFloat(product.salePrice.toString()) : null
-    return (
-      <HomeProductCard
-        key={product.id}
-        id={product.id}
-        slug={product.slug}
-        name={product.name}
-        price={price}
-        salePrice={salePrice ?? undefined}
-        image={product.images[0]?.url}
-      />
-    )
-  })
-
   return (
-    <section className="px-4 py-4">
+    <section className="px-3 md:px-4 py-3 md:py-4">
       <div className="flex justify-between items-center mb-3">
         <h2 className="text-[15px] font-extrabold text-gray-800">{title}</h2>
-        <Link href={href} className="text-xs font-extrabold text-orange-500">Tümünü Gör →</Link>
+        <Link href={href} className="text-xs font-extrabold text-orange-500 bg-orange-50 px-3 py-1 rounded-full border border-orange-200 hover:bg-orange-100 transition-colors">
+          Tümünü Gör →
+        </Link>
       </div>
       {autoScroll ? (
-        <AutoScrollRow>{cards}</AutoScrollRow>
+        <AutoScrollRow>
+          <ProductCards products={products} />
+        </AutoScrollRow>
       ) : (
-        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">{cards}</div>
+        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide" style={{ WebkitOverflowScrolling: 'touch' }}>
+          <ProductCards products={products} />
+        </div>
       )}
     </section>
   )
 }
+
+const kategoriler = [
+  { label: '🐱 Kedi', href: '/kategori/kedi-kuru-mamasi', slug: 'kedi-kuru-mamasi' },
+  { label: '🐶 Köpek', href: '/kategori/kopek-kuru-mamasi', slug: 'kopek-kuru-mamasi' },
+  { label: '🥫 Konserve', href: '/kategori/kedi-konserve-mamasi', slug: 'kedi-konserve-mamasi' },
+  { label: '🦴 Ödül', href: '/kategori/kopek-odulleri', slug: 'kopek-odulleri' },
+  { label: '🧸 Aksesuar', href: '/kategori/kopek-aksesuarlari', slug: 'kopek-aksesuarlari' },
+]
 
 export default async function HomePage() {
   return (
@@ -64,23 +86,22 @@ export default async function HomePage() {
       <CircleStrip />
       <HeroBanner />
 
-      <div className="bg-white px-4 pb-3 flex gap-2 overflow-x-auto scrollbar-hide justify-center">
-        {[
-          { label: '🐱 Kedi Mamaları', href: '/kategori/kedi-kuru-mamasi' },
-          { label: '🐶 Köpek Mamaları', href: '/kategori/kopek-kuru-mamasi' },
-          { label: '🦜 Kuş Yemi', href: '/kategori/kus-yemi' },
-          { label: '🐠 Balık Yemi', href: '/kategori/balik-yemi' },
-          { label: '🧸 Aksesuarlar', href: '/kategori/kopek-aksesuarlari' },
-        ].map((tab, i) => (
-          <Link key={tab.label} href={tab.href} className={`px-4 py-1.5 rounded-full text-xs font-extrabold whitespace-nowrap border-2 transition-all ${i === 0 ? 'bg-orange-500 text-white border-orange-500' : 'bg-orange-50 text-orange-500 border-orange-200'}`}>
+      {/* Kategori butonları */}
+      <div className="bg-white px-3 py-3 flex gap-2 overflow-x-auto scrollbar-hide border-b border-gray-100" style={{ WebkitOverflowScrolling: 'touch' }}>
+        {kategoriler.map((tab) => (
+          <Link
+            key={tab.slug}
+            href={tab.href}
+            className="px-4 py-2 rounded-full text-xs font-extrabold whitespace-nowrap border-2 transition-colors flex-shrink-0 bg-orange-50 text-orange-500 border-orange-200 active:bg-orange-500 active:text-white hover:bg-orange-100"
+          >
             {tab.label}
           </Link>
         ))}
       </div>
 
-      <ProductSection title="🔥 Çok Satanlar" categorySlug="yetiskin-kopek-mamasi" href="/kategori/kopek" autoScroll={true} />
+      <ProductSection title="🔥 Çok Satanlar" categorySlug="kopek-kuru-mamasi" href="/kategori/kopek-kuru-mamasi" autoScroll={true} />
 
-      <div className="mx-4 my-1 bg-gradient-to-r from-blue-700 to-blue-500 rounded-2xl px-5 py-3.5 flex justify-between items-center">
+      <div className="mx-3 md:mx-4 my-2 bg-gradient-to-r from-blue-700 to-blue-500 rounded-2xl px-5 py-3.5 flex justify-between items-center">
         <div>
           <p className="text-sm font-extrabold text-white">🎉 İlk Siparişe %10 İndirim!</p>
           <p className="text-[10px] text-blue-100 mt-0.5">SEPETMAMA10 kupon kodunu kullan · Min. 200₺</p>
