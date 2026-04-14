@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "import-products": "tsx --tsconfig scripts/tsconfig.json scripts/import-products.ts"
+    "import-products": "tsx --tsconfig scripts/tsconfig.json scripts/import-products.ts",
+    "update-descriptions": "tsx --tsconfig scripts/tsconfig.json scripts/update-descriptions.ts"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
