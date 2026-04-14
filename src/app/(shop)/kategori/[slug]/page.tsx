@@ -8,7 +8,7 @@ import Link from 'next/link'
 
 interface PageProps {
   params: Promise<{ slug: string }>
-  searchParams: Promise<{ min?: string; max?: string; sayfa?: string }>
+  searchParams: Promise<{ min?: string; max?: string; sayfa?: string; marka?: string }>
 }
 
 async function getAllCategoryIds(parentId: string): Promise<string[]> {
@@ -41,13 +41,21 @@ export default async function KategoriPage({ params, searchParams }: PageProps) 
     isActive: true,
     categories: { some: { categoryId: { in: categoryIds } } },
     ...(sp.min || sp.max ? { price: { ...(sp.min ? { gte: parseFloat(sp.min) } : {}), ...(sp.max ? { lte: parseFloat(sp.max) } : {}) } } : {}),
+    ...(sp.marka ? { brand: sp.marka } : {}),
   }
 
-  const [products, total] = await Promise.all([
+  const [products, total, brandList] = await Promise.all([
     prisma.product.findMany({ where, include: { images: { orderBy: { order: 'asc' }, take: 1 } }, orderBy: { createdAt: 'desc' }, skip, take: perPage }),
     prisma.product.count({ where }),
+    prisma.product.findMany({
+      where: { isActive: true, categories: { some: { categoryId: { in: categoryIds } } }, brand: { not: null } },
+      select: { brand: true },
+      distinct: ['brand'],
+      orderBy: { brand: 'asc' },
+    }),
   ])
 
+  const brands = brandList.map((b) => b.brand).filter(Boolean) as string[]
   const totalPages = Math.ceil(total / perPage)
 
   return (
@@ -85,7 +93,7 @@ export default async function KategoriPage({ params, searchParams }: PageProps) 
                 </div>
               </div>
             )}
-            <Filters searchParams={sp} />
+            <Filters searchParams={sp} brands={brands} />
           </div>
 
           {category.children.length > 0 && (

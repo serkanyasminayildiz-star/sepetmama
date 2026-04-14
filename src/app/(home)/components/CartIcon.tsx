@@ -2,9 +2,18 @@
 
 import { useCartStore } from '@/store/cartStore'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 
 export default function CartIcon() {
-  const count = useCartStore((s) => s.count())
+  const [count, setCount] = useState(0)
+
+  useEffect(() => {
+    const unsub = useCartStore.subscribe((state) => {
+      setCount(state.count())
+    })
+    setCount(useCartStore.getState().count())
+    return unsub
+  }, [])
 
   return (
     <Link href="/sepet" className="relative w-9 h-9 rounded-xl border border-orange-100 bg-white flex items-center justify-center text-base hover:bg-orange-50 transition-colors">

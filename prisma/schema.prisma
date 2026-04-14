@@ -92,6 +92,7 @@ model Product {
   salePrice   Decimal? @db.Decimal(10, 2)
   stock       Int      @default(0)
   sku         String?  @unique
+  brand       String?
   isActive    Boolean  @default(true)
 
   categories CategoryProduct[]

@@ -64,14 +64,6 @@ export default async function HomePage() {
       <CircleStrip />
       <HeroBanner />
 
-      <div className="bg-white px-4 py-4">
-        <div className="flex items-center h-12 rounded-2xl border-2 border-orange-500 overflow-hidden shadow-[0_4px_20px_rgba(255,107,26,0.12)]">
-          <span className="pl-3 text-base">🔍</span>
-          <input type="text" placeholder="Mama, aksesuar veya marka ara..." className="flex-1 border-none outline-none px-3 text-sm bg-transparent text-gray-800 placeholder:text-gray-400" />
-          <button className="bg-orange-500 hover:bg-orange-600 transition-colors h-full px-5 text-white text-sm font-extrabold">Ara</button>
-        </div>
-      </div>
-
       <div className="bg-white px-4 pb-3 flex gap-2 overflow-x-auto scrollbar-hide justify-center">
         {[
           { label: '🐱 Kedi Mamaları', href: '/kategori/kedi-kuru-mamasi' },
