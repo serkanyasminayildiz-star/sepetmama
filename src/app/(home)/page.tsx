@@ -22,30 +22,8 @@ async function getProducts(categorySlug: string, take = 10) {
   })
 }
 
-function ProductCards({ products }: { products: any[] }) {
-  return (
-    <>
-      {products.map((product) => {
-        const price = parseFloat(product.price.toString())
-        const salePrice = product.salePrice ? parseFloat(product.salePrice.toString()) : null
-        return (
-          <HomeProductCard
-            key={product.id}
-            id={product.id}
-            slug={product.slug}
-            name={product.name}
-            price={price}
-            salePrice={salePrice ?? undefined}
-            image={product.images[0]?.url}
-          />
-        )
-      })}
-    </>
-  )
-}
-
-async function ProductSection({ title, categorySlug, href, autoScroll = false }: {
-  title: string; categorySlug: string; href: string; autoScroll?: boolean
+async function ProductSection({ title, categorySlug, href }: {
+  title: string; categorySlug: string; href: string
 }) {
   const products = await getProducts(categorySlug)
   if (products.length === 0) return null
@@ -58,26 +36,54 @@ async function ProductSection({ title, categorySlug, href, autoScroll = false }:
           Tümünü Gör →
         </Link>
       </div>
-      {autoScroll ? (
-        <AutoScrollRow>
-          <ProductCards products={products} />
-        </AutoScrollRow>
-      ) : (
-        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide" style={{ WebkitOverflowScrolling: 'touch' }}>
-          <ProductCards products={products} />
-        </div>
-      )}
+      <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide" style={{ WebkitOverflowScrolling: 'touch' }}>
+        {products.map((product) => {
+          const price = parseFloat(product.price.toString())
+          const salePrice = product.salePrice ? parseFloat(product.salePrice.toString()) : null
+          return (
+            <HomeProductCard
+              key={product.id}
+              id={product.id}
+              slug={product.slug}
+              name={product.name}
+              price={price}
+              salePrice={salePrice ?? undefined}
+              image={product.images[0]?.url}
+            />
+          )
+        })}
+      </div>
     </section>
   )
 }
 
-const kategoriler = [
-  { label: '🐱 Kedi', href: '/kategori/kedi-kuru-mamasi', slug: 'kedi-kuru-mamasi' },
-  { label: '🐶 Köpek', href: '/kategori/kopek-kuru-mamasi', slug: 'kopek-kuru-mamasi' },
-  { label: '🥫 Konserve', href: '/kategori/kedi-konserve-mamasi', slug: 'kedi-konserve-mamasi' },
-  { label: '🦴 Ödül', href: '/kategori/kopek-odulleri', slug: 'kopek-odulleri' },
-  { label: '🧸 Aksesuar', href: '/kategori/kopek-aksesuarlari', slug: 'kopek-aksesuarlari' },
-]
+async function AutoScrollSection({ title, categorySlug, href }: {
+  title: string; categorySlug: string; href: string
+}) {
+  const products = await getProducts(categorySlug, 12)
+  if (products.length === 0) return null
+
+  const mapped = products.map((p) => ({
+    id: p.id,
+    slug: p.slug,
+    name: p.name,
+    price: parseFloat(p.price.toString()),
+    salePrice: p.salePrice ? parseFloat(p.salePrice.toString()) : undefined,
+    image: p.images[0]?.url,
+  }))
+
+  return (
+    <section className="px-3 md:px-4 py-3 md:py-4">
+      <div className="flex justify-between items-center mb-3">
+        <h2 className="text-[15px] font-extrabold text-gray-800">{title}</h2>
+        <Link href={href} className="text-xs font-extrabold text-orange-500 bg-orange-50 px-3 py-1 rounded-full border border-orange-200 hover:bg-orange-100 transition-colors">
+          Tümünü Gör →
+        </Link>
+      </div>
+      <AutoScrollRow products={mapped} />
+    </section>
+  )
+}
 
 export default async function HomePage() {
   return (
@@ -88,18 +94,21 @@ export default async function HomePage() {
 
       {/* Kategori butonları */}
       <div className="bg-white px-3 py-3 flex gap-2 overflow-x-auto scrollbar-hide border-b border-gray-100" style={{ WebkitOverflowScrolling: 'touch' }}>
-        {kategoriler.map((tab) => (
-          <Link
-            key={tab.slug}
-            href={tab.href}
-            className="px-4 py-2 rounded-full text-xs font-extrabold whitespace-nowrap border-2 transition-colors flex-shrink-0 bg-orange-50 text-orange-500 border-orange-200 active:bg-orange-500 active:text-white hover:bg-orange-100"
-          >
+        {[
+          { label: '🐱 Kedi', href: '/kategori/kedi-kuru-mamasi' },
+          { label: '🐶 Köpek', href: '/kategori/kopek-kuru-mamasi' },
+          { label: '🥫 Konserve', href: '/kategori/kedi-konserve-mamasi' },
+          { label: '🦴 Ödül', href: '/kategori/kopek-odulleri' },
+          { label: '🧸 Aksesuar', href: '/kategori/kopek-aksesuarlari' },
+        ].map((tab) => (
+          <Link key={tab.href} href={tab.href}
+            className="px-4 py-2 rounded-full text-xs font-extrabold whitespace-nowrap border-2 flex-shrink-0 bg-orange-50 text-orange-500 border-orange-200 active:bg-orange-500 active:text-white hover:bg-orange-100 transition-colors">
             {tab.label}
           </Link>
         ))}
       </div>
 
-      <ProductSection title="🔥 Çok Satanlar" categorySlug="kopek-kuru-mamasi" href="/kategori/kopek-kuru-mamasi" autoScroll={true} />
+      <AutoScrollSection title="🔥 Çok Satanlar" categorySlug="kopek-kuru-mamasi" href="/kategori/kopek-kuru-mamasi" />
 
       <div className="mx-3 md:mx-4 my-2 bg-gradient-to-r from-blue-700 to-blue-500 rounded-2xl px-5 py-3.5 flex justify-between items-center">
         <div>
