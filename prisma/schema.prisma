@@ -115,10 +115,21 @@ model ProductImage {
 
 model Order {
   id              String      @id @default(cuid())
-  userId          String
-  user            User        @relation(fields: [userId], references: [id])
-  addressId       String
-  address         Address     @relation(fields: [addressId], references: [id])
+  userId          String?
+  user            User?       @relation(fields: [userId], references: [id])
+  addressId       String?
+  address         Address?    @relation(fields: [addressId], references: [id])
+
+  shippingFullName String
+  shippingEmail    String
+  shippingPhone    String
+  shippingAddress  String
+
+  paidAt           DateTime?
+  failedReason     String?
+
+  consents         Json?
+
   status          OrderStatus @default(PENDING)
   total           Decimal     @db.Decimal(10, 2)
   discount        Decimal?    @db.Decimal(10, 2)

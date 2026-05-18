@@ -21,20 +21,22 @@ export default function OdemeClient() {
   const getToken = async () => {
     setLoading(true)
     setError('')
-    const userIp = await fetch('https://api.ipify.org?format=json')
-      .then((r) => r.json()).then((d) => d.ip).catch(() => '127.0.0.1')
 
     const res = await fetch('/api/paytr/token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        items: items.map((i) => ({ name: i.name, price: i.price, quantity: i.quantity })),
-        total: Math.round(grandTotal * 100) / 100,
-        userIp,
-        email: form.email,
-        name: form.name,
-        phone: form.phone,
-        address: form.address,
+        items: items.map((i) => ({ id: i.id, quantity: i.quantity })),
+        shipping: {
+          name: form.name,
+          email: form.email,
+          phone: form.phone,
+          address: form.address,
+        },
+        consents: {
+          kvkk: form.kvkk,
+          mesafeli: form.mesafeli,
+        },
       }),
     })
 

@@ -5,6 +5,7 @@ import Filters from './Filters'
 import Header from '@/app/(home)/components/Header'
 import Footer from '@/app/(home)/components/Footer'
 import Link from 'next/link'
+import JsonLd from '@/components/JsonLd'
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -68,8 +69,35 @@ export default async function KategoriPage({ params, searchParams }: PageProps) 
   const brands = brandList.map((b) => b.brand).filter(Boolean) as string[]
   const totalPages = Math.ceil(total / perPage)
 
+  const siteUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000'
+
+  const breadcrumbItems = [
+    { "@type": "ListItem", position: 1, name: "Ana Sayfa", item: `${siteUrl}/` },
+    ...(category.parent
+      ? [{
+          "@type": "ListItem",
+          position: 2,
+          name: category.parent.name,
+          item: `${siteUrl}/kategori/${category.parent.slug}`,
+        }]
+      : []),
+    {
+      "@type": "ListItem",
+      position: category.parent ? 3 : 2,
+      name: category.name,
+      item: `${siteUrl}/kategori/${category.slug}`,
+    },
+  ]
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: breadcrumbItems,
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
+      <JsonLd data={breadcrumbSchema} />
       <Header />
       <div className="max-w-7xl mx-auto px-3 md:px-4 py-4 md:py-6">
 

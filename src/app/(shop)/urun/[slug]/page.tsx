@@ -6,6 +6,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import ProductGrid from '@/app/(shop)/kategori/[slug]/ProductGrid'
 import AddToCartButton from './AddToCartButton'
+import JsonLd from '@/components/JsonLd'
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -49,8 +50,67 @@ export default async function UrunPage({ params }: PageProps) {
     ? product.reviews.reduce((sum, r) => sum + r.rating, 0) / product.reviews.length
     : 0
 
+  const siteUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000'
+  const productUrl = `${siteUrl}/urun/${product.slug}`
+
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    image: product.images.map((i) => i.url),
+    ...(product.description ? { description: product.description } : {}),
+    ...(product.sku ? { sku: product.sku } : {}),
+    ...(product.brand ? { brand: { "@type": "Brand", name: product.brand } } : {}),
+    offers: {
+      "@type": "Offer",
+      url: productUrl,
+      priceCurrency: "TRY",
+      price: displayPrice.toFixed(2),
+      availability:
+        product.stock > 0
+          ? "https://schema.org/InStock"
+          : "https://schema.org/OutOfStock",
+      itemCondition: "https://schema.org/NewCondition",
+    },
+    ...(avgRating > 0
+      ? {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: avgRating.toFixed(1),
+            reviewCount: product.reviews.length,
+          },
+        }
+      : {}),
+  }
+
+  const breadcrumbItems = [
+    { "@type": "ListItem", position: 1, name: "Ana Sayfa", item: `${siteUrl}/` },
+    ...(firstCategory
+      ? [{
+          "@type": "ListItem",
+          position: 2,
+          name: firstCategory.name,
+          item: `${siteUrl}/kategori/${firstCategory.slug}`,
+        }]
+      : []),
+    {
+      "@type": "ListItem",
+      position: firstCategory ? 3 : 2,
+      name: product.name,
+      item: productUrl,
+    },
+  ]
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: breadcrumbItems,
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
+      <JsonLd data={productSchema} />
+      <JsonLd data={breadcrumbSchema} />
       <Header />
       <div className="max-w-6xl mx-auto px-4 py-6">
 
