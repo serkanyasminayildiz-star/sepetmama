@@ -182,7 +182,7 @@ export async function POST(req: NextRequest) {
     const data = await response.json()
 
     if (data.status === 'success') {
-      return NextResponse.json({ token: data.token, orderId: order.id })
+      return NextResponse.json({ token: data.token, orderId: order.id, _debug_testMode: PAYTR_TEST_MODE })
     }
 
     await prisma.order.update({
