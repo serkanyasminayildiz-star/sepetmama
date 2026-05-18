@@ -96,7 +96,7 @@ export default function RootLayout({
             "@type": "Organization",
             name: siteName,
             url: siteUrl,
-            logo: `${siteUrl}/images/hero.png`,
+            logo: `${siteUrl}/api/logo`,
             contactPoint: {
               "@type": "ContactPoint",
               telephone: "+90-532-489-7846",
