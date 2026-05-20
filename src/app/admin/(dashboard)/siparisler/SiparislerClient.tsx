@@ -3,30 +3,14 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import Link from 'next/link'
+import { getStatusMeta, ORDER_STATUS } from '@/lib/order-status'
 
 const btn = (bg = '#E8845A', extra?: React.CSSProperties): React.CSSProperties => ({
   background: bg, color: 'white', border: 'none', borderRadius: 10,
   padding: '10px 18px', fontSize: 13, fontWeight: 700, cursor: 'pointer',
   fontFamily: 'inherit', whiteSpace: 'nowrap', ...extra,
 })
-
-const durumRenk: Record<string, { bg: string; color: string }> = {
-  PENDING: { bg: '#FFF3E0', color: '#E65100' },
-  CONFIRMED: { bg: '#E3F2FD', color: '#1565C0' },
-  SHIPPED: { bg: '#E8F5E9', color: '#2E7D32' },
-  DELIVERED: { bg: '#F3E5F5', color: '#6A1B9A' },
-  CANCELLED: { bg: '#FFEBEE', color: '#C62828' },
-  REFUNDED: { bg: '#F5F5F5', color: '#666' },
-}
-
-const durumTR: Record<string, string> = {
-  PENDING: '⏳ Beklemede',
-  CONFIRMED: '✅ Onaylandı',
-  SHIPPED: '🚚 Kargoda',
-  DELIVERED: '📦 Teslim Edildi',
-  CANCELLED: '❌ İptal',
-  REFUNDED: '↩️ İade',
-}
 
 export default function SiparislerClient({ orders, searchParams }: any) {
   const router = useRouter()
@@ -76,7 +60,10 @@ export default function SiparislerClient({ orders, searchParams }: any) {
 
       {/* Durum filtreleri */}
       <div style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
-        {[['', 'Tümü'], ['PENDING', '⏳ Beklemede'], ['CONFIRMED', '✅ Onaylandı'], ['SHIPPED', '🚚 Kargoda'], ['DELIVERED', '📦 Teslim Edildi'], ['CANCELLED', '❌ İptal']].map(([val, lbl]) => (
+        {[
+          ['', 'Tümü'],
+          ...(Object.entries(ORDER_STATUS).map(([k, v]) => [k, `${v.emoji} ${v.label}`])),
+        ].map(([val, lbl]) => (
           <button key={val} onClick={() => filtrele(val)}
             style={{ ...btn(searchParams.durum === val || (!searchParams.durum && val === '') ? '#E8845A' : '#E8D5B7'), color: searchParams.durum === val || (!searchParams.durum && val === '') ? 'white' : '#5C3D2E', padding: '8px 16px', fontSize: 12 }}>
             {lbl}
@@ -95,15 +82,32 @@ export default function SiparislerClient({ orders, searchParams }: any) {
           <div key={sp.id} style={{ background: 'white', borderRadius: 18, boxShadow: '0 4px 16px rgba(92,61,46,0.06)', overflow: 'hidden' }}>
             {/* Sipariş başlık */}
             <div style={{ padding: '14px 20px', background: '#FAF5EF', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
                 <span style={{ fontFamily: 'Georgia,serif', fontSize: 15, fontWeight: 700, color: '#5C3D2E' }}>#{sp.id.slice(-8).toUpperCase()}</span>
                 <span style={{ fontSize: 12, opacity: 0.5 }}>{new Date(sp.createdAt).toLocaleString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
-                <span style={{ background: durumRenk[sp.status]?.bg || '#F5F5F5', color: durumRenk[sp.status]?.color || '#666', padding: '2px 9px', borderRadius: 50, fontSize: 11, fontWeight: 700 }}>
-                  {durumTR[sp.status] || sp.status}
-                </span>
+                {(() => {
+                  const m = getStatusMeta(sp.status)
+                  return (
+                    <span style={{ background: m.bg, color: m.color, padding: '2px 9px', borderRadius: 50, fontSize: 11, fontWeight: 700 }}>
+                      {m.emoji} {m.label}
+                    </span>
+                  )
+                })()}
+                {sp.paidAt ? (
+                  <span style={{ background: '#E8F5E9', color: '#2E7D32', padding: '2px 9px', borderRadius: 50, fontSize: 11, fontWeight: 700 }}>
+                    💰 Ödendi
+                  </span>
+                ) : (
+                  <span style={{ background: '#FFF3E0', color: '#E65100', padding: '2px 9px', borderRadius: 50, fontSize: 11, fontWeight: 700 }}>
+                    💳 Ödeme bekleniyor
+                  </span>
+                )}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <span style={{ fontFamily: 'Georgia,serif', fontSize: 20, fontWeight: 700, color: '#E8845A' }}>₺{parseFloat(sp.total).toFixed(2)}</span>
+                <Link href={`/admin/siparisler/${sp.id}/fis`} target="_blank" style={{ background: '#FDF6EE', border: '2px solid #E8D5B7', borderRadius: 8, padding: '5px 10px', fontSize: 12, cursor: 'pointer', color: '#5C3D2E', fontWeight: 600, textDecoration: 'none' }}>
+                  🖨️ Fiş
+                </Link>
                 <button onClick={() => setAcikId(acikId === sp.id ? null : sp.id)}
                   style={{ background: 'none', border: '2px solid #E8D5B7', borderRadius: 8, padding: '5px 12px', fontSize: 12, cursor: 'pointer', color: '#5C3D2E', fontWeight: 600 }}>
                   {acikId === sp.id ? '▲ Kapat' : '▼ Detay'}
@@ -118,17 +122,16 @@ export default function SiparislerClient({ orders, searchParams }: any) {
                   {/* Müşteri */}
                   <div style={{ background: '#FDF6EE', borderRadius: 12, padding: '12px 16px' }}>
                     <div style={{ fontSize: 10, fontWeight: 700, opacity: 0.5, marginBottom: 6, textTransform: 'uppercase' }}>Müşteri</div>
-                    <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 2 }}>{sp.user?.name || '—'}</div>
-                    <div style={{ fontSize: 12, opacity: 0.7 }}>{sp.user?.email}</div>
-                    <div style={{ fontSize: 12, opacity: 0.7 }}>{sp.user?.phone}</div>
+                    <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 2 }}>{sp.shippingFullName || sp.user?.name || '—'}</div>
+                    <div style={{ fontSize: 12, opacity: 0.7 }}>{sp.shippingEmail || sp.user?.email || '—'}</div>
+                    <div style={{ fontSize: 12, opacity: 0.7 }}>{sp.shippingPhone || sp.user?.phone || '—'}</div>
+                    {!sp.user && <div style={{ fontSize: 10, marginTop: 4, color: '#E65100', fontWeight: 600 }}>👤 Misafir sipariş</div>}
                   </div>
                   {/* Adres */}
                   <div style={{ background: '#FDF6EE', borderRadius: 12, padding: '12px 16px' }}>
                     <div style={{ fontSize: 10, fontWeight: 700, opacity: 0.5, marginBottom: 6, textTransform: 'uppercase' }}>Teslimat Adresi</div>
-                    <div style={{ fontSize: 13 }}>{sp.address?.fullName}</div>
-                    <div style={{ fontSize: 12, opacity: 0.7 }}>{sp.address?.address}</div>
-                    <div style={{ fontSize: 12, fontWeight: 600 }}>{sp.address?.district} / {sp.address?.city}</div>
-                    <div style={{ fontSize: 12, opacity: 0.7 }}>{sp.address?.phone}</div>
+                    <div style={{ fontSize: 13, lineHeight: 1.5 }}>{sp.shippingAddress || sp.address?.address || '—'}</div>
+                    {sp.address?.district && <div style={{ fontSize: 12, fontWeight: 600, marginTop: 4 }}>{sp.address.district} / {sp.address.city}</div>}
                   </div>
                   {/* Kargo takip */}
                   <div style={{ background: '#FDF6EE', borderRadius: 12, padding: '12px 16px' }}>
@@ -143,6 +146,23 @@ export default function SiparislerClient({ orders, searchParams }: any) {
                     <button onClick={() => kargoGuncelle(sp.id)} style={{ ...btn(), padding: '6px 14px', fontSize: 12 }}>Kaydet</button>
                   </div>
                 </div>
+
+                {/* KVKK + mesafeli onay snapshot */}
+                {sp.consents && (
+                  <div style={{ background: '#F0F8E8', borderRadius: 12, padding: '10px 14px', marginBottom: 14, fontSize: 11, color: '#2E7D32', display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+                    {sp.consents.kvkk && <span>✓ KVKK kabul edildi</span>}
+                    {sp.consents.mesafeli && <span>✓ Mesafeli Satış Sözleşmesi kabul edildi</span>}
+                    {sp.consents.acceptedAt && <span style={{ opacity: 0.6 }}>{new Date(sp.consents.acceptedAt).toLocaleString('tr-TR')}</span>}
+                    {sp.consents.ip && <span style={{ opacity: 0.6 }}>IP: {sp.consents.ip}</span>}
+                  </div>
+                )}
+
+                {/* Hata mesajı (failed payment) */}
+                {sp.failedReason && (
+                  <div style={{ background: '#FFEBEE', borderRadius: 12, padding: '10px 14px', marginBottom: 14, fontSize: 12, color: '#C62828' }}>
+                    ⚠ Hata: {sp.failedReason}
+                  </div>
+                )}
 
                 {/* Sipariş ürünleri */}
                 <div style={{ background: '#F8F4F0', borderRadius: 12, padding: 14, marginBottom: 14 }}>

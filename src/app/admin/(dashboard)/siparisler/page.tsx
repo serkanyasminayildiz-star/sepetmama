@@ -14,14 +14,31 @@ export default async function SiparislerPage({
 
   const orders = await prisma.order.findMany({
     where,
-    include: {
+    select: {
+      id: true,
+      status: true,
+      total: true,
+      shippingFee: true,
+      createdAt: true,
+      paidAt: true,
+      failedReason: true,
+      cargoCompany: true,
+      cargoTrackingNo: true,
+      shippingFullName: true,
+      shippingEmail: true,
+      shippingPhone: true,
+      shippingAddress: true,
       user: { select: { name: true, email: true, phone: true } },
-      address: true,
+      address: { select: { fullName: true, phone: true, address: true, city: true, district: true } },
       items: {
-        include: {
+        select: {
+          id: true,
+          quantity: true,
+          price: true,
           product: {
-            include: {
-              images: { orderBy: { order: 'asc' }, take: 1 },
+            select: {
+              name: true,
+              images: { select: { url: true }, orderBy: { order: 'asc' }, take: 1 },
             },
           },
         },
