@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'crypto'
 import { prisma } from '@/lib/prisma'
+import { sendOrderConfirmation, sendAdminNotification } from '@/lib/email/send'
 
 const MERCHANT_KEY = process.env.PAYTR_MERCHANT_KEY!
 const MERCHANT_SALT = process.env.PAYTR_MERCHANT_SALT!
@@ -29,7 +30,7 @@ export async function POST(req: NextRequest) {
 
   const order = await prisma.order.findUnique({
     where: { id: merchantOid },
-    include: { items: true },
+    include: { items: { include: { product: { select: { name: true } } } } },
   })
 
   if (!order) {
@@ -41,6 +42,7 @@ export async function POST(req: NextRequest) {
   }
 
   if (status === 'success') {
+    let stockOk = false
     try {
       await prisma.$transaction(async (tx) => {
         for (const item of order.items) {
@@ -57,12 +59,37 @@ export async function POST(req: NextRequest) {
           data: { status: 'CONFIRMED', paidAt: new Date() },
         })
       })
+      stockOk = true
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Stock update failed'
       await prisma.order.update({
         where: { id: order.id },
         data: { status: 'CANCELLED', failedReason: `Post-payment stock failure: ${msg}` },
       })
+    }
+
+    // Email — sadece sipariş CONFIRMED olduğunda. Email hatası callback'i bozmaz.
+    if (stockOk) {
+      const emailData = {
+        orderId: order.id,
+        total: parseFloat(order.total.toString()),
+        shippingFee: parseFloat(order.shippingFee.toString()),
+        customerName: order.shippingFullName,
+        customerEmail: order.shippingEmail,
+        customerPhone: order.shippingPhone,
+        shippingAddress: order.shippingAddress,
+        items: order.items.map((i) => ({
+          name: i.product.name,
+          quantity: i.quantity,
+          price: parseFloat(i.price.toString()),
+        })),
+        isLoggedInUser: !!order.userId,
+        siteUrl: process.env.NEXTAUTH_URL || 'https://www.sepetmama.com',
+      }
+      await Promise.allSettled([
+        sendOrderConfirmation(emailData),
+        sendAdminNotification(emailData),
+      ])
     }
   } else {
     await prisma.order.update({
