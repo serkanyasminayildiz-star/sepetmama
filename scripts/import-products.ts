@@ -96,27 +96,47 @@ async function main() {
     const oldPrice = row['Sale Price'] && row['Regular Price'] ? parseFloat(row['Regular Price']) : null
     const stock = row['Stock Status'] === 'instock' ? 10 : 0
 
-    let slug = slugify(title)
+    const slug = slugify(title)
     const existing = await prisma.product.findUnique({ where: { slug } })
-    if (existing) slug = `${slug}-${row['ID']}`
 
+    const productData = {
+      name: title,
+      description: row['Short Description']?.replace(/<[^>]*>/g, '').trim() || null,
+      price,
+      salePrice: oldPrice ? price : null,
+      stock,
+      sku: row['Sku'] || null,
+      isActive: true,
+    }
+
+    if (existing) {
+      // UPDATE — idempotent: ürün varsa fields güncellenir, görseller dokunulmaz
+      await prisma.product.update({
+        where: { slug },
+        data: {
+          ...productData,
+          categories: {
+            deleteMany: {},
+            create: categoryIds.map(categoryId => ({ categoryId })),
+          },
+        },
+      })
+      console.log(`  ↻ Güncellendi`)
+      continue
+    }
+
+    // CREATE — yeni ürün
     const product = await prisma.product.create({
       data: {
-        name: title,
+        ...productData,
         slug,
-        description: row['Short Description']?.replace(/<[^>]*>/g, '').trim() || null,
-        price,
-        salePrice: oldPrice ? price : null,
-        stock,
-        sku: row['Sku'] || null,
-        isActive: true,
         categories: {
-          create: categoryIds.map(categoryId => ({ categoryId }))
-        }
-      }
+          create: categoryIds.map(categoryId => ({ categoryId })),
+        },
+      },
     })
 
-    // Görseller
+    // Görseller (sadece yeni create'te yüklenir; update'te dokunulmaz)
     const imageUrls = (row['Image URL'] || '').split('|').filter(Boolean).slice(0, 3)
     for (let j = 0; j < imageUrls.length; j++) {
       const url = imageUrls[j].trim()

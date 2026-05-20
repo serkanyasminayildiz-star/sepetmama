@@ -47,12 +47,7 @@ async function main() {
 
     if (!description) { skipped++; continue }
 
-    let slug = slugify(title)
-    const existing = await prisma.product.findUnique({ where: { slug } })
-    if (!existing) {
-      slug = `${slug}-${row['ID']}`
-    }
-
+    const slug = slugify(title)
     const product = await prisma.product.findUnique({ where: { slug } })
     if (!product) { skipped++; continue }
 

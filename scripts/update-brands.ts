@@ -27,12 +27,8 @@ async function main() {
     const brand = row['Markalar']?.trim()
     if (!title || !brand) continue
 
-    let slug = slugify(title)
-    let product = await prisma.product.findUnique({ where: { slug } })
-    if (!product) {
-      slug = `${slug}-${row['ID']}`
-      product = await prisma.product.findUnique({ where: { slug } })
-    }
+    const slug = slugify(title)
+    const product = await prisma.product.findUnique({ where: { slug } })
     if (!product) continue
 
     await prisma.product.update({ where: { slug }, data: { brand } })
