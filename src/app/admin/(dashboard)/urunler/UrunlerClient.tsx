@@ -15,6 +15,19 @@ const btn = (bg = '#E8845A', extra?: React.CSSProperties): React.CSSProperties =
   fontFamily: 'inherit', whiteSpace: 'nowrap', ...extra,
 })
 
+function getPageNumbers(current: number, total: number): (number | 'gap')[] {
+  if (total <= 9) return Array.from({ length: total }, (_, i) => i + 1)
+  const window = 2
+  const result: (number | 'gap')[] = [1]
+  if (current - window > 2) result.push('gap')
+  for (let i = Math.max(2, current - window); i <= Math.min(total - 1, current + window); i++) {
+    result.push(i)
+  }
+  if (current + window < total - 1) result.push('gap')
+  result.push(total)
+  return result
+}
+
 export default function UrunlerClient({ products, total, sayfa, totalPages, categories, brands, searchParams }: any) {
   const router = useRouter()
   const [duzenle, setDuzenle] = useState<any>(null)
@@ -263,10 +276,44 @@ export default function UrunlerClient({ products, total, sayfa, totalPages, cate
 
         {/* Sayfalama */}
         {totalPages > 1 && (
-          <div style={{ padding: '14px 18px', borderTop: '1px solid #F0E8E0', display: 'flex', justifyContent: 'center', gap: 6 }}>
-            {sayfa > 1 && <button onClick={() => filtrele('sayfa', String(sayfa - 1))} style={btn('#5C3D2E', { padding: '6px 14px', fontSize: 12 })}>← Önceki</button>}
-            <span style={{ padding: '6px 14px', background: '#E8845A', color: 'white', borderRadius: 10, fontSize: 12, fontWeight: 700 }}>{sayfa} / {totalPages}</span>
-            {sayfa < totalPages && <button onClick={() => filtrele('sayfa', String(sayfa + 1))} style={btn('#5C3D2E', { padding: '6px 14px', fontSize: 12 })}>Sonraki →</button>}
+          <div style={{ padding: '14px 18px', borderTop: '1px solid #F0E8E0', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+            <button
+              onClick={() => filtrele('sayfa', String(sayfa - 1))}
+              disabled={sayfa <= 1}
+              style={{ background: sayfa <= 1 ? '#F0EBE3' : '#FDF6EE', color: sayfa <= 1 ? '#999' : '#5C3D2E', border: '1px solid #E8D5B7', borderRadius: 8, padding: '6px 12px', fontSize: 12, fontWeight: 600, cursor: sayfa <= 1 ? 'not-allowed' : 'pointer', fontFamily: 'inherit' }}
+            >
+              ← Önceki
+            </button>
+
+            {getPageNumbers(sayfa, totalPages).map((p, i) =>
+              p === 'gap' ? (
+                <span key={'gap-' + i} style={{ padding: '6px 6px', color: '#999', fontSize: 12 }}>…</span>
+              ) : (
+                <button
+                  key={p}
+                  onClick={() => filtrele('sayfa', String(p))}
+                  style={{
+                    background: p === sayfa ? '#E8845A' : '#FDF6EE',
+                    color: p === sayfa ? 'white' : '#5C3D2E',
+                    border: '1px solid ' + (p === sayfa ? '#E8845A' : '#E8D5B7'),
+                    borderRadius: 8, padding: '6px 11px', fontSize: 12, fontWeight: 700,
+                    cursor: 'pointer', fontFamily: 'inherit', minWidth: 32,
+                  }}
+                >
+                  {p}
+                </button>
+              )
+            )}
+
+            <button
+              onClick={() => filtrele('sayfa', String(sayfa + 1))}
+              disabled={sayfa >= totalPages}
+              style={{ background: sayfa >= totalPages ? '#F0EBE3' : '#FDF6EE', color: sayfa >= totalPages ? '#999' : '#5C3D2E', border: '1px solid #E8D5B7', borderRadius: 8, padding: '6px 12px', fontSize: 12, fontWeight: 600, cursor: sayfa >= totalPages ? 'not-allowed' : 'pointer', fontFamily: 'inherit' }}
+            >
+              Sonraki →
+            </button>
+
+            <span style={{ marginLeft: 8, fontSize: 12, color: '#5C3D2E', opacity: 0.6 }}>{sayfa} / {totalPages}</span>
           </div>
         )}
       </div>
