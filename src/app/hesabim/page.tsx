@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { auth, signOut } from '@/auth'
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
 import Header from '@/app/(home)/components/Header'
 import Footer from '@/app/(home)/components/Footer'
 
@@ -37,9 +38,25 @@ export default async function HesabimPage() {
           </div>
         </div>
 
+        <Link
+          href="/siparislerim"
+          className="block bg-white rounded-2xl border border-orange-100 p-4 mb-4 hover:shadow-md hover:border-orange-200 transition-all"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-orange-50 rounded-xl flex items-center justify-center text-2xl flex-shrink-0">
+              📦
+            </div>
+            <div className="flex-1">
+              <p className="font-extrabold text-gray-800">Siparişlerim</p>
+              <p className="text-xs text-gray-500">Tüm siparişlerini ve durumlarını gör</p>
+            </div>
+            <span className="text-orange-500 font-bold">→</span>
+          </div>
+        </Link>
+
         <div className="bg-orange-50 rounded-2xl border border-orange-100 p-4 mb-4">
           <p className="text-sm text-orange-700">
-            <span className="font-bold">Yakında:</span> Sipariş geçmişi, adres yönetimi, favoriler.
+            <span className="font-bold">Yakında:</span> Adres yönetimi, favoriler.
           </p>
         </div>
 

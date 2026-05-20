@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
+import { auth } from '@/auth'
 import CartClear from './CartClear'
 import PurchaseTracker from '@/components/PurchaseTracker'
 
@@ -9,6 +10,7 @@ interface PageProps {
 
 export default async function BasariliPage({ searchParams }: PageProps) {
   const { orderId } = await searchParams
+  const session = await auth()
 
   const order = orderId
     ? await prisma.order.findUnique({
@@ -75,12 +77,26 @@ export default async function BasariliPage({ searchParams }: PageProps) {
           </div>
         )}
 
-        <Link
-          href="/"
-          className="inline-block bg-orange-500 text-white font-extrabold px-6 py-3 rounded-xl hover:bg-orange-600 transition-colors"
-        >
-          Ana Sayfaya Dön
-        </Link>
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          {session?.user && (
+            <Link
+              href="/siparislerim"
+              className="inline-block bg-orange-500 text-white font-extrabold px-6 py-3 rounded-xl hover:bg-orange-600 transition-colors"
+            >
+              📦 Siparişlerimi Gör
+            </Link>
+          )}
+          <Link
+            href="/"
+            className={`inline-block font-extrabold px-6 py-3 rounded-xl transition-colors ${
+              session?.user
+                ? 'bg-white border-2 border-orange-200 text-orange-600 hover:bg-orange-50'
+                : 'bg-orange-500 text-white hover:bg-orange-600'
+            }`}
+          >
+            Ana Sayfaya Dön
+          </Link>
+        </div>
       </div>
     </div>
   )
