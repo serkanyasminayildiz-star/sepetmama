@@ -1,7 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { auth } from '@/auth'
 import { redirect, notFound } from 'next/navigation'
-import { getStatusMeta } from '@/lib/order-status'
 import PrintButton from './PrintButton'
 
 export default async function FisPage({ params }: { params: Promise<{ id: string }> }) {
@@ -38,7 +37,6 @@ export default async function FisPage({ params }: { params: Promise<{ id: string
 
   if (!order) notFound()
 
-  const status = getStatusMeta(order.status)
   const total = parseFloat(order.total.toString())
   const shipping = parseFloat(order.shippingFee.toString())
   const subtotal = total - shipping
@@ -82,21 +80,6 @@ export default async function FisPage({ params }: { params: Promise<{ id: string
             <div style={{ fontSize: 11, color: '#666', marginTop: 4 }}>
               {new Date(order.createdAt).toLocaleString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
             </div>
-          </div>
-        </div>
-
-        {/* Durum + Ödeme satırı */}
-        <div style={{ display: 'flex', gap: 12, marginBottom: 24 }}>
-          <div style={{ flex: 1, background: status.bg, color: status.color, padding: '10px 14px', borderRadius: 8, fontWeight: 700, fontSize: 13 }}>
-            {status.emoji} {status.label}
-          </div>
-          <div style={{ flex: 1, background: order.paidAt ? '#E8F5E9' : '#FFF3E0', color: order.paidAt ? '#2E7D32' : '#E65100', padding: '10px 14px', borderRadius: 8, fontWeight: 700, fontSize: 13 }}>
-            {order.paidAt ? '💰 Ödendi' : '💳 Ödeme bekleniyor'}
-            {order.paidAt && (
-              <span style={{ fontWeight: 400, fontSize: 11, opacity: 0.7, marginLeft: 8 }}>
-                {new Date(order.paidAt).toLocaleString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
-              </span>
-            )}
           </div>
         </div>
 
