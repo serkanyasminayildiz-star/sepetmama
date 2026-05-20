@@ -28,7 +28,7 @@ function cleanHtml(html: string): string {
 
 async function main() {
   const fileContent = fs.readFileSync('./Csv.csv', 'utf-8').replace(/^\uFEFF/, '')
-  const records = parse(fileContent, { columns: true, skip_empty_lines: true, relax_quotes: true, relax_column_count: true })
+  const records = parse(fileContent, { columns: true, skip_empty_lines: true, relax_quotes: true, relax_column_count: true }) as Record<string, string | undefined>[]
 
   console.log(`Toplam ${records.length} ürün işlenecek`)
 
