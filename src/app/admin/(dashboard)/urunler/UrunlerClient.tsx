@@ -65,6 +65,12 @@ export default function UrunlerClient({ products, total, sayfa, totalPages, cate
     router.refresh()
   }
 
+  const oneCikanToggle = async (id: string, featured: boolean) => {
+    await fetch(`/api/admin/urun/${id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ isFeatured: !featured }) })
+    goster(featured ? '☆ Öne çıkandan kaldırıldı' : '⭐ Öne çıkana eklendi')
+    router.refresh()
+  }
+
   const urunSil = async (id: string) => {
     if (!confirm('Bu ürünü silmek istediğinizden emin misiniz?')) return
     await fetch(`/api/admin/urun/${id}`, { method: 'DELETE' })
@@ -165,7 +171,7 @@ export default function UrunlerClient({ products, total, sayfa, totalPages, cate
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
             <thead>
               <tr style={{ background: '#FAF5EF' }}>
-                {['', 'ÜRÜN', 'FİYAT', 'İNDİRİMLİ', 'STOK', 'MARKA', 'KATEGORİ', 'DURUM', 'İŞLEM'].map(h => (
+                {['', 'ÜRÜN', 'FİYAT', 'İNDİRİMLİ', 'STOK', 'MARKA', 'KATEGORİ', 'DURUM', '⭐', 'İŞLEM'].map(h => (
                   <th key={h} style={{ padding: '10px 12px', textAlign: 'left', fontSize: 10, fontWeight: 700, color: '#5C3D2E', opacity: 0.5 }}>{h}</th>
                 ))}
               </tr>
@@ -235,6 +241,11 @@ export default function UrunlerClient({ products, total, sayfa, totalPages, cate
                     <td style={{ padding: '8px 10px' }}>
                       <button onClick={() => aktifToggle(urun.id, urun.isActive)} style={{ background: urun.isActive ? '#E8F5E9' : '#FFEBEE', color: urun.isActive ? '#2E7D32' : '#C62828', border: 'none', padding: '3px 10px', borderRadius: 50, fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>
                         {urun.isActive ? 'Aktif' : 'Pasif'}
+                      </button>
+                    </td>
+                    <td style={{ padding: '8px 10px', textAlign: 'center' }}>
+                      <button onClick={() => oneCikanToggle(urun.id, urun.isFeatured)} title={urun.isFeatured ? 'Öne çıkandan kaldır' : 'Öne çıkana ekle'} style={{ background: 'transparent', border: 'none', fontSize: 18, cursor: 'pointer', padding: '2px 6px', lineHeight: 1 }}>
+                        {urun.isFeatured ? '⭐' : '☆'}
                       </button>
                     </td>
                     <td style={{ padding: '8px 10px' }}>

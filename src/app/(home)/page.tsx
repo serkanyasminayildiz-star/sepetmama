@@ -22,6 +22,39 @@ async function getProducts(categorySlug: string, take = 10) {
   })
 }
 
+async function getFeaturedProducts(take = 12) {
+  return prisma.product.findMany({
+    where: { isActive: true, isFeatured: true },
+    include: { images: { orderBy: { order: 'asc' }, take: 1 } },
+    orderBy: { createdAt: 'desc' },
+    take,
+  })
+}
+
+function mapProduct(p: Awaited<ReturnType<typeof getProducts>>[number]) {
+  return {
+    id: p.id,
+    slug: p.slug,
+    name: p.name,
+    price: parseFloat(p.price.toString()),
+    salePrice: p.salePrice ? parseFloat(p.salePrice.toString()) : undefined,
+    image: p.images[0]?.url,
+  }
+}
+
+async function FeaturedSection() {
+  const products = await getFeaturedProducts(12)
+  if (products.length === 0) return null
+  return (
+    <section className="px-3 md:px-4 py-3 md:py-4">
+      <div className="flex justify-between items-center mb-3">
+        <h2 className="text-[15px] font-extrabold text-gray-800">⭐ Öne Çıkan Ürünler</h2>
+      </div>
+      <AutoScrollRow products={products.map(mapProduct)} />
+    </section>
+  )
+}
+
 async function ProductSection({ title, categorySlug, href }: {
   title: string; categorySlug: string; href: string
 }) {
@@ -37,53 +70,30 @@ async function ProductSection({ title, categorySlug, href }: {
         </Link>
       </div>
       <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide" style={{ WebkitOverflowScrolling: 'touch' }}>
-        {products.map((product) => {
-          const price = parseFloat(product.price.toString())
-          const salePrice = product.salePrice ? parseFloat(product.salePrice.toString()) : null
-          return (
-            <HomeProductCard
-              key={product.id}
-              id={product.id}
-              slug={product.slug}
-              name={product.name}
-              price={price}
-              salePrice={salePrice ?? undefined}
-              image={product.images[0]?.url}
-            />
-          )
-        })}
+        {products.map((product) => (
+          <HomeProductCard
+            key={product.id}
+            id={product.id}
+            slug={product.slug}
+            name={product.name}
+            price={parseFloat(product.price.toString())}
+            salePrice={product.salePrice ? parseFloat(product.salePrice.toString()) : undefined}
+            image={product.images[0]?.url}
+          />
+        ))}
       </div>
     </section>
   )
 }
 
-async function AutoScrollSection({ title, categorySlug, href }: {
-  title: string; categorySlug: string; href: string
-}) {
-  const products = await getProducts(categorySlug, 12)
-  if (products.length === 0) return null
-
-  const mapped = products.map((p) => ({
-    id: p.id,
-    slug: p.slug,
-    name: p.name,
-    price: parseFloat(p.price.toString()),
-    salePrice: p.salePrice ? parseFloat(p.salePrice.toString()) : undefined,
-    image: p.images[0]?.url,
-  }))
-
-  return (
-    <section className="px-3 md:px-4 py-3 md:py-4">
-      <div className="flex justify-between items-center mb-3">
-        <h2 className="text-[15px] font-extrabold text-gray-800">{title}</h2>
-        <Link href={href} className="text-xs font-extrabold text-orange-500 bg-orange-50 px-3 py-1 rounded-full border border-orange-200 hover:bg-orange-100 transition-colors">
-          Tümünü Gör →
-        </Link>
-      </div>
-      <AutoScrollRow products={mapped} />
-    </section>
-  )
-}
+const TABS = [
+  { label: '🐱 Kedi Maması', href: '/kategori/yetiskin-kedi-mamasi-1-7-yas' },
+  { label: '🐈 Yavru Kedi', href: '/kategori/yavru-kedi-mamalari' },
+  { label: '🥫 Kedi Konserve', href: '/kategori/yetiskin-kedi-konservesi' },
+  { label: '🐶 Köpek Maması', href: '/kategori/yetiskin-kopek-mamasi' },
+  { label: '🐕 Yavru Köpek', href: '/kategori/yavru-kopek-mamasi' },
+  { label: '🦴 Köpek Ödülü', href: '/kategori/kopek-odulleri' },
+]
 
 export default async function HomePage() {
   return (
@@ -94,13 +104,7 @@ export default async function HomePage() {
 
       {/* Kategori butonları */}
       <div className="bg-white px-3 py-3 flex gap-2 overflow-x-auto scrollbar-hide border-b border-gray-100" style={{ WebkitOverflowScrolling: 'touch' }}>
-        {[
-          { label: '🐱 Kedi', href: '/kategori/kedi-kuru-mamasi' },
-          { label: '🐶 Köpek', href: '/kategori/kopek-kuru-mamasi' },
-          { label: '🥫 Konserve', href: '/kategori/kedi-konserve-mamasi' },
-          { label: '🦴 Ödül', href: '/kategori/kopek-odulleri' },
-          { label: '🧸 Aksesuar', href: '/kategori/kopek-aksesuarlari' },
-        ].map((tab) => (
+        {TABS.map((tab) => (
           <Link key={tab.href} href={tab.href}
             className="px-4 py-2 rounded-full text-xs font-extrabold whitespace-nowrap border-2 flex-shrink-0 bg-orange-50 text-orange-500 border-orange-200 active:bg-orange-500 active:text-white hover:bg-orange-100 transition-colors">
             {tab.label}
@@ -108,7 +112,8 @@ export default async function HomePage() {
         ))}
       </div>
 
-      <AutoScrollSection title="🔥 Çok Satanlar" categorySlug="kopek-kuru-mamasi" href="/kategori/kopek-kuru-mamasi" />
+      {/* Öne çıkan ürünler slider */}
+      <FeaturedSection />
 
       <div className="mx-3 md:mx-4 my-2 bg-gradient-to-r from-blue-700 to-blue-500 rounded-2xl px-5 py-3.5 flex justify-between items-center">
         <div>
@@ -118,9 +123,12 @@ export default async function HomePage() {
         <button className="bg-white text-blue-700 text-xs font-extrabold px-3.5 py-2 rounded-xl whitespace-nowrap hover:bg-blue-50 transition-colors">Hemen Al</button>
       </div>
 
-      <ProductSection title="🐱 Kedi Mamaları" categorySlug="kedi-kuru-mamasi" href="/kategori/kedi-kuru-mamasi" />
-      <ProductSection title="🐶 Köpek Mamaları" categorySlug="kopek-kuru-mamasi" href="/kategori/kopek-kuru-mamasi" />
-      <ProductSection title="🥫 Kedi Konserveleri" categorySlug="kedi-konserve-mamasi" href="/kategori/kedi-konserve-mamasi" />
+      {/* 6 kategori section */}
+      <ProductSection title="🐱 Kedi Kuru Mamaları" categorySlug="yetiskin-kedi-mamasi-1-7-yas" href="/kategori/yetiskin-kedi-mamasi-1-7-yas" />
+      <ProductSection title="🐈 Yavru Kedi Mamaları" categorySlug="yavru-kedi-mamalari" href="/kategori/yavru-kedi-mamalari" />
+      <ProductSection title="🥫 Kedi Konserveleri" categorySlug="yetiskin-kedi-konservesi" href="/kategori/yetiskin-kedi-konservesi" />
+      <ProductSection title="🐶 Köpek Kuru Mamaları" categorySlug="yetiskin-kopek-mamasi" href="/kategori/yetiskin-kopek-mamasi" />
+      <ProductSection title="🐕 Yavru Köpek Mamaları" categorySlug="yavru-kopek-mamasi" href="/kategori/yavru-kopek-mamasi" />
       <ProductSection title="🦴 Köpek Ödülleri" categorySlug="kopek-odulleri" href="/kategori/kopek-odulleri" />
 
       <Footer />
