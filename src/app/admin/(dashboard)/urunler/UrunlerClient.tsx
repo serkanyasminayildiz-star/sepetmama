@@ -26,7 +26,7 @@ export default function UrunlerClient({ products, total, sayfa, totalPages, cate
   const filtrele = (key: string, val: string) => {
     const params = new URLSearchParams(searchParams)
     if (val) params.set(key, val); else params.delete(key)
-    params.delete('sayfa')
+    if (key !== 'sayfa') params.delete('sayfa')
     router.push(`/admin/urunler?${params.toString()}`)
   }
 
