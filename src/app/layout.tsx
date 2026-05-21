@@ -73,7 +73,10 @@ export const metadata: Metadata = {
     telephone: false,
   },
   verification: {
-    google: process.env.GOOGLE_SITE_VERIFICATION || undefined,
+    google: [
+      process.env.GOOGLE_SITE_VERIFICATION,
+      process.env.GOOGLE_SITE_VERIFICATION_MERCHANT,
+    ].filter((v): v is string => Boolean(v)),
   },
 };
 
