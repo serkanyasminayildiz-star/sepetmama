@@ -61,9 +61,9 @@ export async function GET() {
 
       return `    <item>
       <g:id>${esc(p.id)}</g:id>
-      <g:title>${esc(title)}</g:title>
-      <g:description>${esc(description)}</g:description>
-      <g:link>${esc(link)}</g:link>
+      <title>${esc(title)}</title>
+      <description>${esc(description)}</description>
+      <link>${esc(link)}</link>
       <g:image_link>${esc(image)}</g:image_link>
       <g:condition>new</g:condition>
       <g:availability>${availability}</g:availability>
