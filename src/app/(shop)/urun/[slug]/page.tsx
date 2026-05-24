@@ -71,6 +71,41 @@ export default async function UrunPage({ params }: PageProps) {
           ? "https://schema.org/InStock"
           : "https://schema.org/OutOfStock",
       itemCondition: "https://schema.org/NewCondition",
+      shippingDetails: {
+        "@type": "OfferShippingDetails",
+        shippingRate: {
+          "@type": "MonetaryAmount",
+          value: displayPrice >= 1000 ? "0.00" : "49.90",
+          currency: "TRY",
+        },
+        shippingDestination: {
+          "@type": "DefinedRegion",
+          addressCountry: "TR",
+        },
+        deliveryTime: {
+          "@type": "ShippingDeliveryTime",
+          handlingTime: {
+            "@type": "QuantitativeValue",
+            minValue: 0,
+            maxValue: 1,
+            unitCode: "DAY",
+          },
+          transitTime: {
+            "@type": "QuantitativeValue",
+            minValue: 1,
+            maxValue: 3,
+            unitCode: "DAY",
+          },
+        },
+      },
+      hasMerchantReturnPolicy: {
+        "@type": "MerchantReturnPolicy",
+        applicableCountry: "TR",
+        returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
+        merchantReturnDays: 14,
+        returnMethod: "https://schema.org/ReturnByMail",
+        returnFees: "https://schema.org/FreeReturn",
+      },
     },
     ...(avgRating > 0
       ? {
