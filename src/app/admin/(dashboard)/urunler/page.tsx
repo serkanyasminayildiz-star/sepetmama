@@ -26,7 +26,7 @@ export default async function UrunlerPage({
     prisma.product.findMany({
       where,
       include: {
-        images: { orderBy: { order: 'asc' }, take: 1 },
+        images: { orderBy: { order: 'asc' } },
         categories: { include: { category: true }, take: 1 },
       },
       orderBy: { createdAt: 'desc' },

@@ -32,6 +32,7 @@ export default function UrunlerClient({ products, total, sayfa, totalPages, cate
   const router = useRouter()
   const [duzenle, setDuzenle] = useState<any>(null)
   const [bildirim, setBildirim] = useState('')
+  const [uploading, setUploading] = useState(false)
   const [inlineEdit, setInlineEdit] = useState<{ id: string; alan: string; deger: string } | null>(null)
 
   const goster = (msg: string) => { setBildirim(msg); setTimeout(() => setBildirim(''), 3000) }
@@ -90,6 +91,37 @@ export default function UrunlerClient({ products, total, sayfa, totalPages, cate
     goster('✅ Ürün silindi'); router.refresh()
   }
 
+  const resimYukle = async (file: File) => {
+    if (!duzenle || uploading) return
+    setUploading(true)
+    const fd = new FormData()
+    fd.append('file', file)
+    const res = await fetch(`/api/admin/urun/${duzenle.id}/image`, { method: 'POST', body: fd })
+    setUploading(false)
+    if (res.ok) {
+      const { image } = await res.json()
+      setDuzenle({ ...duzenle, images: [...(duzenle.images || []), image] })
+      goster('✅ Görsel yüklendi')
+      router.refresh()
+    } else {
+      const data = await res.json().catch(() => ({}))
+      goster('❌ ' + (data.error || 'Yükleme hatası'))
+    }
+  }
+
+  const resimSil = async (imageId: string) => {
+    if (!duzenle) return
+    if (!confirm('Görseli silmek istediğine emin misin?')) return
+    const res = await fetch(`/api/admin/urun/${duzenle.id}/image?imageId=${imageId}`, { method: 'DELETE' })
+    if (res.ok) {
+      setDuzenle({ ...duzenle, images: (duzenle.images || []).filter((i: any) => i.id !== imageId) })
+      goster('✅ Görsel silindi')
+      router.refresh()
+    } else {
+      goster('❌ Silinemedi')
+    }
+  }
+
   return (
     <div>
       {bildirim && (
@@ -133,6 +165,36 @@ export default function UrunlerClient({ products, total, sayfa, totalPages, cate
                   <option value="1">✅ Aktif</option>
                   <option value="0">❌ Pasif</option>
                 </select>
+              </div>
+              <div style={{ gridColumn: '1/-1' }}>
+                <label style={{ fontSize: 12, fontWeight: 700, color: '#5C3D2E', opacity: 0.7, display: 'block', marginBottom: 5 }}>
+                  Görseller <span style={{ opacity: 0.6, fontWeight: 500 }}>({(duzenle.images || []).length}/6 — max 5MB, JPG/PNG/WEBP)</span>
+                </label>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 8 }}>
+                  {(duzenle.images || []).map((img: any) => (
+                    <div key={img.id} style={{ position: 'relative', aspectRatio: '1', background: '#FDF6EE', borderRadius: 10, overflow: 'hidden', border: '2px solid #E8D5B7' }}>
+                      <Image src={img.url} alt="" fill style={{ objectFit: 'contain', padding: 4 }} sizes="100px" />
+                      <button
+                        type="button"
+                        onClick={() => resimSil(img.id)}
+                        title="Görseli sil"
+                        style={{ position: 'absolute', top: 3, right: 3, background: '#C62828', color: 'white', border: 'none', borderRadius: '50%', width: 22, height: 22, cursor: 'pointer', fontSize: 11, fontWeight: 700, lineHeight: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                      >✕</button>
+                    </div>
+                  ))}
+                  {(duzenle.images?.length || 0) < 6 && (
+                    <label style={{ aspectRatio: '1', background: uploading ? '#F0EBE3' : '#FDF6EE', borderRadius: 10, border: '2px dashed #E8D5B7', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: uploading ? 'wait' : 'pointer', fontSize: 28, color: '#E8845A', fontWeight: 700 }}>
+                      {uploading ? '⏳' : '+'}
+                      <input
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        disabled={uploading}
+                        style={{ display: 'none' }}
+                        onChange={e => { const f = e.target.files?.[0]; if (f) resimYukle(f); e.target.value = '' }}
+                      />
+                    </label>
+                  )}
+                </div>
               </div>
               <div style={{ gridColumn: '1/-1' }}>
                 <label style={{ fontSize: 12, fontWeight: 700, color: '#5C3D2E', opacity: 0.7, display: 'block', marginBottom: 5 }}>Açıklama</label>
