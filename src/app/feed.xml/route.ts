@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import { NextResponse } from 'next/server'
 
-export const revalidate = 3600 // 1 saat
+export const revalidate = 300 // 5 dk (admin değişiklikleri Google'a hızlı yansısın)
 
 // XML/HTML special char escape
 function esc(text: string | null | undefined): string {
@@ -98,7 +98,7 @@ ${items}
   return new NextResponse(xml, {
     headers: {
       'Content-Type': 'application/xml; charset=utf-8',
-      'Cache-Control': 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400',
+      'Cache-Control': 'public, max-age=300, s-maxage=300, stale-while-revalidate=86400',
     },
   })
 }
