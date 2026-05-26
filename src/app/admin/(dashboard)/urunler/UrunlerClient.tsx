@@ -176,6 +176,11 @@ export default function UrunlerClient({ products, total, sayfa, totalPages, cate
           <option value="tukendi">❌ Stok Yok</option>
           <option value="kritik">⚠️ Kritik (≤5)</option>
         </select>
+        <select value={searchParams.onecikan || ''} onChange={e => filtrele('onecikan', e.target.value)} style={{ ...s, width: 'auto' }}>
+          <option value="">Tümü (öne çıkan)</option>
+          <option value="evet">⭐ Öne Çıkanlar</option>
+          <option value="hayir">☆ Öne Çıkmayanlar</option>
+        </select>
       </div>
 
       {/* Tablo */}

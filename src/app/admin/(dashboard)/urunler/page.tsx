@@ -5,7 +5,7 @@ import UrunlerClient from './UrunlerClient'
 export default async function UrunlerPage({
   searchParams,
 }: {
-  searchParams: Promise<{ sayfa?: string; arama?: string; marka?: string; kategori?: string; stok?: string }>
+  searchParams: Promise<{ sayfa?: string; arama?: string; marka?: string; kategori?: string; stok?: string; onecikan?: string }>
 }) {
   const sp = await searchParams
   const sayfa = parseInt(sp.sayfa || '1')
@@ -19,6 +19,8 @@ export default async function UrunlerPage({
   if (sp.stok === 'kritik') where.stock = { gt: 0, lte: 5 }
   if (sp.stok === 'stokta') where.stock = { gt: 0 }
   if (sp.kategori) where.categories = { some: { categoryId: sp.kategori } }
+  if (sp.onecikan === 'evet') where.isFeatured = true
+  if (sp.onecikan === 'hayir') where.isFeatured = false
 
   const [products, total, categories, brands] = await Promise.all([
     prisma.product.findMany({
