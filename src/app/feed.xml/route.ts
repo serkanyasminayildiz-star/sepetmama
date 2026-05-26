@@ -33,6 +33,7 @@ export async function GET() {
       salePrice: true,
       stock: true,
       brand: true,
+      isFeatured: true,
       images: { select: { url: true }, orderBy: { order: 'asc' }, take: 1 },
       categories: {
         select: { category: { select: { name: true } } },
@@ -73,6 +74,7 @@ export async function GET() {
       ${p.brand ? `<g:brand>${esc(p.brand)}</g:brand>` : '<g:brand>SepetMama</g:brand>'}
       <g:identifier_exists>no</g:identifier_exists>
       <g:product_type>${esc(category)}</g:product_type>
+      <g:custom_label_0>${p.isFeatured ? 'featured' : 'regular'}</g:custom_label_0>
       <g:shipping>
         <g:country>TR</g:country>
         <g:service>Standart</g:service>
