@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { auth } from '@/auth'
 import CartClear from './CartClear'
 import PurchaseTracker from '@/components/PurchaseTracker'
+import PendingPoller from './PendingPoller'
 
 interface PageProps {
   searchParams: Promise<{ orderId?: string }>
@@ -48,6 +49,9 @@ export default async function BasariliPage({ searchParams }: PageProps) {
       <CartClear />
       {order && order.status === 'CONFIRMED' && (
         <PurchaseTracker orderId={order.id} value={totalNum} items={trackingItems} />
+      )}
+      {order && order.status === 'PENDING' && (
+        <PendingPoller orderId={order.id} />
       )}
       <div className="bg-white rounded-2xl border border-green-100 p-10 text-center max-w-md w-full">
         <p className="text-5xl mb-4">{isPending ? '⏳' : '🎉'}</p>
