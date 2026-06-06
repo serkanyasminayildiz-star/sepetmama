@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'crypto'
 import { prisma } from '@/lib/prisma'
-import { sendOrderConfirmation, sendAdminNotification } from '@/lib/email/send'
+import { sendOrderConfirmation, sendAdminNotification, sendRewardEmail } from '@/lib/email/send'
+import { createRewardCoupon, REWARD_MIN_ORDER } from '@/lib/reward'
 
 const MERCHANT_KEY = process.env.PAYTR_MERCHANT_KEY!
 const MERCHANT_SALT = process.env.PAYTR_MERCHANT_SALT!
@@ -97,6 +98,29 @@ export async function POST(req: NextRequest) {
         sendOrderConfirmation(emailData),
         sendAdminNotification(emailData),
       ])
+
+      // Sadık müşteri ödülü — sadece ÜYE + tutar eşiği tutuyorsa.
+      // Hata sipariş/ödeme akışını bozmaz.
+      if (order.userId) {
+        try {
+          const orderTotal = parseFloat(order.total.toString())
+          const reward = await createRewardCoupon(order.userId, orderTotal)
+          if (reward) {
+            await sendRewardEmail(order.shippingEmail, {
+              customerName: order.shippingFullName,
+              code: reward.code,
+              rewardValue: parseFloat(reward.value.toString()),
+              minOrder: REWARD_MIN_ORDER,
+              expiresText: reward.expiresAt
+                ? `Son kullanım: ${reward.expiresAt.toLocaleDateString('tr-TR')}`
+                : undefined,
+              siteUrl: process.env.NEXTAUTH_URL || 'https://www.sepetmama.com',
+            })
+          }
+        } catch (err) {
+          console.error('[reward] ödül kuponu oluşturma/gönderme hatası:', err, 'order=', order.id)
+        }
+      }
     }
   } else {
     await prisma.order.update({

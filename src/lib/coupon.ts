@@ -35,6 +35,16 @@ export async function validateAndComputeCoupon(
     return { valid: false, error: 'Kupon kullanım limiti dolmuş.' }
   }
 
+  // Hesaba özel ödül kuponu → sadece sahibi kullanabilir
+  if (coupon.userId) {
+    if (!userId) {
+      return { valid: false, error: 'Bu kupon hesabınıza özeldir. Lütfen giriş yapın.' }
+    }
+    if (coupon.userId !== userId) {
+      return { valid: false, error: 'Bu kupon başka bir hesaba tanımlı, sizde kullanılamaz.' }
+    }
+  }
+
   // İlk sipariş kuponu → üye girişi + daha önce ödenmiş sipariş olmamalı
   if (coupon.firstOrderOnly) {
     if (!userId) {

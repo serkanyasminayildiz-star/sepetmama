@@ -4,6 +4,7 @@ import OrderConfirmation, { type OrderEmailData } from '@/emails/OrderConfirmati
 import AdminNewOrder from '@/emails/AdminNewOrder'
 import CouponEmail, { type CouponEmailData } from '@/emails/CouponEmail'
 import WinBackEmail, { type WinBackEmailData } from '@/emails/WinBackEmail'
+import RewardEmail, { type RewardEmailData } from '@/emails/RewardEmail'
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY
 const EMAIL_FROM = process.env.EMAIL_FROM || 'SepetMama <siparis@sepetmama.com>'
@@ -86,6 +87,33 @@ export async function sendWinBackEmail(
     return true
   } catch (err) {
     console.error('[email] win-back email beklenmedik hata:', err, 'to=', to)
+    return false
+  }
+}
+
+export async function sendRewardEmail(
+  to: string,
+  data: RewardEmailData
+): Promise<boolean> {
+  if (!resend) {
+    console.warn(`[email] RESEND_API_KEY yok, ödül email atlandı: to=${to}`)
+    return false
+  }
+  try {
+    const html = await render(RewardEmail(data))
+    const result = await resend.emails.send({
+      from: EMAIL_FROM,
+      to,
+      subject: `🎁 ₺${data.rewardValue} hediye kuponu kazandınız!`,
+      html,
+    })
+    if (result.error) {
+      console.error('[email] ödül email gönderme hatası:', result.error, 'to=', to)
+      return false
+    }
+    return true
+  } catch (err) {
+    console.error('[email] ödül email beklenmedik hata:', err, 'to=', to)
     return false
   }
 }

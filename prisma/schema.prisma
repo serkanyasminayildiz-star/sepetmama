@@ -43,6 +43,7 @@ model User {
   reviews   Review[]
   accounts  Account[]
   sessions  Session[]
+  coupons   Coupon[]
 }
 
 model Address {
@@ -196,9 +197,13 @@ model Coupon {
   expiresAt      DateTime?
   isActive       Boolean    @default(true)
   firstOrderOnly Boolean    @default(false)
+  userId         String? // dolu ise: hesaba özel ödül kuponu, sadece bu kullanıcı kullanır
+  user           User?      @relation(fields: [userId], references: [id])
   orders         Order[]
 
   createdAt DateTime @default(now())
+
+  @@index([userId])
 }
 
 model Account {
