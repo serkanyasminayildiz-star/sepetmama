@@ -3,6 +3,7 @@ import { render } from '@react-email/components'
 import OrderConfirmation, { type OrderEmailData } from '@/emails/OrderConfirmation'
 import AdminNewOrder from '@/emails/AdminNewOrder'
 import CouponEmail, { type CouponEmailData } from '@/emails/CouponEmail'
+import WinBackEmail, { type WinBackEmailData } from '@/emails/WinBackEmail'
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY
 const EMAIL_FROM = process.env.EMAIL_FROM || 'SepetMama <siparis@sepetmama.com>'
@@ -58,6 +59,33 @@ export async function sendCouponEmail(
     return true
   } catch (err) {
     console.error('[email] kupon email beklenmedik hata:', err, 'to=', to)
+    return false
+  }
+}
+
+export async function sendWinBackEmail(
+  to: string,
+  data: WinBackEmailData
+): Promise<boolean> {
+  if (!resend) {
+    console.warn(`[email] RESEND_API_KEY yok, win-back email atlandı: to=${to}`)
+    return false
+  }
+  try {
+    const html = await render(WinBackEmail(data))
+    const result = await resend.emails.send({
+      from: EMAIL_FROM,
+      to,
+      subject: `Siparişinizi tamamlayamadınız mı? Size özel ${data.discountText} 🎁`,
+      html,
+    })
+    if (result.error) {
+      console.error('[email] win-back email gönderme hatası:', result.error, 'to=', to)
+      return false
+    }
+    return true
+  } catch (err) {
+    console.error('[email] win-back email beklenmedik hata:', err, 'to=', to)
     return false
   }
 }

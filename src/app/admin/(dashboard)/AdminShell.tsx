@@ -8,6 +8,7 @@ const menuler = [
   { id: 'urunler', icon: '📦', ad: 'Ürünler', href: '/admin/urunler' },
   { id: 'stok', icon: '📉', ad: 'Stok Takibi', href: '/admin/stok' },
   { id: 'siparisler', icon: '🛒', ad: 'Siparişler', href: '/admin/siparisler' },
+  { id: 'terk-edilen', icon: '🛍️', ad: 'Terk Edilen Sepetler', href: '/admin/terk-edilen' },
   { id: 'uyeler', icon: '👤', ad: 'Üyeler', href: '/admin/uyeler' },
   { id: 'kategoriler', icon: '📁', ad: 'Kategoriler', href: '/admin/kategoriler' },
   { id: 'markalar', icon: '🏷️', ad: 'Markalar', href: '/admin/markalar' },
