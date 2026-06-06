@@ -1,10 +1,11 @@
 import type { Metadata } from 'next'
-import { auth, signOut } from '@/auth'
+import { auth } from '@/auth'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import Header from '@/app/(home)/components/Header'
 import Footer from '@/app/(home)/components/Footer'
 import { prisma } from '@/lib/prisma'
+import LogoutButton from '@/components/LogoutButton'
 
 export const metadata: Metadata = {
   title: 'Hesabım',
@@ -102,19 +103,7 @@ export default async function HesabimPage() {
           </p>
         </div>
 
-        <form
-          action={async () => {
-            'use server'
-            await signOut({ redirectTo: '/' })
-          }}
-        >
-          <button
-            type="submit"
-            className="w-full bg-white border border-red-200 text-red-600 font-bold py-3 rounded-xl hover:bg-red-50 transition-colors"
-          >
-            Çıkış Yap
-          </button>
-        </form>
+        <LogoutButton />
       </div>
       <Footer />
     </div>
