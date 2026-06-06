@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { signIn } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import GoogleButton from '@/components/GoogleButton'
 
 const inputStyle = {
   width: '100%',
@@ -51,6 +52,7 @@ export default function GirisPage() {
           {loading ? 'Giriş yapılıyor...' : 'Giriş Yap'}
         </button>
       </form>
+      <GoogleButton label="Google ile giriş yap" />
       <div className="mt-6 text-center text-sm text-gray-500">
         Hesabın yok mu?{' '}
         <Link href="/kayit" className="text-orange-500 font-extrabold hover:underline">Kayıt Ol</Link>

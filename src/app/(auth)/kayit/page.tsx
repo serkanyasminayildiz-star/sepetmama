@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import GoogleButton from '@/components/GoogleButton'
 
 export default function KayitPage() {
   const router = useRouter()
@@ -106,6 +107,8 @@ export default function KayitPage() {
           {loading ? 'Kayıt yapılıyor...' : 'Kayıt Ol'}
         </button>
       </form>
+
+      <GoogleButton label="Google ile kayıt ol" />
 
       <div className="mt-6 text-center text-sm text-gray-500">
         Zaten hesabın var mı?{' '}
