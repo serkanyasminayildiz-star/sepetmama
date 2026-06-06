@@ -103,7 +103,7 @@ export async function POST(req: NextRequest) {
     let couponId: string | null = null
     let discount = 0
     if (couponCode.trim()) {
-      const couponResult = await validateAndComputeCoupon(couponCode, cartTotal)
+      const couponResult = await validateAndComputeCoupon(couponCode, cartTotal, userId)
       if (!couponResult.valid) {
         return NextResponse.json({ error: couponResult.error }, { status: 400 })
       }

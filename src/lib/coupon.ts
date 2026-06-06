@@ -19,7 +19,8 @@ export interface CouponResult {
  */
 export async function validateAndComputeCoupon(
   rawCode: string,
-  cartTotal: number
+  cartTotal: number,
+  userId?: string | null
 ): Promise<CouponResult> {
   const code = (rawCode || '').trim().toUpperCase()
   if (!code) return { valid: false, error: 'Kupon kodu girin.' }
@@ -32,6 +33,19 @@ export async function validateAndComputeCoupon(
   }
   if (coupon.maxUses != null && coupon.usedCount >= coupon.maxUses) {
     return { valid: false, error: 'Kupon kullanım limiti dolmuş.' }
+  }
+
+  // İlk sipariş kuponu → üye girişi + daha önce ödenmiş sipariş olmamalı
+  if (coupon.firstOrderOnly) {
+    if (!userId) {
+      return { valid: false, error: 'Bu kupon yalnızca üyelere özeldir. Lütfen giriş yapın veya üye olun.' }
+    }
+    const paidCount = await prisma.order.count({
+      where: { userId, paidAt: { not: null } },
+    })
+    if (paidCount > 0) {
+      return { valid: false, error: 'Bu kupon yalnızca ilk siparişinizde geçerlidir.' }
+    }
   }
 
   const minOrder = coupon.minOrder ? parseFloat(coupon.minOrder.toString()) : 0

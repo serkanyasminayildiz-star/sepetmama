@@ -1,6 +1,7 @@
 'use client'
 
 import { useCartStore } from '@/store/cartStore'
+import { useCoupon } from '@/hooks/useCoupon'
 import { useState } from 'react'
 import Link from 'next/link'
 
@@ -17,48 +18,16 @@ export default function OdemeClient() {
   const [error, setError] = useState('')
   const [form, setForm] = useState({ name: '', email: '', phone: '', address: '', kvkk: false, mesafeli: false })
 
-  // Kupon state
+  // Kupon — sepetten taşınan kod dahil tek kaynaktan
+  const { couponCode, discount, error: couponError, loading: couponLoading, apply: applyCoupon, remove: removeCoupon } = useCoupon(cartTotal)
   const [couponInput, setCouponInput] = useState('')
-  const [appliedCode, setAppliedCode] = useState('')
-  const [discount, setDiscount] = useState(0)
-  const [couponLoading, setCouponLoading] = useState(false)
-  const [couponError, setCouponError] = useState('')
+
+  const handleApplyCoupon = async () => {
+    const ok = await applyCoupon(couponInput)
+    if (ok) setCouponInput('')
+  }
 
   const grandTotal = Math.max(0, cartTotal - discount + shipping)
-
-  const applyCoupon = async () => {
-    if (!couponInput.trim()) return
-    setCouponLoading(true)
-    setCouponError('')
-    try {
-      const res = await fetch('/api/coupon/validate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: couponInput.trim(), cartTotal }),
-      })
-      const data = await res.json()
-      if (res.ok && data.discount != null) {
-        setAppliedCode(data.code)
-        setDiscount(data.discount)
-        setCouponError('')
-      } else {
-        setAppliedCode('')
-        setDiscount(0)
-        setCouponError(data.error || 'Kupon uygulanamadı.')
-      }
-    } catch {
-      setCouponError('Kupon doğrulanamadı.')
-    } finally {
-      setCouponLoading(false)
-    }
-  }
-
-  const removeCoupon = () => {
-    setAppliedCode('')
-    setDiscount(0)
-    setCouponInput('')
-    setCouponError('')
-  }
 
   const getToken = async () => {
     setLoading(true)
@@ -79,7 +48,7 @@ export default function OdemeClient() {
           kvkk: form.kvkk,
           mesafeli: form.mesafeli,
         },
-        couponCode: appliedCode || undefined,
+        couponCode: couponCode || undefined,
       }),
     })
 
@@ -160,10 +129,10 @@ export default function OdemeClient() {
           </div>
           {/* Kupon */}
           <div className="border-t border-gray-100 pt-3 mb-1">
-            {appliedCode ? (
+            {discount > 0 ? (
               <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-xl px-3 py-2">
                 <span className="text-sm font-semibold text-green-700">
-                  🎉 <span className="font-extrabold">{appliedCode}</span> uygulandı
+                  🎉 <span className="font-extrabold">{couponCode}</span> uygulandı
                 </span>
                 <button onClick={removeCoupon} className="text-xs text-green-700 font-semibold hover:underline">
                   Kaldır
@@ -176,19 +145,31 @@ export default function OdemeClient() {
                     type="text"
                     value={couponInput}
                     onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
-                    onKeyDown={(e) => { if (e.key === 'Enter') applyCoupon() }}
+                    onKeyDown={(e) => { if (e.key === 'Enter') handleApplyCoupon() }}
                     placeholder="İndirim kodu"
                     style={{ flex: 1, border: '1.5px solid #d1d5db', borderRadius: '12px', padding: '10px 14px', fontSize: '14px', color: '#000', outline: 'none', textTransform: 'uppercase' }}
                   />
                   <button
-                    onClick={applyCoupon}
+                    onClick={handleApplyCoupon}
                     disabled={couponLoading || !couponInput.trim()}
                     className="bg-gray-800 hover:bg-gray-900 disabled:opacity-40 text-white font-bold px-4 rounded-xl text-sm whitespace-nowrap transition-colors"
                   >
                     {couponLoading ? '...' : 'Uygula'}
                   </button>
                 </div>
-                {couponError && <p className="text-xs text-red-500 mt-1.5">{couponError}</p>}
+                {couponError && (
+                  <p className="text-xs text-red-500 mt-1.5">
+                    {couponError}
+                    {couponError.includes('üye') && (
+                      <>
+                        {' '}
+                        <Link href="/giris" className="text-orange-500 font-semibold underline">Giriş yap</Link>
+                        {' / '}
+                        <Link href="/kayit" className="text-orange-500 font-semibold underline">Üye ol</Link>
+                      </>
+                    )}
+                  </p>
+                )}
               </>
             )}
           </div>
@@ -200,7 +181,7 @@ export default function OdemeClient() {
             </div>
             {discount > 0 && (
               <div className="flex justify-between text-sm">
-                <span className="text-green-600 font-semibold">İndirim ({appliedCode})</span>
+                <span className="text-green-600 font-semibold">İndirim ({couponCode})</span>
                 <span className="text-green-600 font-semibold">-₺{discount.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}</span>
               </div>
             )}

@@ -12,9 +12,11 @@ interface CartItem {
 
 interface CartStore {
   items: CartItem[]
+  couponCode: string | null
   addItem: (item: Omit<CartItem, 'quantity'>) => void
   removeItem: (id: string) => void
   updateQty: (id: string, qty: number) => void
+  setCoupon: (code: string | null) => void
   clearCart: () => void
   total: () => number
   count: () => number
@@ -24,6 +26,9 @@ export const useCartStore = create<CartStore>()(
   persist(
     (set, get) => ({
       items: [],
+      couponCode: null,
+
+      setCoupon: (code) => set({ couponCode: code }),
 
       addItem: (item) => {
         const existing = get().items.find((i) => i.id === item.id)
@@ -48,7 +53,7 @@ export const useCartStore = create<CartStore>()(
         }))
       },
 
-      clearCart: () => set({ items: [] }),
+      clearCart: () => set({ items: [], couponCode: null }),
 
       total: () =>
         get().items.reduce((sum, i) => sum + i.price * i.quantity, 0),

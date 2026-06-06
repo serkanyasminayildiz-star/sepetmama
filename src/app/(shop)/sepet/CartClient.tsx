@@ -1,16 +1,29 @@
 'use client'
 
 import { useCartStore } from '@/store/cartStore'
+import { useCoupon } from '@/hooks/useCoupon'
+import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 
 const FREE_SHIPPING_THRESHOLD = 1000
+const SHIPPING_FEE = 49.90
 
 export default function CartClient() {
   const { items, removeItem, updateQty } = useCartStore()
   const total = useCartStore((s) => s.total())
   const remaining = Math.max(0, FREE_SHIPPING_THRESHOLD - total)
   const progressPercent = Math.min(100, (total / FREE_SHIPPING_THRESHOLD) * 100)
+
+  const { couponCode, discount, error: couponError, loading: couponLoading, apply: applyCoupon, remove: removeCoupon } = useCoupon(total)
+  const [couponInput, setCouponInput] = useState('')
+  const shipping = remaining === 0 ? 0 : SHIPPING_FEE
+  const grandTotal = Math.max(0, total - discount + shipping)
+
+  const handleApplyCoupon = async () => {
+    const ok = await applyCoupon(couponInput)
+    if (ok) setCouponInput('')
+  }
 
   if (items.length === 0) {
     return (
@@ -78,11 +91,65 @@ export default function CartClient() {
       <div className="lg:col-span-1">
         <div className="bg-white rounded-2xl border border-orange-100 p-5 sticky top-20">
           <h2 className="font-extrabold text-gray-800 mb-4 text-base">Sipariş Özeti</h2>
+
+          {/* Kupon */}
+          <div className="mb-4">
+            {discount > 0 ? (
+              <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-xl px-3 py-2">
+                <span className="text-sm font-semibold text-green-700">
+                  🎉 <span className="font-extrabold">{couponCode}</span> uygulandı
+                </span>
+                <button onClick={removeCoupon} className="text-xs text-green-700 font-semibold hover:underline">
+                  Kaldır
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={couponInput}
+                    onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
+                    onKeyDown={(e) => { if (e.key === 'Enter') handleApplyCoupon() }}
+                    placeholder="İndirim kodu"
+                    className="flex-1 border-[1.5px] border-gray-300 rounded-xl px-3 py-2.5 text-sm text-black outline-none uppercase"
+                  />
+                  <button
+                    onClick={handleApplyCoupon}
+                    disabled={couponLoading || !couponInput.trim()}
+                    className="bg-gray-800 hover:bg-gray-900 disabled:opacity-40 text-white font-bold px-4 rounded-xl text-sm whitespace-nowrap transition-colors"
+                  >
+                    {couponLoading ? '...' : 'Uygula'}
+                  </button>
+                </div>
+                {couponError && (
+                  <p className="text-xs text-red-500 mt-1.5">
+                    {couponError}
+                    {couponError.includes('üye') && (
+                      <>
+                        {' '}
+                        <Link href="/giris" className="text-orange-500 font-semibold underline">Giriş yap</Link>
+                        {' / '}
+                        <Link href="/kayit" className="text-orange-500 font-semibold underline">Üye ol</Link>
+                      </>
+                    )}
+                  </p>
+                )}
+              </>
+            )}
+          </div>
+
           <div className="flex flex-col gap-3 mb-4">
             <div className="flex justify-between text-sm">
               <span className="text-gray-500">Ara Toplam</span>
               <span className="font-semibold">₺{total.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}</span>
             </div>
+            {discount > 0 && (
+              <div className="flex justify-between text-sm">
+                <span className="text-green-600 font-semibold">İndirim ({couponCode})</span>
+                <span className="text-green-600 font-semibold">-₺{discount.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}</span>
+              </div>
+            )}
             <div className="flex justify-between text-sm">
               <span className="text-gray-500">Kargo</span>
               <span className={`font-semibold ${remaining === 0 ? 'text-green-600' : ''}`}>
@@ -92,7 +159,7 @@ export default function CartClient() {
             <div className="border-t border-gray-100 pt-3 flex justify-between">
               <span className="font-extrabold text-gray-800">Toplam</span>
               <span className="font-extrabold text-orange-500 text-lg">
-                ₺{(total + (remaining === 0 ? 0 : 49.90)).toLocaleString('tr-TR', { minimumFractionDigits: 2 })}
+                ₺{grandTotal.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}
               </span>
             </div>
           </div>
