@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
@@ -9,6 +8,7 @@ const menuler = [
   { id: 'urunler', icon: '📦', ad: 'Ürünler', href: '/admin/urunler' },
   { id: 'stok', icon: '📉', ad: 'Stok Takibi', href: '/admin/stok' },
   { id: 'siparisler', icon: '🛒', ad: 'Siparişler', href: '/admin/siparisler' },
+  { id: 'uyeler', icon: '👤', ad: 'Üyeler', href: '/admin/uyeler' },
   { id: 'kategoriler', icon: '📁', ad: 'Kategoriler', href: '/admin/kategoriler' },
   { id: 'markalar', icon: '🏷️', ad: 'Markalar', href: '/admin/markalar' },
   { id: 'kuponlar', icon: '🎟️', ad: 'Kuponlar', href: '/admin/kuponlar' },

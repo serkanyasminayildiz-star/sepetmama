@@ -2,6 +2,7 @@ import { Resend } from 'resend'
 import { render } from '@react-email/components'
 import OrderConfirmation, { type OrderEmailData } from '@/emails/OrderConfirmation'
 import AdminNewOrder from '@/emails/AdminNewOrder'
+import CouponEmail, { type CouponEmailData } from '@/emails/CouponEmail'
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY
 const EMAIL_FROM = process.env.EMAIL_FROM || 'SepetMama <siparis@sepetmama.com>'
@@ -31,6 +32,33 @@ export async function sendOrderConfirmation(data: OrderEmailData): Promise<void>
     }
   } catch (err) {
     console.error('[email] müşteri onay email beklenmedik hata:', err, 'order=', data.orderId)
+  }
+}
+
+export async function sendCouponEmail(
+  to: string,
+  data: CouponEmailData
+): Promise<boolean> {
+  if (!resend) {
+    console.warn(`[email] RESEND_API_KEY yok, kupon email atlandı: to=${to}`)
+    return false
+  }
+  try {
+    const html = await render(CouponEmail(data))
+    const result = await resend.emails.send({
+      from: EMAIL_FROM,
+      to,
+      subject: `🎁 Size özel indirim kuponu: ${data.code}`,
+      html,
+    })
+    if (result.error) {
+      console.error('[email] kupon email gönderme hatası:', result.error, 'to=', to)
+      return false
+    }
+    return true
+  } catch (err) {
+    console.error('[email] kupon email beklenmedik hata:', err, 'to=', to)
+    return false
   }
 }
 
