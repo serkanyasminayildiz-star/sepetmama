@@ -58,6 +58,13 @@ export async function POST(req: NextRequest) {
           where: { id: order.id },
           data: { status: 'CONFIRMED', paidAt: new Date() },
         })
+        // Kupon kullanıldıysa kullanım sayacını artır (sadece başarılı ödemede)
+        if (order.couponId) {
+          await tx.coupon.update({
+            where: { id: order.couponId },
+            data: { usedCount: { increment: 1 } },
+          })
+        }
       })
       stockOk = true
     } catch (err) {

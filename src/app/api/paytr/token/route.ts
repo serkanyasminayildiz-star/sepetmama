@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'crypto'
 import { prisma } from '@/lib/prisma'
 import { auth } from '@/auth'
+import { validateAndComputeCoupon } from '@/lib/coupon'
 
 const MERCHANT_ID = process.env.PAYTR_MERCHANT_ID!
 const MERCHANT_KEY = process.env.PAYTR_MERCHANT_KEY!
@@ -35,6 +36,7 @@ export async function POST(req: NextRequest) {
     const items: CartItemInput[] = body.items
     const shipping: ShippingInput = body.shipping
     const consents: ConsentsInput = body.consents
+    const couponCode: string = typeof body.couponCode === 'string' ? body.couponCode : ''
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       return NextResponse.json({ error: 'Sepet boş.' }, { status: 400 })
@@ -95,8 +97,23 @@ export async function POST(req: NextRequest) {
       basketLines.push([product.name.substring(0, 100), effectivePrice.toFixed(2), item.quantity])
     }
 
+    // Kupon — SUNUCU tarafında, DB fiyatlarından hesaplanan cartTotal ile
+    // yeniden doğrula (client'a güvenme). Geçersizse satışı bloklamak yerine
+    // net hata dön ki kullanıcı görsün.
+    let couponId: string | null = null
+    let discount = 0
+    if (couponCode.trim()) {
+      const couponResult = await validateAndComputeCoupon(couponCode, cartTotal)
+      if (!couponResult.valid) {
+        return NextResponse.json({ error: couponResult.error }, { status: 400 })
+      }
+      couponId = couponResult.couponId ?? null
+      discount = couponResult.discount ?? 0
+    }
+
+    // Ücretsiz kargo eşiği indirim ÖNCESİ sepet tutarına göre belirlenir.
     const shippingFee = cartTotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_FEE
-    const grandTotal = Math.round((cartTotal + shippingFee) * 100) / 100
+    const grandTotal = Math.round((cartTotal - discount + shippingFee) * 100) / 100
 
     const userIp =
       req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
@@ -113,6 +130,8 @@ export async function POST(req: NextRequest) {
         shippingAddress: shipping.address,
         total: grandTotal,
         shippingFee,
+        couponId,
+        discount: discount > 0 ? discount : null,
         consents: {
           kvkk: consents.kvkk,
           mesafeli: consents.mesafeli,
