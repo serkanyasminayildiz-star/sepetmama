@@ -5,11 +5,12 @@ import { useCoupon } from '@/hooks/useCoupon'
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { computeFirstOrderDiscount, FIRST_ORDER_MIN, FIRST_ORDER_RATE, type FirstOrderStatus } from '@/lib/firstOrder'
 
 const FREE_SHIPPING_THRESHOLD = 1000
 const SHIPPING_FEE = 49.90
 
-export default function CartClient() {
+export default function CartClient({ firstOrderStatus }: { firstOrderStatus: FirstOrderStatus }) {
   const { items, removeItem, updateQty } = useCartStore()
   const total = useCartStore((s) => s.total())
   const remaining = Math.max(0, FREE_SHIPPING_THRESHOLD - total)
@@ -17,8 +18,13 @@ export default function CartClient() {
 
   const { couponCode, discount, error: couponError, loading: couponLoading, apply: applyCoupon, remove: removeCoupon } = useCoupon(total)
   const [couponInput, setCouponInput] = useState('')
+
+  // İlk sipariş indirimi (giriş yapmış, ilk sipariş) — kupon ile stack olmaz, büyük olan uygulanır
+  const foDiscount = firstOrderStatus === 'eligible' ? computeFirstOrderDiscount(total) : 0
+  const effectiveDiscount = Math.max(discount, foDiscount)
+  const discountIsFirstOrder = foDiscount > 0 && foDiscount >= discount
   const shipping = remaining === 0 ? 0 : SHIPPING_FEE
-  const grandTotal = Math.max(0, total - discount + shipping)
+  const grandTotal = Math.max(0, total - effectiveDiscount + shipping)
 
   const handleApplyCoupon = async () => {
     const ok = await applyCoupon(couponInput)
@@ -41,6 +47,28 @@ export default function CartClient() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <div className="lg:col-span-2 flex flex-col gap-3">
+        {/* İlk sipariş indirimi — göze sokarcasına */}
+        {firstOrderStatus === 'guest' && (
+          <div className="bg-gradient-to-r from-orange-500 to-amber-500 rounded-2xl p-4 shadow-md">
+            <p className="font-extrabold text-white text-base">🎁 İlk siparişine özel %{FIRST_ORDER_RATE} indirim!</p>
+            <p className="text-sm text-orange-50 mt-0.5">Üye ol veya giriş yap — indirim ödeme adımında otomatik uygulanır.</p>
+            <div className="flex gap-2 mt-3">
+              <Link href="/kayit" className="bg-white text-orange-600 font-extrabold px-4 py-2 rounded-xl text-sm hover:bg-orange-50 transition-colors">Üye Ol →</Link>
+              <Link href="/giris" className="bg-white/20 border border-white/70 text-white font-bold px-4 py-2 rounded-xl text-sm hover:bg-white/30 transition-colors">Giriş Yap</Link>
+            </div>
+          </div>
+        )}
+        {firstOrderStatus === 'eligible' && (
+          <div className="bg-green-50 border-2 border-green-300 rounded-2xl p-4">
+            <p className="font-extrabold text-green-700">🎉 Tebrikler! İlk sipariş %{FIRST_ORDER_RATE} indirimin hazır.</p>
+            <p className="text-sm text-green-600 mt-0.5">
+              {foDiscount > 0
+                ? <>Bu siparişte <span className="font-extrabold">-₺{foDiscount.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}</span> indirim uygulanıyor.</>
+                : <>Min ₺{FIRST_ORDER_MIN.toLocaleString('tr-TR')} sepette otomatik uygulanır.</>}
+            </p>
+          </div>
+        )}
+
         <div className="bg-white rounded-2xl border border-orange-100 p-4">
           {remaining > 0 ? (
             <p className="text-sm font-semibold text-gray-700 mb-2">
@@ -144,10 +172,12 @@ export default function CartClient() {
               <span className="text-gray-500">Ara Toplam</span>
               <span className="font-semibold">₺{total.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}</span>
             </div>
-            {discount > 0 && (
+            {effectiveDiscount > 0 && (
               <div className="flex justify-between text-sm">
-                <span className="text-green-600 font-semibold">İndirim ({couponCode})</span>
-                <span className="text-green-600 font-semibold">-₺{discount.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}</span>
+                <span className="text-green-600 font-semibold">
+                  {discountIsFirstOrder ? `İlk Sipariş İndirimi (%${FIRST_ORDER_RATE})` : `İndirim (${couponCode})`}
+                </span>
+                <span className="text-green-600 font-semibold">-₺{effectiveDiscount.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}</span>
               </div>
             )}
             <div className="flex justify-between text-sm">

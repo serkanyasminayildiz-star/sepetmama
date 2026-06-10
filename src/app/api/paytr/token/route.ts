@@ -3,6 +3,7 @@ import crypto from 'crypto'
 import { prisma } from '@/lib/prisma'
 import { auth } from '@/auth'
 import { validateAndComputeCoupon } from '@/lib/coupon'
+import { computeFirstOrderDiscount } from '@/lib/firstOrder'
 
 const MERCHANT_ID = process.env.PAYTR_MERCHANT_ID!
 const MERCHANT_KEY = process.env.PAYTR_MERCHANT_KEY!
@@ -101,14 +102,30 @@ export async function POST(req: NextRequest) {
     // yeniden doğrula (client'a güvenme). Geçersizse satışı bloklamak yerine
     // net hata dön ki kullanıcı görsün.
     let couponId: string | null = null
-    let discount = 0
+    let couponDiscount = 0
     if (couponCode.trim()) {
       const couponResult = await validateAndComputeCoupon(couponCode, cartTotal, userId)
       if (!couponResult.valid) {
         return NextResponse.json({ error: couponResult.error }, { status: 400 })
       }
       couponId = couponResult.couponId ?? null
-      discount = couponResult.discount ?? 0
+      couponDiscount = couponResult.discount ?? 0
+    }
+
+    // İlk sipariş indirimi — üye + daha önce ödenmiş siparişi yoksa, sunucu
+    // tarafında otomatik. Kupon ile STACK olmaz: büyük olan uygulanır.
+    let foDiscount = 0
+    if (userId) {
+      const paidCount = await prisma.order.count({ where: { userId, paidAt: { not: null } } })
+      if (paidCount === 0) foDiscount = computeFirstOrderDiscount(cartTotal)
+    }
+
+    let discount = 0
+    if (couponDiscount >= foDiscount) {
+      discount = couponDiscount // kupon (veya ikisi eşitse kupon) uygulanır
+    } else {
+      discount = foDiscount // ilk sipariş indirimi kazandı — kupon tüketilmez
+      couponId = null
     }
 
     // Ücretsiz kargo eşiği indirim ÖNCESİ sepet tutarına göre belirlenir.
