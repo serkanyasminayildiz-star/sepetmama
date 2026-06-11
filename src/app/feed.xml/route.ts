@@ -19,6 +19,25 @@ function truncate(text: string, max: number): string {
   return text.slice(0, max - 1) + '…'
 }
 
+// Google ürün kategorisi (resmi taksonomi ID) — Shopping eşleşmesini güçlendirir.
+// 4434 Cat Food, 4433 Dog Food, 4435 Cat Litter. Katalog ağırlıklı kedi maması.
+function googleCategoryId(text: string): string {
+  const t = text.toLowerCase()
+  if (/kumu|litter/.test(t)) return '4435' // Cat Litter
+  if (/köpek|kopek|\bdog\b/.test(t)) return '4433' // Dog Food
+  return '4434' // Cat Food (varsayılan)
+}
+
+// Marka normalizasyonu: TAMAMI BÜYÜK harfli markaları düzgün yaz (PRO PLAN → Pro Plan).
+function normalizeBrand(brand: string | null): string {
+  if (!brand || !brand.trim()) return 'SepetMama'
+  const b = brand.trim()
+  if (b === b.toUpperCase()) {
+    return b.split(/\s+/).map((w) => w.charAt(0) + w.slice(1).toLowerCase()).join(' ')
+  }
+  return b
+}
+
 export async function GET() {
   const siteUrl = process.env.NEXTAUTH_URL || 'https://www.sepetmama.com'
 
@@ -59,6 +78,8 @@ export async function GET() {
       const link = `${siteUrl}/urun/${p.slug}`
       const availability = p.stock > 0 ? 'in stock' : 'out of stock'
       const category = p.categories[0]?.category.name || 'Pet'
+      const gpc = googleCategoryId(`${p.name} ${category}`)
+      const brand = normalizeBrand(p.brand)
 
       return `    <item>
       <g:id>${esc(p.id)}</g:id>
@@ -71,8 +92,9 @@ export async function GET() {
       <g:price>${price.toFixed(2)} TRY</g:price>${
         hasSale ? `\n      <g:sale_price>${salePrice!.toFixed(2)} TRY</g:sale_price>` : ''
       }
-      ${p.brand ? `<g:brand>${esc(p.brand)}</g:brand>` : '<g:brand>SepetMama</g:brand>'}
+      <g:brand>${esc(brand)}</g:brand>
       <g:identifier_exists>no</g:identifier_exists>
+      <g:google_product_category>${gpc}</g:google_product_category>
       <g:product_type>${esc(category)}</g:product_type>
       <g:custom_label_0>${p.isFeatured ? 'featured' : 'regular'}</g:custom_label_0>
       <g:shipping>
