@@ -261,11 +261,7 @@ export default async function UrunPage({ params }: PageProps) {
                 </div>
                 <div className="flex items-center gap-2 text-sm text-gray-500">
                   <span className="text-blue-500">🚚</span>
-                  <span>1-3 iş günü teslimat</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-gray-500">
-                  <span>↩️</span>
-                  <span>14 gün kolay iade</span>
+                  <span>1-3 iş günü içinde kargoda</span>
                 </div>
               </div>
 
@@ -295,16 +291,17 @@ export default async function UrunPage({ params }: PageProps) {
               )}
 
               {/* Güven rozetleri */}
-              <div className="grid grid-cols-3 gap-2 mt-1">
+              <div className="flex flex-wrap gap-2 mt-1">
                 {[
+                  { icon: '✅', label: '%100 Orijinal Ürün' },
                   { icon: '🔒', label: 'Güvenli Ödeme' },
                   { icon: '💳', label: 'Taksit İmkanı' },
-                  { icon: '↩️', label: '14 Gün İade' },
+                  { icon: '🚚', label: 'Hızlı Kargo' },
+                  { icon: '↩️', label: 'Kolay İade (14 gün)' },
                 ].map((b) => (
-                  <div key={b.label} className="flex flex-col items-center text-center bg-gray-50 rounded-xl py-2.5 px-1">
-                    <span className="text-xl">{b.icon}</span>
-                    <span className="text-[11px] font-semibold text-gray-600 mt-1 leading-tight">{b.label}</span>
-                  </div>
+                  <span key={b.label} className="inline-flex items-center gap-1.5 bg-gray-50 border border-gray-100 rounded-full px-3 py-1.5 text-xs font-semibold text-gray-700">
+                    <span>{b.icon}</span>{b.label}
+                  </span>
                 ))}
               </div>
             </div>
