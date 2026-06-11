@@ -7,6 +7,7 @@ import Link from 'next/link'
 import ProductGrid from '@/app/(shop)/kategori/[slug]/ProductGrid'
 import AddToCartButton from './AddToCartButton'
 import JsonLd from '@/components/JsonLd'
+import { auth } from '@/auth'
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -25,6 +26,9 @@ export default async function UrunPage({ params }: PageProps) {
   })
 
   if (!product) notFound()
+
+  const session = await auth()
+  const isGuest = !session?.user
 
   const price = parseFloat(product.price.toString())
   const salePrice = product.salePrice ? parseFloat(product.salePrice.toString()) : null
@@ -232,6 +236,17 @@ export default async function UrunPage({ params }: PageProps) {
                 )}
               </div>
 
+              {/* İlk sipariş indirimi — misafire çağrı */}
+              {isGuest && (
+                <Link
+                  href="/kayit"
+                  className="flex items-center justify-between gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-2xl px-4 py-3 hover:opacity-95 transition-opacity"
+                >
+                  <span className="text-sm font-extrabold">🎁 Üye ol, ilk siparişine %10 indirim kazan!</span>
+                  <span className="text-lg font-extrabold">→</span>
+                </Link>
+              )}
+
               {/* Kargo bilgisi */}
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2 text-sm">
@@ -269,9 +284,29 @@ export default async function UrunPage({ params }: PageProps) {
               </div>
 
               {/* Stok durumu */}
-              <p className={`text-sm font-semibold ${product.stock > 0 ? 'text-green-600' : 'text-red-500'}`}>
-                {product.stock > 0 ? `✓ Stokta var (${product.stock} adet)` : '✗ Stokta yok'}
-              </p>
+              {product.stock > 0 ? (
+                product.stock <= 5 ? (
+                  <p className="text-sm font-bold text-orange-600">⚡ Son {product.stock} adet — stoklarla sınırlı!</p>
+                ) : (
+                  <p className="text-sm font-semibold text-green-600">✓ Stokta var, hemen kargoya hazır</p>
+                )
+              ) : (
+                <p className="text-sm font-semibold text-red-500">✗ Stokta yok</p>
+              )}
+
+              {/* Güven rozetleri */}
+              <div className="grid grid-cols-3 gap-2 mt-1">
+                {[
+                  { icon: '🔒', label: 'Güvenli Ödeme' },
+                  { icon: '💳', label: 'Taksit İmkanı' },
+                  { icon: '↩️', label: '14 Gün İade' },
+                ].map((b) => (
+                  <div key={b.label} className="flex flex-col items-center text-center bg-gray-50 rounded-xl py-2.5 px-1">
+                    <span className="text-xl">{b.icon}</span>
+                    <span className="text-[11px] font-semibold text-gray-600 mt-1 leading-tight">{b.label}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
