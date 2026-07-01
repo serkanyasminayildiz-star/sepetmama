@@ -10,7 +10,7 @@ export default function IletisimPage() {
               <span className="text-orange-500 text-xl">📞</span>
               <div>
                 <p className="font-extrabold text-gray-800 text-sm">Müşteri Hizmetleri</p>
-                <p className="text-gray-600 text-sm">+90 532 489 7846</p>
+                <p className="text-gray-600 text-sm">+90 532 177 3721</p>
               </div>
             </div>
             <div className="flex items-start gap-3">

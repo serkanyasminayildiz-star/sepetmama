@@ -27,7 +27,7 @@ export default function HakkimizdaPage() {
             <p><span className="font-semibold">Vergi Dairesi:</span> Konak</p>
             <p><span className="font-semibold">Vergi No:</span> 9650295235</p>
             <p><span className="font-semibold">E-posta:</span> info@sepetmama.com</p>
-            <p><span className="font-semibold">Telefon:</span> +90 532 489 7846</p>
+            <p><span className="font-semibold">Telefon:</span> +90 532 177 3721</p>
           </div>
         </div>
       </div>

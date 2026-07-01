@@ -11,7 +11,7 @@ export default function MesafeliSatisSozlesmesiPage() {
             <p><span className="font-semibold">Adres:</span> Atilla Mah. 349. Sok. No:55 İç Kapı No:A Konak/İzmir</p>
             <p><span className="font-semibold">Vergi Dairesi:</span> Konak</p>
             <p><span className="font-semibold">Vergi No:</span> 9650295235</p>
-            <p><span className="font-semibold">Telefon:</span> +90 532 489 7846</p>
+            <p><span className="font-semibold">Telefon:</span> +90 532 177 3721</p>
             <p><span className="font-semibold">E-posta:</span> info@sepetmama.com</p>
           </div>
         </div>

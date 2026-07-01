@@ -106,7 +106,7 @@ export default function RootLayout({
             logo: `${siteUrl}/api/logo`,
             contactPoint: {
               "@type": "ContactPoint",
-              telephone: "+90-532-489-7846",
+              telephone: "+90-532-177-3721",
               contactType: "customer service",
               areaServed: "TR",
               availableLanguage: ["Turkish"],

@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation'
 
-const PHONE = '905324897846'
+const PHONE = '905321773721'
 const MESSAGE = "Merhaba, sepetmama.com'dan ulaşıyorum."
 
 export default function WhatsAppButton() {

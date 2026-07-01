@@ -74,7 +74,7 @@ export default function CouponEmail({
             <Text style={footerTextStyle}>
               Sorularınız için bize ulaşın:<br />
               ✉ <Link href="mailto:info@sepetmama.com" style={linkStyle}>info@sepetmama.com</Link><br />
-              📞 +90 532 489 7846
+              📞 +90 532 177 3721
             </Text>
             <Text style={footerSmallStyle}>
               © {new Date().getFullYear()} SepetMama · <Link href={siteUrl} style={linkStyle}>www.sepetmama.com</Link>

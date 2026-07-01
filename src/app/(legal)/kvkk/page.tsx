@@ -27,7 +27,7 @@ export default function KvkkPage() {
           <p><span className="font-semibold">Vergi Dairesi:</span> Konak</p>
           <p><span className="font-semibold">Vergi No:</span> 9650295235</p>
           <p><span className="font-semibold">Adres:</span> Atilla Mah. 349. Sok. No:55/A Konak/İzmir</p>
-          <p><span className="font-semibold">Telefon:</span> +90 532 489 7846</p>
+          <p><span className="font-semibold">Telefon:</span> +90 532 177 3721</p>
         </div>
         <div className="bg-orange-50 rounded-xl p-4 border border-orange-100">
           <p className="font-semibold text-orange-700">İletişim: <a href="mailto:info@sepetmama.com" className="underline">info@sepetmama.com</a></p>
