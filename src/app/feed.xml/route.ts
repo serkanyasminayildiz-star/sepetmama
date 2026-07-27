@@ -28,6 +28,12 @@ function googleCategoryId(text: string): string {
   return '4434' // Cat Food (varsayılan)
 }
 
+// Kargo — sitedeki değerlerle AYNI olmak zorunda. Feed'de sabit ücret bildirmek,
+// 1000₺ üstü ücretsiz kargo kuralı yüzünden Google'a yanlış toplam gösteriyordu.
+// Değiştirirken sepet (CartClient) ve ödeme (OdemeClient) sabitleriyle birlikte güncelle.
+const FREE_SHIPPING_THRESHOLD = 1000
+const SHIPPING_FEE = '49.90'
+
 // Marka normalizasyonu: TAMAMI BÜYÜK harfli markaları düzgün yaz (PRO PLAN → Pro Plan).
 function normalizeBrand(brand: string | null): string {
   if (!brand || !brand.trim()) return 'SepetMama'
@@ -80,6 +86,9 @@ export async function GET() {
       const category = p.categories[0]?.category.name || 'Pet'
       const gpc = googleCategoryId(`${p.name} ${category}`)
       const brand = normalizeBrand(p.brand)
+      // Alıcının gerçekte ödeyeceği fiyat üzerinden: indirimliyse o baz alınır.
+      const displayPrice = hasSale ? salePrice! : price
+      const shippingPrice = displayPrice >= FREE_SHIPPING_THRESHOLD ? '0.00' : SHIPPING_FEE
 
       return `    <item>
       <g:id>${esc(p.id)}</g:id>
@@ -100,7 +109,7 @@ export async function GET() {
       <g:shipping>
         <g:country>TR</g:country>
         <g:service>Standart</g:service>
-        <g:price>49.90 TRY</g:price>
+        <g:price>${shippingPrice} TRY</g:price>
       </g:shipping>
     </item>`
     })

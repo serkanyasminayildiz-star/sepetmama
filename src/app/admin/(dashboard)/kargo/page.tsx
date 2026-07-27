@@ -15,7 +15,7 @@ export default function KargoPage() {
             </p>
           </div>
           <p style={{ fontSize: 13, color: '#5C3D2E', opacity: 0.6 }}>
-            Kargo ayarlarını değiştirmek için <code>src/app/(shop)/sepet/CartClient.tsx</code> ve <code>src/app/(shop)/odeme/OdemeClient.tsx</code> dosyalarındaki <code>FREE_SHIPPING</code> ve <code>SHIPPING_FEE</code> sabitlerini güncelleyin.
+            Kargo ayarlarını değiştirmek için <code>src/app/(shop)/sepet/CartClient.tsx</code>, <code>src/app/(shop)/odeme/OdemeClient.tsx</code>, <code>src/app/(shop)/urun/[slug]/page.tsx</code> ve <code>src/app/feed.xml/route.ts</code> dosyalarındaki <code>FREE_SHIPPING</code> / <code>SHIPPING_FEE</code> sabitlerini birlikte güncelleyin. Feed&apos;deki değer Google Merchant&apos;a giden kargo ücretidir; sitedekiyle aynı olmazsa Merchant Center uyarı verir.
           </p>
         </div>
       </div>
