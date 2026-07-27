@@ -42,7 +42,7 @@ export default function Footer() {
           <div className="flex flex-col gap-1.5">
             <p className="text-[11px] text-gray-500">📞 <span className="text-orange-500 font-bold">+90 532 177 3721</span></p>
             <p className="text-[11px] text-gray-500">✉️ <span className="text-orange-500 font-bold">info@sepetmama.com</span></p>
-            <p className="text-[11px] text-gray-500">📍 Konak / İzmir</p>
+            <p className="text-[11px] text-gray-500 leading-relaxed">📍 Murat Reis Mah. Şehit Ceysu Ceylan Sok. No: 80/B Konak / İzmir</p>
             <p className="text-[10px] text-gray-600 mt-1 leading-relaxed">Pazartesi – Cumartesi<br />09:00 – 18:00</p>
           </div>
         </div>

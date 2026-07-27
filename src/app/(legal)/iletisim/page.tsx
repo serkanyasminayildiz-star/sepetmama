@@ -31,6 +31,7 @@ export default function IletisimPage() {
               <span className="text-orange-500 text-xl">📍</span>
               <div>
                 <p className="font-extrabold text-gray-800 text-sm">Adres</p>
+                <p className="text-gray-600 text-sm">Murat Reis Mahallesi, Şehit Ceysu Ceylan Sokak No: 80/B</p>
                 <p className="text-gray-600 text-sm">Konak / İzmir</p>
               </div>
             </div>
@@ -62,11 +63,11 @@ export default function IletisimPage() {
             <div className="space-y-2">
               <label className="flex items-start gap-2 cursor-pointer">
                 <input type="checkbox" className="mt-0.5" />
-                <span className="text-xs text-gray-600">KVKK Aydınlatma Metni'ni okudum, anladım ve kabul ediyorum.</span>
+                <span className="text-xs text-gray-600">KVKK Aydınlatma Metni&apos;ni okudum, anladım ve kabul ediyorum.</span>
               </label>
               <label className="flex items-start gap-2 cursor-pointer">
                 <input type="checkbox" className="mt-0.5" />
-                <span className="text-xs text-gray-600">Açık Rıza Metni'ni okudum, anladım ve kabul ediyorum.</span>
+                <span className="text-xs text-gray-600">Açık Rıza Metni&apos;ni okudum, anladım ve kabul ediyorum.</span>
               </label>
             </div>
             <button type="submit" className="w-full bg-orange-500 hover:bg-orange-600 text-white font-extrabold py-3 rounded-xl transition-colors">Gönder</button>

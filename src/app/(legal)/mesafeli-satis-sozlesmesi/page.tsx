@@ -8,7 +8,7 @@ export default function MesafeliSatisSozlesmesiPage() {
           <h2 className="font-extrabold text-gray-800 mb-2">4. Satıcı Bilgileri</h2>
           <div className="bg-gray-50 rounded-xl p-4 space-y-1">
             <p><span className="font-semibold">Ünvanı:</span> SepetMama – EV HAYVANLARI, BUNLARIN MAMA VE GIDALARI İLE EŞYALARININ PERAKENDE TİCARETİ</p>
-            <p><span className="font-semibold">Adres:</span> Atilla Mah. 349. Sok. No:55 İç Kapı No:A Konak/İzmir</p>
+            <p><span className="font-semibold">Adres:</span> Murat Reis Mah. Şehit Ceysu Ceylan Sok. No: 80/B Konak/İzmir</p>
             <p><span className="font-semibold">Vergi Dairesi:</span> Konak</p>
             <p><span className="font-semibold">Vergi No:</span> 9650295235</p>
             <p><span className="font-semibold">Telefon:</span> +90 532 177 3721</p>
@@ -17,7 +17,7 @@ export default function MesafeliSatisSozlesmesiPage() {
         </div>
         <div>
           <h2 className="font-extrabold text-gray-800 mb-2">10. Cayma Hakkı</h2>
-          <p>ALICI, ürünün teslim tarihinden itibaren <strong>14 gün</strong> içerisinde hiçbir gerekçe göstermeksizin sözleşmeden cayma hakkını kullanabilir. Cayma hakkının kullanımından kaynaklanan masraflar SATICI'ya aittir.</p>
+          <p>ALICI, ürünün teslim tarihinden itibaren <strong>14 gün</strong> içerisinde hiçbir gerekçe göstermeksizin sözleşmeden cayma hakkını kullanabilir. Cayma hakkının kullanımından kaynaklanan masraflar SATICI&apos;ya aittir.</p>
         </div>
         <div>
           <h2 className="font-extrabold text-gray-800 mb-2">13. Yetkili Mahkeme</h2>

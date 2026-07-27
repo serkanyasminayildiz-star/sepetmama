@@ -14,7 +14,7 @@ export default function IadeKosullariPage() {
           <p className="mb-2">Ürünü teslim aldıktan sonraki <strong>14 gün</strong> içinde iade talebinizi iletebilirsiniz.</p>
           <ul className="list-disc list-inside space-y-1 mt-2">
             <li>İade edilecek ürünlerin kullanılmamış, ambalajı hasar görmemiş ve satılabilir durumda olması gerekir.</li>
-            <li>İade adresi: Atilla Mah. 349. Sok. No:55/A Konak/İzmir</li>
+            <li>İade adresi: Murat Reis Mah. Şehit Ceysu Ceylan Sok. No: 80/B Konak/İzmir</li>
             <li>Ayıplı veya hatalı ürünlerde iade kargo ücreti firmamıza aittir.</li>
             <li>Diğer iade durumlarında kargo ücreti müşteriye aittir.</li>
           </ul>
@@ -23,7 +23,7 @@ export default function IadeKosullariPage() {
           <h2 className="font-extrabold text-gray-800 mb-2">3. Değişim Politikası</h2>
           <p className="mb-2">Ürünü teslim aldıktan sonraki <strong>14 gün</strong> içinde değişim talebinde bulunabilirsiniz.</p>
           <p>Değiştirmek istediğiniz ürün kullanılmamış, ambalajı hasar görmemiş ve satılabilir durumda olmalıdır.</p>
-          <p className="mt-2">Değişim adresi: Atilla Mah. 349. Sok. No:55/A Konak/İzmir</p>
+          <p className="mt-2">Değişim adresi: Murat Reis Mah. Şehit Ceysu Ceylan Sok. No: 80/B Konak/İzmir</p>
         </div>
         <div>
           <h2 className="font-extrabold text-gray-800 mb-2">4. İletişim</h2>
