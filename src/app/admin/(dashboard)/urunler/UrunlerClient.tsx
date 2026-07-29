@@ -107,7 +107,9 @@ export default function UrunlerClient({ products, total, sayfa, totalPages, cate
     const res = await fetch(`/api/admin/urun/${inlineEdit.id}`, {
       method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
     })
-    if (res.ok) { goster('✅ Güncellendi'); setInlineEdit(null); router.refresh() }
+    if (res.ok) { goster('✅ Güncellendi'); setInlineEdit(null); router.refresh(); return }
+    const data = await res.json().catch(() => ({}))
+    goster('❌ ' + (data.error || 'Güncellenemedi'))
   }
 
   const aktifToggle = async (id: string, aktif: boolean) => {
@@ -123,7 +125,12 @@ export default function UrunlerClient({ products, total, sayfa, totalPages, cate
 
   const urunSil = async (id: string) => {
     if (!confirm('Bu ürünü silmek istediğinizden emin misiniz?')) return
-    await fetch(`/api/admin/urun/${id}`, { method: 'DELETE' })
+    const res = await fetch(`/api/admin/urun/${id}`, { method: 'DELETE' })
+    if (!res.ok) {
+      // Siparişi/yorumu olan ürün veri bütünlüğü için silinemez
+      goster('❌ Silinemedi — bu ürünün sipariş geçmişi olabilir, "Pasif" yapmayı deneyin')
+      return
+    }
     goster('✅ Ürün silindi'); router.refresh()
   }
 
