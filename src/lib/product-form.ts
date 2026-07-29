@@ -17,6 +17,31 @@ export function slugify(text: string): string {
     .replace(/^-|-$/g, '')
 }
 
+/**
+ * Uzun açıklamadan kısa açıklama türetir: sınıra sığdığı sürece cümle ekler,
+ * tek cümle bile sığmıyorsa kelime sınırından kırpar.
+ */
+export function kisaAciklamaTuret(aciklama: string | null | undefined, max = SHORT_DESC_MAX): string {
+  const metin = (aciklama || '').replace(/\s+/g, ' ').trim()
+  if (!metin) return ''
+  if (metin.length <= max) return metin
+
+  const cumleler = metin.match(/[^.!?]+[.!?]*/g) || [metin]
+  let sonuc = ''
+  for (const c of cumleler) {
+    const aday = (sonuc + c).trim()
+    if (aday.length > max) break
+    sonuc = aday + ' '
+  }
+  sonuc = sonuc.trim()
+  if (sonuc) return sonuc
+
+  // İlk cümle bile uzun: kelime ortasından bölmeden kırp
+  const kirpik = metin.slice(0, max - 1)
+  const bosluk = kirpik.lastIndexOf(' ')
+  return (bosluk > max * 0.5 ? kirpik.slice(0, bosluk) : kirpik).trim() + '…'
+}
+
 /** Alınmış slug'lar arasında çakışma varsa -2, -3 … ekleyerek benzersizleştirir. */
 export function uniqueSlug(base: string, taken: string[]): string {
   const set = new Set(taken)
@@ -77,12 +102,17 @@ export function validateProduct(body: Record<string, unknown>): ValidationResult
   const stock = stockRaw === null ? 0 : Math.trunc(stockRaw)
   if (stock < 0) return { ok: false, error: 'Stok negatif olamaz' }
 
+  const description = toText(body.description)
+  // Kısa açıklama boş bırakıldıysa uzun açıklamadan türetilir
+  const shortDescription =
+    toText(body.shortDescription, SHORT_DESC_MAX) || (description ? kisaAciklamaTuret(description) || null : null)
+
   return {
     ok: true,
     data: {
       name,
-      shortDescription: toText(body.shortDescription, SHORT_DESC_MAX),
-      description: toText(body.description),
+      shortDescription,
+      description,
       brand: toText(body.brand),
       tag: toText(body.tag, TAG_MAX),
       categoryId: toText(body.categoryId),

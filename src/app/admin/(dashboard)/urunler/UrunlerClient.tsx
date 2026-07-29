@@ -81,6 +81,7 @@ export default function UrunlerClient({ products, total, sayfa, totalPages, cate
     mod: 'duzenle',
     degerler: {
       id: urun.id,
+      slug: urun.slug,
       name: urun.name || '',
       shortDescription: urun.shortDescription || '',
       description: urun.description || '',

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
-import { SHORT_DESC_MAX, TAG_MAX } from '@/lib/product-form'
+import { SHORT_DESC_MAX, TAG_MAX, kisaAciklamaTuret, slugify } from '@/lib/product-form'
 
 const MAX_IMAGES = 6
 const ETIKET_ONERILERI = ['Yeni', 'Çok Satan', 'Kampanya', 'Son Fırsat', 'Tükeniyor']
@@ -27,6 +27,7 @@ type YerelResim = { file: File; onizleme: string }
 
 export type UrunFormDegerleri = {
   id?: string
+  slug?: string
   name: string
   shortDescription: string
   description: string
@@ -61,6 +62,8 @@ export default function UrunFormModal({
   const [kaydediliyor, setKaydediliyor] = useState(false)
   const [yukleniyor, setYukleniyor] = useState(false)
   const [hata, setHata] = useState('')
+  // Kısa açıklama açıklamadan türetilsin mi? Kullanıcı elle yazınca kapanır.
+  const [kisaOtomatik, setKisaOtomatik] = useState(!baslangic.shortDescription)
 
   // Seçilen dosyalar için üretilen önizleme URL'lerini serbest bırak
   useEffect(() => {
@@ -68,6 +71,28 @@ export default function UrunFormModal({
   }, [yerelResimler])
 
   const set = (alan: keyof UrunFormDegerleri, deger: unknown) => setForm((f) => ({ ...f, [alan]: deger }))
+
+  // Açıklama yazıldıkça kısa açıklama otomatik güncellenir (elle düzenlenmediyse)
+  const aciklamaDegisti = (metin: string) => {
+    setForm((f) => ({
+      ...f,
+      description: metin,
+      shortDescription: kisaOtomatik ? kisaAciklamaTuret(metin) : f.shortDescription,
+    }))
+  }
+
+  const kisaAciklamaDegisti = (metin: string) => {
+    setKisaOtomatik(false)
+    set('shortDescription', metin.slice(0, SHORT_DESC_MAX))
+  }
+
+  const kisaAciklamayiOtomatigeDondur = () => {
+    setKisaOtomatik(true)
+    set('shortDescription', kisaAciklamaTuret(form.description))
+  }
+
+  // Yeni üründe adres addan türetilir; mevcut üründe adres sabittir (SEO kırılmasın)
+  const slugOnizleme = mod === 'yeni' ? slugify(form.name) : form.slug || ''
 
   const toplamResim = form.images.length + yerelResimler.length
 
@@ -202,13 +227,54 @@ export default function UrunFormModal({
 
           <div style={{ gridColumn: '1/-1' }}>
             <label style={etiketStil}>
-              Kısa Açıklama <span style={{ opacity: 0.6, fontWeight: 500 }}>(ürün kartında görünür — {form.shortDescription.length}/{SHORT_DESC_MAX})</span>
+              SEO Adresi <span style={{ opacity: 0.6, fontWeight: 500 }}>(ürün adından otomatik oluşur)</span>
+            </label>
+            <div style={{ ...s, background: '#FAF5EF', color: '#5C3D2E', opacity: slugOnizleme ? 1 : 0.5, fontSize: 13, overflowX: 'auto', whiteSpace: 'nowrap' }}>
+              sepetmama.com/urun/<strong>{slugOnizleme || '…'}</strong>
+            </div>
+            {mod === 'duzenle' && (
+              <div style={{ fontSize: 11, color: '#5C3D2E', opacity: 0.5, marginTop: 4 }}>
+                Yayındaki ürünün adresi, arama motorlarındaki sıralaması bozulmasın diye değişmez.
+              </div>
+            )}
+          </div>
+
+          <div style={{ gridColumn: '1/-1' }}>
+            <label style={etiketStil}>Açıklama <span style={{ opacity: 0.6, fontWeight: 500 }}>(ürün sayfasındaki uzun metin)</span></label>
+            <textarea
+              value={form.description}
+              onChange={(e) => aciklamaDegisti(e.target.value)}
+              rows={5}
+              style={{ ...s, resize: 'vertical' }}
+              placeholder="Ürünün detaylı tanıtımı — kısa açıklama buradan otomatik oluşturulur."
+            />
+          </div>
+
+          <div style={{ gridColumn: '1/-1' }}>
+            <label style={etiketStil}>
+              Kısa Açıklama{' '}
+              <span style={{ opacity: 0.6, fontWeight: 500 }}>
+                (ürün sayfasında başlık altında — {form.shortDescription.length}/{SHORT_DESC_MAX})
+              </span>{' '}
+              {kisaOtomatik ? (
+                <span style={{ background: '#E8F5E9', color: '#2E7D32', borderRadius: 50, padding: '1px 8px', fontSize: 10, fontWeight: 700 }}>
+                  otomatik
+                </span>
+              ) : (
+                <button
+                  type="button"
+                  onClick={kisaAciklamayiOtomatigeDondur}
+                  style={{ background: '#FDF6EE', border: '1px solid #E8D5B7', borderRadius: 50, padding: '1px 8px', fontSize: 10, fontWeight: 700, color: '#5C3D2E', cursor: 'pointer', fontFamily: 'inherit' }}
+                >
+                  ↺ otomatiğe dön
+                </button>
+              )}
             </label>
             <input
               value={form.shortDescription}
-              onChange={(e) => set('shortDescription', e.target.value.slice(0, SHORT_DESC_MAX))}
+              onChange={(e) => kisaAciklamaDegisti(e.target.value)}
               style={s}
-              placeholder="Tek cümlelik özet"
+              placeholder="Açıklamayı yazınca burası kendiliğinden dolar — istersen elle değiştirebilirsin"
             />
           </div>
 
@@ -306,10 +372,6 @@ export default function UrunFormModal({
             )}
           </div>
 
-          <div style={{ gridColumn: '1/-1' }}>
-            <label style={etiketStil}>Açıklama <span style={{ opacity: 0.6, fontWeight: 500 }}>(ürün sayfasındaki uzun metin)</span></label>
-            <textarea value={form.description} onChange={(e) => set('description', e.target.value)} rows={4} style={{ ...s, resize: 'vertical' }} />
-          </div>
         </div>
 
         <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
