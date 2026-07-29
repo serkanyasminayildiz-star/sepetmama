@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma'
+import type { Prisma } from '@prisma/client'
 import AdminShell from '../AdminShell'
 import UrunlerClient from './UrunlerClient'
 
@@ -12,7 +13,7 @@ export default async function UrunlerPage({
   const perPage = 50
   const skip = (sayfa - 1) * perPage
 
-  const where: any = {}
+  const where: Prisma.ProductWhereInput = {}
   if (sp.arama) where.name = { contains: sp.arama, mode: 'insensitive' }
   if (sp.marka) where.brand = sp.marka
   if (sp.stok === 'tukendi') where.stock = 0

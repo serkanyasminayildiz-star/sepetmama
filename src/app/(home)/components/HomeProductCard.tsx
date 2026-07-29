@@ -11,9 +11,10 @@ interface Props {
   price: number
   salePrice?: number
   image?: string
+  tag?: string | null
 }
 
-export default function HomeProductCard({ id, slug, name, price, salePrice, image }: Props) {
+export default function HomeProductCard({ id, slug, name, price, salePrice, image, tag }: Props) {
   const addItem = useCartStore((s) => s.addItem)
   const displayPrice = salePrice ?? price
   const discount = salePrice ? Math.round(((price - salePrice) / price) * 100) : null
@@ -29,6 +30,9 @@ export default function HomeProductCard({ id, slug, name, price, salePrice, imag
           )}
           {discount && discount > 0 && (
             <span className="absolute top-2 left-2 bg-orange-500 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-md">%{discount}</span>
+          )}
+          {tag && (
+            <span className="absolute top-2 right-2 bg-gray-800/90 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-md">{tag}</span>
           )}
         </div>
         <div className="p-3 flex flex-col flex-1">

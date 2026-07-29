@@ -8,7 +8,7 @@ const MAX_SIZE_MB = 5
 
 async function checkAdmin() {
   const session = await auth()
-  if (!session || session.user.role !== 'ADMIN') return false
+  if (!session?.user || session.user.role !== 'ADMIN') return false
   return true
 }
 

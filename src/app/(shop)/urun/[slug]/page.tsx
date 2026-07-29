@@ -205,6 +205,9 @@ export default async function UrunPage({ params }: PageProps) {
             <div className="flex flex-col gap-4">
               <div>
                 <h1 className="text-xl font-extrabold text-gray-800 leading-tight mb-2">{product.name}</h1>
+                {product.shortDescription && (
+                  <p className="text-sm text-gray-500 leading-relaxed mb-2">{product.shortDescription}</p>
+                )}
                 {avgRating > 0 && (
                   <div className="flex items-center gap-1.5">
                     <div className="flex">

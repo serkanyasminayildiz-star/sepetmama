@@ -5,7 +5,7 @@ import { sendWinBackEmail } from '@/lib/email/send'
 
 async function checkAdmin() {
   const session = await auth()
-  if (!session || session.user.role !== 'ADMIN') return false
+  if (!session?.user || session.user.role !== 'ADMIN') return false
   return true
 }
 

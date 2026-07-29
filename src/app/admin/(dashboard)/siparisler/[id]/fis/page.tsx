@@ -5,7 +5,7 @@ import PrintButton from './PrintButton'
 
 export default async function FisPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await auth()
-  if (!session || session.user.role !== 'ADMIN') redirect('/giris')
+  if (!session?.user || session.user.role !== 'ADMIN') redirect('/giris')
 
   const { id } = await params
   const order = await prisma.order.findUnique({

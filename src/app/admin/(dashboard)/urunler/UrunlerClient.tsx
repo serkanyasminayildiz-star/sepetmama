@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import UrunFormModal, { BOS_URUN, type UrunFormDegerleri } from './UrunFormModal'
 
 const s: React.CSSProperties = {
   width: '100%', padding: '10px 14px', border: '2px solid #E8D5B7',
@@ -28,43 +29,78 @@ function getPageNumbers(current: number, total: number): (number | 'gap')[] {
   return result
 }
 
-export default function UrunlerClient({ products, total, sayfa, totalPages, categories, brands, searchParams }: any) {
+type Kategori = { id: string; name: string; parentId: string | null }
+
+type AdminUrun = {
+  id: string
+  name: string
+  slug: string
+  shortDescription: string | null
+  description: string | null
+  brand: string | null
+  tag: string | null
+  price: string
+  salePrice: string | null
+  stock: number
+  isActive: boolean
+  isFeatured: boolean
+  images: { id: string; url: string }[]
+  categories: { categoryId: string; category?: { name: string } }[]
+}
+
+type Props = {
+  products: AdminUrun[]
+  total: number
+  sayfa: number
+  totalPages: number
+  categories: Kategori[]
+  brands: string[]
+  searchParams: Record<string, string | undefined>
+}
+
+export default function UrunlerClient({ products, total, sayfa, totalPages, categories, brands, searchParams }: Props) {
   const router = useRouter()
-  const [duzenle, setDuzenle] = useState<any>(null)
+  const [form, setForm] = useState<{ mod: 'yeni' | 'duzenle'; degerler: UrunFormDegerleri } | null>(null)
   const [bildirim, setBildirim] = useState('')
-  const [uploading, setUploading] = useState(false)
   const [inlineEdit, setInlineEdit] = useState<{ id: string; alan: string; deger: string } | null>(null)
 
   const goster = (msg: string) => { setBildirim(msg); setTimeout(() => setBildirim(''), 3000) }
 
   const filtrele = (key: string, val: string) => {
-    const params = new URLSearchParams(searchParams)
+    const params = new URLSearchParams(
+      Object.entries(searchParams).filter((e): e is [string, string] => e[1] !== undefined)
+    )
     if (val) params.set(key, val); else params.delete(key)
     if (key !== 'sayfa') params.delete('sayfa')
     router.push(`/admin/urunler?${params.toString()}`)
   }
 
-  const urunGuncelle = async () => {
-    const res = await fetch(`/api/admin/urun/${duzenle.id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name: duzenle.name,
-        price: parseFloat(duzenle.price),
-        salePrice: duzenle.salePrice ? parseFloat(duzenle.salePrice) : null,
-        stock: parseInt(duzenle.stock),
-        isActive: duzenle.isActive,
-        description: duzenle.description,
-        brand: duzenle.brand,
-      }),
-    })
-    if (res.ok) { goster('✅ Ürün güncellendi'); setDuzenle(null); router.refresh() }
-    else goster('❌ Hata oluştu')
-  }
+  const yeniUrun = () => setForm({ mod: 'yeni', degerler: { ...BOS_URUN } })
+
+  const urunDuzenle = (urun: AdminUrun) => setForm({
+    mod: 'duzenle',
+    degerler: {
+      id: urun.id,
+      name: urun.name || '',
+      shortDescription: urun.shortDescription || '',
+      description: urun.description || '',
+      brand: urun.brand || '',
+      tag: urun.tag || '',
+      categoryId: urun.categories?.[0]?.categoryId || '',
+      price: String(parseFloat(urun.price)),
+      salePrice: urun.salePrice ? String(parseFloat(urun.salePrice)) : '',
+      stock: String(urun.stock),
+      isActive: urun.isActive,
+      isFeatured: urun.isFeatured,
+      images: urun.images || [],
+    },
+  })
+
+  const formBitti = (mesaj: string) => { goster(mesaj); setForm(null); router.refresh() }
 
   const inlineKaydet = async () => {
     if (!inlineEdit) return
-    const body: any = {}
+    const body: Record<string, number | null> = {}
     if (inlineEdit.alan === 'price') body.price = parseFloat(inlineEdit.deger)
     if (inlineEdit.alan === 'salePrice') body.salePrice = inlineEdit.deger ? parseFloat(inlineEdit.deger) : null
     if (inlineEdit.alan === 'stock') body.stock = parseInt(inlineEdit.deger)
@@ -91,36 +127,6 @@ export default function UrunlerClient({ products, total, sayfa, totalPages, cate
     goster('✅ Ürün silindi'); router.refresh()
   }
 
-  const resimYukle = async (file: File) => {
-    if (!duzenle || uploading) return
-    setUploading(true)
-    const fd = new FormData()
-    fd.append('file', file)
-    const res = await fetch(`/api/admin/urun/${duzenle.id}/image`, { method: 'POST', body: fd })
-    setUploading(false)
-    if (res.ok) {
-      const { image } = await res.json()
-      setDuzenle({ ...duzenle, images: [...(duzenle.images || []), image] })
-      goster('✅ Görsel yüklendi')
-      router.refresh()
-    } else {
-      const data = await res.json().catch(() => ({}))
-      goster('❌ ' + (data.error || 'Yükleme hatası'))
-    }
-  }
-
-  const resimSil = async (imageId: string) => {
-    if (!duzenle) return
-    if (!confirm('Görseli silmek istediğine emin misin?')) return
-    const res = await fetch(`/api/admin/urun/${duzenle.id}/image?imageId=${imageId}`, { method: 'DELETE' })
-    if (res.ok) {
-      setDuzenle({ ...duzenle, images: (duzenle.images || []).filter((i: any) => i.id !== imageId) })
-      goster('✅ Görsel silindi')
-      router.refresh()
-    } else {
-      goster('❌ Silinemedi')
-    }
-  }
 
   return (
     <div>
@@ -130,89 +136,24 @@ export default function UrunlerClient({ products, total, sayfa, totalPages, cate
         </div>
       )}
 
-      {/* Ürün Düzenleme Modali */}
-      {duzenle && (
-        <div onClick={e => { if (e.target === e.currentTarget) setDuzenle(null) }} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.55)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
-          <div style={{ background: 'white', borderRadius: 20, padding: 28, width: '100%', maxWidth: 640, maxHeight: '92vh', overflowY: 'auto' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-              <h2 style={{ fontFamily: 'Georgia,serif', fontSize: 18, fontWeight: 700, color: '#5C3D2E', margin: 0 }}>✏️ Ürün Düzenle</h2>
-              <button onClick={() => setDuzenle(null)} style={{ background: '#F0EBE3', border: 'none', fontSize: 20, cursor: 'pointer', borderRadius: 8, width: 36, height: 36, color: '#5C3D2E' }}>✕</button>
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-              <div style={{ gridColumn: '1/-1' }}>
-                <label style={{ fontSize: 12, fontWeight: 700, color: '#5C3D2E', opacity: 0.7, display: 'block', marginBottom: 5 }}>Ürün Adı</label>
-                <input value={duzenle.name} onChange={e => setDuzenle({ ...duzenle, name: e.target.value })} style={s} />
-              </div>
-              <div>
-                <label style={{ fontSize: 12, fontWeight: 700, color: '#5C3D2E', opacity: 0.7, display: 'block', marginBottom: 5 }}>Fiyat ₺</label>
-                <input type="number" step="0.01" value={duzenle.price} onChange={e => setDuzenle({ ...duzenle, price: e.target.value })} style={s} />
-              </div>
-              <div>
-                <label style={{ fontSize: 12, fontWeight: 700, color: '#5C3D2E', opacity: 0.7, display: 'block', marginBottom: 5 }}>İndirimli Fiyat ₺</label>
-                <input type="number" step="0.01" value={duzenle.salePrice || ''} onChange={e => setDuzenle({ ...duzenle, salePrice: e.target.value })} style={s} placeholder="Boş = indirim yok" />
-              </div>
-              <div>
-                <label style={{ fontSize: 12, fontWeight: 700, color: '#5C3D2E', opacity: 0.7, display: 'block', marginBottom: 5 }}>Stok</label>
-                <input type="number" value={duzenle.stock} onChange={e => setDuzenle({ ...duzenle, stock: e.target.value })} style={s} />
-              </div>
-              <div>
-                <label style={{ fontSize: 12, fontWeight: 700, color: '#5C3D2E', opacity: 0.7, display: 'block', marginBottom: 5 }}>Marka</label>
-                <input value={duzenle.brand || ''} onChange={e => setDuzenle({ ...duzenle, brand: e.target.value })} style={s} />
-              </div>
-              <div>
-                <label style={{ fontSize: 12, fontWeight: 700, color: '#5C3D2E', opacity: 0.7, display: 'block', marginBottom: 5 }}>Durum</label>
-                <select value={duzenle.isActive ? '1' : '0'} onChange={e => setDuzenle({ ...duzenle, isActive: e.target.value === '1' })} style={s}>
-                  <option value="1">✅ Aktif</option>
-                  <option value="0">❌ Pasif</option>
-                </select>
-              </div>
-              <div style={{ gridColumn: '1/-1' }}>
-                <label style={{ fontSize: 12, fontWeight: 700, color: '#5C3D2E', opacity: 0.7, display: 'block', marginBottom: 5 }}>
-                  Görseller <span style={{ opacity: 0.6, fontWeight: 500 }}>({(duzenle.images || []).length}/6 — max 5MB, JPG/PNG/WEBP)</span>
-                </label>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 8 }}>
-                  {(duzenle.images || []).map((img: any) => (
-                    <div key={img.id} style={{ position: 'relative', aspectRatio: '1', background: '#FDF6EE', borderRadius: 10, overflow: 'hidden', border: '2px solid #E8D5B7' }}>
-                      <Image src={img.url} alt="" fill style={{ objectFit: 'contain', padding: 4 }} sizes="100px" />
-                      <button
-                        type="button"
-                        onClick={() => resimSil(img.id)}
-                        title="Görseli sil"
-                        style={{ position: 'absolute', top: 3, right: 3, background: '#C62828', color: 'white', border: 'none', borderRadius: '50%', width: 22, height: 22, cursor: 'pointer', fontSize: 11, fontWeight: 700, lineHeight: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                      >✕</button>
-                    </div>
-                  ))}
-                  {(duzenle.images?.length || 0) < 6 && (
-                    <label style={{ aspectRatio: '1', background: uploading ? '#F0EBE3' : '#FDF6EE', borderRadius: 10, border: '2px dashed #E8D5B7', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: uploading ? 'wait' : 'pointer', fontSize: 28, color: '#E8845A', fontWeight: 700 }}>
-                      {uploading ? '⏳' : '+'}
-                      <input
-                        type="file"
-                        accept="image/jpeg,image/png,image/webp"
-                        disabled={uploading}
-                        style={{ display: 'none' }}
-                        onChange={e => { const f = e.target.files?.[0]; if (f) resimYukle(f); e.target.value = '' }}
-                      />
-                    </label>
-                  )}
-                </div>
-              </div>
-              <div style={{ gridColumn: '1/-1' }}>
-                <label style={{ fontSize: 12, fontWeight: 700, color: '#5C3D2E', opacity: 0.7, display: 'block', marginBottom: 5 }}>Açıklama</label>
-                <textarea value={duzenle.description || ''} onChange={e => setDuzenle({ ...duzenle, description: e.target.value })} rows={4} style={{ ...s, resize: 'vertical' }} />
-              </div>
-            </div>
-            <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
-              <button onClick={urunGuncelle} style={{ ...btn(), flex: 1, padding: '14px' }}>💾 Kaydet</button>
-              <button onClick={() => setDuzenle(null)} style={btn('#888')}>İptal</button>
-            </div>
-          </div>
-        </div>
+      {form && (
+        <UrunFormModal
+          mod={form.mod}
+          baslangic={form.degerler}
+          kategoriler={categories}
+          markalar={brands}
+          onKapat={() => setForm(null)}
+          onBitti={formBitti}
+        />
       )}
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
         <h1 style={{ fontFamily: 'Georgia,serif', fontSize: 24, fontWeight: 700, color: '#2C1A0E' }}>
           Ürün Yönetimi <span style={{ fontSize: 14, fontWeight: 400, opacity: 0.5 }}>{total} ürün</span>
         </h1>
+        <button onClick={yeniUrun} style={btn('#E8845A', { padding: '12px 22px', fontSize: 14 })}>
+          ➕ Yeni Ürün
+        </button>
       </div>
 
       {/* Filtreler */}
@@ -226,7 +167,7 @@ export default function UrunlerClient({ products, total, sayfa, totalPages, cate
         />
         <select value={searchParams.kategori || ''} onChange={e => filtrele('kategori', e.target.value)} style={{ ...s, width: 'auto' }}>
           <option value="">Tüm Kategoriler</option>
-          {categories.map((k: any) => <option key={k.id} value={k.id}>{k.name}</option>)}
+          {categories.map((k) => <option key={k.id} value={k.id}>{k.name}</option>)}
         </select>
         <select value={searchParams.marka || ''} onChange={e => filtrele('marka', e.target.value)} style={{ ...s, width: 'auto' }}>
           <option value="">Tüm Markalar</option>
@@ -257,7 +198,7 @@ export default function UrunlerClient({ products, total, sayfa, totalPages, cate
               </tr>
             </thead>
             <tbody>
-              {products.map((urun: any) => {
+              {products.map((urun) => {
                 const image = urun.images[0]?.url
                 const price = parseFloat(urun.price)
                 const salePrice = urun.salePrice ? parseFloat(urun.salePrice) : null
@@ -272,6 +213,11 @@ export default function UrunlerClient({ products, total, sayfa, totalPages, cate
                     </td>
                     <td style={{ padding: '8px 10px', maxWidth: 220 }}>
                       <div style={{ fontWeight: 600, color: '#2C1A0E', fontSize: 12 }}>{urun.name?.substring(0, 50)}{urun.name?.length > 50 ? '…' : ''}</div>
+                      {urun.tag && (
+                        <span style={{ display: 'inline-block', marginTop: 4, background: '#FFF1E8', color: '#E8845A', border: '1px solid #F5C9AE', borderRadius: 50, padding: '1px 8px', fontSize: 10, fontWeight: 700 }}>
+                          {urun.tag}
+                        </span>
+                      )}
                     </td>
                     {/* Inline fiyat */}
                     <td style={{ padding: '8px 10px', whiteSpace: 'nowrap' }}>
@@ -330,7 +276,7 @@ export default function UrunlerClient({ products, total, sayfa, totalPages, cate
                     </td>
                     <td style={{ padding: '8px 10px' }}>
                       <div style={{ display: 'flex', gap: 5 }}>
-                        <button onClick={() => setDuzenle({ ...urun, price: String(price), salePrice: salePrice ? String(salePrice) : '', stock: String(urun.stock) })} style={{ background: '#FDF6EE', border: '2px solid #E8D5B7', borderRadius: 8, padding: '5px 10px', fontSize: 12, cursor: 'pointer', fontWeight: 600, color: '#5C3D2E' }}>✏️</button>
+                        <button onClick={() => urunDuzenle(urun)} style={{ background: '#FDF6EE', border: '2px solid #E8D5B7', borderRadius: 8, padding: '5px 10px', fontSize: 12, cursor: 'pointer', fontWeight: 600, color: '#5C3D2E' }}>✏️</button>
                         <button onClick={() => urunSil(urun.id)} style={{ background: '#FFEBEE', border: 'none', borderRadius: 8, padding: '5px 9px', fontSize: 13, cursor: 'pointer', color: '#C62828' }}>🗑️</button>
                       </div>
                     </td>

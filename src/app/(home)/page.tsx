@@ -39,6 +39,7 @@ function mapProduct(p: Awaited<ReturnType<typeof getProducts>>[number]) {
     price: parseFloat(p.price.toString()),
     salePrice: p.salePrice ? parseFloat(p.salePrice.toString()) : undefined,
     image: p.images[0]?.url,
+    tag: p.tag,
   }
 }
 
@@ -79,6 +80,7 @@ async function ProductSection({ title, categorySlug, href }: {
             price={parseFloat(product.price.toString())}
             salePrice={product.salePrice ? parseFloat(product.salePrice.toString()) : undefined}
             image={product.images[0]?.url}
+            tag={product.tag}
           />
         ))}
       </div>

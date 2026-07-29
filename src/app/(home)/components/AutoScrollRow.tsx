@@ -10,6 +10,7 @@ interface Product {
   price: number
   salePrice?: number
   image?: string
+  tag?: string | null
 }
 
 export default function AutoScrollRow({ products }: { products: Product[] }) {
@@ -48,6 +49,7 @@ export default function AutoScrollRow({ products }: { products: Product[] }) {
         price={p.price}
         salePrice={p.salePrice}
         image={p.image}
+        tag={p.tag}
       />
     </div>
   ))

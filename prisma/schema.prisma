@@ -91,6 +91,10 @@ model Product {
   name        String
   slug        String   @unique
   description String?
+  /// Ürün kartı ve ürün sayfası için tek cümlelik özet
+  shortDescription String?
+  /// Vitrin rozeti: "Yeni", "Çok Satan", "Kampanya" gibi kısa etiket
+  tag         String?
   price       Decimal  @db.Decimal(10, 2)
   salePrice   Decimal? @db.Decimal(10, 2)
   stock       Int      @default(0)
