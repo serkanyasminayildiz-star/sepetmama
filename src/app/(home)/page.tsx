@@ -117,14 +117,6 @@ export default async function HomePage() {
       {/* Öne çıkan ürünler slider */}
       <FeaturedSection />
 
-      <div className="mx-3 md:mx-4 my-2 bg-gradient-to-r from-blue-700 to-blue-500 rounded-2xl px-5 py-3.5 flex justify-between items-center">
-        <div>
-          <p className="text-sm font-extrabold text-white">🎉 İlk Siparişe %10 İndirim!</p>
-          <p className="text-[10px] text-blue-100 mt-0.5">SEPETMAMA10 kupon kodunu kullan · Min. 200₺</p>
-        </div>
-        <button className="bg-white text-blue-700 text-xs font-extrabold px-3.5 py-2 rounded-xl whitespace-nowrap hover:bg-blue-50 transition-colors">Hemen Al</button>
-      </div>
-
       {/* 6 kategori section */}
       <ProductSection title="🐱 Kedi Kuru Mamaları" categorySlug="yetiskin-kedi-mamasi-1-7-yas" href="/kategori/yetiskin-kedi-mamasi-1-7-yas" />
       <ProductSection title="🐈 Yavru Kedi Mamaları" categorySlug="yavru-kedi-mamalari" href="/kategori/yavru-kedi-mamalari" />

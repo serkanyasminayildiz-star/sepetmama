@@ -7,7 +7,6 @@ import Link from 'next/link'
 import ProductGrid from '@/app/(shop)/kategori/[slug]/ProductGrid'
 import AddToCartButton from './AddToCartButton'
 import JsonLd from '@/components/JsonLd'
-import { auth } from '@/auth'
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -26,9 +25,6 @@ export default async function UrunPage({ params }: PageProps) {
   })
 
   if (!product) notFound()
-
-  const session = await auth()
-  const isGuest = !session?.user
 
   const price = parseFloat(product.price.toString())
   const salePrice = product.salePrice ? parseFloat(product.salePrice.toString()) : null
@@ -238,17 +234,6 @@ export default async function UrunPage({ params }: PageProps) {
                   </p>
                 )}
               </div>
-
-              {/* İlk sipariş indirimi — misafire çağrı */}
-              {isGuest && (
-                <Link
-                  href="/kayit"
-                  className="flex items-center justify-between gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-2xl px-4 py-3 hover:opacity-95 transition-opacity"
-                >
-                  <span className="text-sm font-extrabold">🎁 Üye ol, ilk siparişine %10 indirim kazan!</span>
-                  <span className="text-lg font-extrabold">→</span>
-                </Link>
-              )}
 
               {/* Kargo bilgisi */}
               <div className="flex flex-col gap-2">
