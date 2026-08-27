@@ -57,6 +57,29 @@ export default function OdemeClient() {
     else { setError(data.error || 'Ödeme başlatılamadı.') }
   }
 
+  // Ödeme sağlayıcısı geçici olarak devre dışı (PayTR hesabı kapandı — yeni sağlayıcı entegre edilince false yap)
+  const PAYMENT_MAINTENANCE = true
+  if (PAYMENT_MAINTENANCE) {
+    return (
+      <div className="max-w-lg mx-auto bg-white rounded-2xl border border-orange-100 p-8 text-center">
+        <p className="text-4xl mb-3">🛠️</p>
+        <h2 className="text-xl font-extrabold text-gray-800 mb-2">Ödeme sistemimiz kısa süreli bakımda</h2>
+        <p className="text-gray-600 text-sm mb-5">
+          Çok yakında tekrar aktif olacak. Siparişinizi hemen vermek isterseniz WhatsApp veya telefonla size yardımcı olalım.
+        </p>
+        <div className="flex flex-col gap-2">
+          <a href="https://wa.me/905321773721" target="_blank" rel="noopener noreferrer" className="bg-green-500 hover:bg-green-600 text-white font-extrabold py-3 rounded-xl transition-colors">
+            💬 WhatsApp ile Sipariş: 0532 177 3721
+          </a>
+          <a href="tel:+905321773721" className="border-2 border-orange-200 text-orange-600 font-bold py-3 rounded-xl hover:bg-orange-50 transition-colors">
+            📞 Telefonla Ara
+          </a>
+          <Link href="/" className="text-sm text-orange-500 font-semibold mt-2 hover:underline">Alışverişe Devam Et</Link>
+        </div>
+      </div>
+    )
+  }
+
   if (items.length === 0) {
     return (
       <div className="py-20 text-center">
