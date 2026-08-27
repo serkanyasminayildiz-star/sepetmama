@@ -22,7 +22,7 @@ export default function HomeProductCard({ id, slug, name, price, salePrice, imag
   return (
     <div className="w-[222px] flex-shrink-0 flex flex-col bg-white rounded-2xl border border-orange-100 overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all">
       <Link href={`/urun/${slug}`} className="flex flex-col flex-1">
-        <div className="relative w-full h-[180px] bg-orange-50 flex-shrink-0">
+        <div className="relative w-full h-[180px] bg-shell flex-shrink-0">
           {image ? (
             <Image src={image} alt={name} fill sizes="222px" className="object-contain p-3" />
           ) : (

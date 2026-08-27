@@ -134,7 +134,7 @@ export default async function SiparisDetayPage({ params }: PageProps) {
               const image = item.product?.images[0]?.url
               return (
                 <div key={item.id} className="flex items-center gap-3 pb-3 border-b border-gray-50 last:border-0 last:pb-0">
-                  <div className="relative w-16 h-16 flex-shrink-0 bg-orange-50 rounded-xl overflow-hidden">
+                  <div className="relative w-16 h-16 flex-shrink-0 bg-shell rounded-xl overflow-hidden">
                     {image ? (
                       <Image src={image} alt={item.product?.name || ''} fill sizes="64px" className="object-contain p-1" />
                     ) : (

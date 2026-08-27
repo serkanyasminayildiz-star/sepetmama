@@ -5,16 +5,34 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
-export default function ProductGrid({ products, total, page, totalPages, slug }: any) {
+// price/salePrice sunucudan Prisma Decimal olarak da gelebilir → toString ile okunur
+interface GridProduct {
+  id: string
+  slug: string
+  name: string
+  price: { toString(): string }
+  salePrice: { toString(): string } | null
+  images: { url: string }[]
+}
+
+interface ProductGridProps {
+  products: GridProduct[]
+  total?: number
+  page: number
+  totalPages: number
+  slug: string
+}
+
+export default function ProductGrid({ products, page, totalPages, slug }: ProductGridProps) {
   const addItem = useCartStore((s) => s.addItem)
   const router = useRouter()
 
   return (
     <div>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3">
-        {products.map((product: any) => {
-          const price = parseFloat(product.price)
-          const salePrice = product.salePrice ? parseFloat(product.salePrice) : null
+        {products.map((product) => {
+          const price = parseFloat(String(product.price))
+          const salePrice = product.salePrice ? parseFloat(String(product.salePrice)) : null
           const displayPrice = salePrice ?? price
           const discount = salePrice ? Math.round(((price - salePrice) / price) * 100) : null
           const image = product.images[0]?.url
@@ -22,7 +40,7 @@ export default function ProductGrid({ products, total, page, totalPages, slug }:
           return (
             <div key={product.id} className="bg-white rounded-2xl border border-orange-100 overflow-hidden hover:shadow-md transition-all flex flex-col">
               <Link href={`/urun/${product.slug}`} className="flex-1 flex flex-col">
-                <div className="relative h-[120px] md:h-[150px] bg-orange-50">
+                <div className="relative h-[120px] md:h-[150px] bg-shell">
                   {image ? (
                     <Image src={image} alt={product.name} fill sizes="(max-width: 640px) 50vw, 33vw" className="object-contain p-2" />
                   ) : (

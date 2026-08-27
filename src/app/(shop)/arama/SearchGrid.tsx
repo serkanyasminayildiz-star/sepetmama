@@ -40,7 +40,7 @@ export default function SearchGrid({ products, page, totalPages, query }: Search
           return (
             <div key={product.id} className="bg-white rounded-2xl border border-orange-100 overflow-hidden hover:shadow-md transition-all flex flex-col">
               <Link href={`/urun/${product.slug}`} className="flex-1 flex flex-col">
-                <div className="relative h-[120px] md:h-[150px] bg-orange-50">
+                <div className="relative h-[120px] md:h-[150px] bg-shell">
                   {image ? (
                     <Image src={image} alt={product.name} fill sizes="(max-width: 640px) 50vw, 33vw" className="object-contain p-2" />
                   ) : (

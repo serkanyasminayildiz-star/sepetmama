@@ -61,7 +61,7 @@ export default function CartClient() {
 
         {items.map((item) => (
           <div key={item.id} className="bg-white rounded-2xl border border-orange-100 p-4 flex gap-4 items-center">
-            <div className="relative w-20 h-20 flex-shrink-0 bg-orange-50 rounded-xl overflow-hidden">
+            <div className="relative w-20 h-20 flex-shrink-0 bg-shell rounded-xl overflow-hidden">
               {item.image ? (
                 <Image src={item.image} alt={item.name} fill sizes="80px" className="object-contain p-1" />
               ) : (

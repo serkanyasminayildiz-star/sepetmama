@@ -63,7 +63,7 @@ export default async function AramaPage({ searchParams }: PageProps) {
   return (
     <>
       <Header />
-      <main className="flex-1 bg-orange-50/40 px-4 md:px-8 py-6">
+      <main className="flex-1 bg-cream px-4 md:px-8 py-6">
         <div className="max-w-6xl mx-auto">
           <SearchBox initial={query} />
 

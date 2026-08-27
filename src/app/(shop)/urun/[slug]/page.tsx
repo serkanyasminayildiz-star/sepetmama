@@ -168,7 +168,7 @@ export default async function UrunPage({ params }: PageProps) {
 
             {/* Görseller */}
             <div>
-              <div className="relative h-[320px] md:h-[400px] bg-orange-50 rounded-2xl overflow-hidden mb-3">
+              <div className="relative h-[320px] md:h-[400px] bg-shell rounded-2xl overflow-hidden mb-3">
                 {product.images[0] ? (
                   <Image
                     src={product.images[0].url}
@@ -189,7 +189,7 @@ export default async function UrunPage({ params }: PageProps) {
               {product.images.length > 1 && (
                 <div className="flex gap-2 overflow-x-auto scrollbar-hide">
                   {product.images.slice(1).map((img, i) => (
-                    <div key={i} className="relative w-16 h-16 flex-shrink-0 bg-orange-50 rounded-xl overflow-hidden border-2 border-orange-100">
+                    <div key={i} className="relative w-16 h-16 flex-shrink-0 bg-shell rounded-xl overflow-hidden border-2 border-orange-100">
                       <Image src={img.url} alt={product.name} fill className="object-contain p-1" />
                     </div>
                   ))}

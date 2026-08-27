@@ -1,7 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
+  /* Sayfa zemini = hero görselinin en açık tonu (sıcak krem) */
+  --background: #fbedda;
   --foreground: #16241d;
 }
 
@@ -28,6 +29,14 @@
   --color-gold: #f2b33d;
   --color-gold-dark: #de991b;
   --color-goldink: #3a2a06;
+
+  /* Sayfa zemini olarak kullanılan gray-50, hero görselinin sıcak kremine
+     bağlandı — beyaz kartlar bu zeminde yükselerek okunur kalır */
+  --color-gray-50: #fbedda;
+  --color-cream: #fbedda;
+  --color-cream-deep: #f4e3cc;
+  /* Ürün fotoğrafı zemini — beyaz karttan hafif ayrışan sıcak açık ton */
+  --color-shell: #faf6ec;
 }
 
 body {

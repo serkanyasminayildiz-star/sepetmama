@@ -20,7 +20,7 @@ interface ProductSectionProps {
 function ProductCard({ product }: { product: Product }) {
   return (
     <div className="min-w-[130px] max-w-[130px] sm:min-w-[148px] sm:max-w-[148px] md:min-w-0 md:max-w-none bg-white rounded-2xl border border-orange-100 overflow-hidden flex-shrink-0 md:flex-shrink">
-      <div className="relative h-[100px] sm:h-[115px] bg-orange-50 flex items-center justify-center text-4xl">
+      <div className="relative h-[100px] sm:h-[115px] bg-shell flex items-center justify-center text-4xl">
         {product.emoji}
         {product.discount && (
           <span className="absolute top-1.5 left-1.5 bg-orange-500 text-white text-[9px] font-extrabold px-1.5 py-0.5 rounded-md">
