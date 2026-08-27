@@ -16,21 +16,21 @@ const circles = [
 const CircleItem = ({ item }: { item: typeof circles[0] }) => (
   <div className="flex flex-col items-center gap-1.5 flex-shrink-0 cursor-pointer group">
     <div className="relative w-[90px] h-[90px]">
-      {/* Dönen tam parlak halka */}
+      {/* Dönen parlak halka — hero görselindeki kil tonları */}
       <div
         className="absolute inset-0 rounded-full animate-spin-ring"
         style={{
-         background: 'conic-gradient(#0E3227, #123F33, #AFD7C6, #0E3227)',
+         background: 'conic-gradient(#6B2F16, #C0663F, #E3B795, #6B2F16)',
          padding: '3px',
          borderRadius: '50%',
-         filter: 'drop-shadow(0 0 5px #0E3227)',
+         filter: 'drop-shadow(0 0 5px rgba(107, 47, 22, 0.45))',
        }}
       >
-        <div className="w-full h-full rounded-full bg-white" />
+        <div className="w-full h-full rounded-full bg-cream" />
       </div>
 
-      {/* İç turuncu daire */}
-      <div className="absolute inset-[3px] rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex flex-col items-center justify-center gap-0.5 shadow-inner group-hover:from-orange-500 group-hover:to-orange-700 transition-all">
+      {/* İç kil rengi daire */}
+      <div className="absolute inset-[3px] rounded-full bg-gradient-to-br from-clay to-clay-dark flex flex-col items-center justify-center gap-0.5 shadow-inner group-hover:from-clay-dark group-hover:to-clay-deep transition-all">
         {item.type === 'trust' ? (
           <>
             <span className="text-2xl leading-none">{item.icon}</span>
@@ -53,7 +53,7 @@ const CircleItem = ({ item }: { item: typeof circles[0] }) => (
 export default function CircleStrip() {
   const doubled = [...circles, ...circles]
   return (
-    <div className="bg-white border-b border-orange-100 overflow-hidden h-[130px] flex items-center group/strip">
+    <div className="bg-cream border-b border-clay/15 overflow-hidden h-[130px] flex items-center group/strip">
       <div className="flex items-center gap-5 px-5 w-max animate-scroll-track group-hover/strip:[animation-play-state:paused]">
         {doubled.map((item, i) => (
           <CircleItem key={i} item={item} />

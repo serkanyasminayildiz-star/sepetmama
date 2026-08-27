@@ -37,6 +37,12 @@
   --color-cream-deep: #f4e3cc;
   /* Ürün fotoğrafı zemini — beyaz karttan hafif ayrışan sıcak açık ton */
   --color-shell: #faf6ec;
+
+  /* Kil/terracotta — hero görselindeki kemer tonları (marka şeridi) */
+  --color-clay: #c0663f;
+  --color-clay-dark: #8a3f22;
+  --color-clay-deep: #6b2f16;
+  --color-clay-light: #e3b795;
 }
 
 body {
