@@ -143,7 +143,7 @@ export default function TerkEdilenClient({ carts, coupons }: { carts: Cart[]; co
             <button
               onClick={gonder}
               disabled={gonderiliyor || secili.size === 0}
-              style={{ background: secili.size === 0 || gonderiliyor ? '#C9B79C' : '#E8845A', color: 'white', border: 'none', borderRadius: 10, padding: '10px 18px', fontSize: 13, fontWeight: 700, cursor: secili.size === 0 || gonderiliyor ? 'not-allowed' : 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap' }}
+              style={{ background: secili.size === 0 || gonderiliyor ? '#C9B79C' : '#F2B33D', color: 'white', border: 'none', borderRadius: 10, padding: '10px 18px', fontSize: 13, fontWeight: 700, cursor: secili.size === 0 || gonderiliyor ? 'not-allowed' : 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap' }}
             >
               {gonderiliyor ? 'Gönderiliyor...' : `✉️ Hatırlatma Gönder (${secili.size})`}
             </button>
@@ -152,7 +152,7 @@ export default function TerkEdilenClient({ carts, coupons }: { carts: Cart[]; co
       </div>
 
       {seciliKupon?.firstOrderOnly && seciliMisafirVar && (
-        <div style={{ background: '#FFF4E5', border: '1px solid #F4C09A', borderRadius: 12, padding: '10px 16px', marginBottom: 12, fontSize: 12.5, color: '#8A4B1E' }}>
+        <div style={{ background: '#FFF4E5', border: '1px solid #E9C878', borderRadius: 12, padding: '10px 16px', marginBottom: 12, fontSize: 12.5, color: '#8A4B1E' }}>
           ⚠️ Seçtiğin kupon &quot;üye + ilk sipariş&quot; şartlı. Seçili misafir müşteriler bunu kullanamaz — onlar için genel bir kupon (ör. TEKRAR15) seç.
         </div>
       )}
@@ -164,7 +164,7 @@ export default function TerkEdilenClient({ carts, coupons }: { carts: Cart[]; co
             <thead>
               <tr style={{ background: '#FAF5EF' }}>
                 <th style={{ padding: '12px', textAlign: 'left', width: 40 }}>
-                  <input type="checkbox" checked={tumuSeciliMi} onChange={tumunuToggle} style={{ cursor: 'pointer', accentColor: '#E8845A' }} />
+                  <input type="checkbox" checked={tumuSeciliMi} onChange={tumunuToggle} style={{ cursor: 'pointer', accentColor: '#F2B33D' }} />
                 </th>
                 {['MÜŞTERİ', 'E-POSTA', 'SEPET', 'TUTAR', 'DENEME', 'TARİH'].map((h) => (
                   <th key={h} style={{ padding: '12px', textAlign: 'left', fontSize: 10, fontWeight: 700, color: '#5C3D2E', opacity: 0.5 }}>{h}</th>
@@ -175,9 +175,9 @@ export default function TerkEdilenClient({ carts, coupons }: { carts: Cart[]; co
               {filtreli.length === 0 ? (
                 <tr><td colSpan={7} style={{ padding: '40px', textAlign: 'center', color: '#9C8470' }}>🎉 Terk edilen sepet yok</td></tr>
               ) : filtreli.map((c) => (
-                <tr key={c.orderId} style={{ borderBottom: '1px solid #F5EFE8', background: secili.has(c.orderId) ? '#FDF6EE' : 'white' }}>
+                <tr key={c.orderId} style={{ borderBottom: '1px solid #F5EFE8', background: secili.has(c.orderId) ? '#F6F3E9' : 'white' }}>
                   <td style={{ padding: '10px 12px' }}>
-                    <input type="checkbox" checked={secili.has(c.orderId)} onChange={() => satirToggle(c.orderId)} style={{ cursor: 'pointer', accentColor: '#E8845A' }} />
+                    <input type="checkbox" checked={secili.has(c.orderId)} onChange={() => satirToggle(c.orderId)} style={{ cursor: 'pointer', accentColor: '#F2B33D' }} />
                   </td>
                   <td style={{ padding: '10px 12px' }}>
                     <div style={{ fontWeight: 600, color: '#2C1A0E' }}>{c.name || '—'}</div>
@@ -189,7 +189,7 @@ export default function TerkEdilenClient({ carts, coupons }: { carts: Cart[]; co
                   <td style={{ padding: '10px 12px', color: '#5C3D2E', opacity: 0.8, maxWidth: 280, fontSize: 12 }}>{c.items.join(', ')}</td>
                   <td style={{ padding: '10px 12px', fontWeight: 700, color: '#5C3D2E', whiteSpace: 'nowrap' }}>₺{c.total.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}</td>
                   <td style={{ padding: '10px 12px' }}>
-                    <span style={{ background: '#F0EBE3', color: '#5C3D2E', padding: '3px 10px', borderRadius: 50, fontSize: 12, fontWeight: 700 }}>{c.attempts}</span>
+                    <span style={{ background: '#EDF1EB', color: '#5C3D2E', padding: '3px 10px', borderRadius: 50, fontSize: 12, fontWeight: 700 }}>{c.attempts}</span>
                   </td>
                   <td style={{ padding: '10px 12px', color: '#5C3D2E', opacity: 0.75, whiteSpace: 'nowrap' }}>{fmtDate(c.createdAt)}</td>
                 </tr>

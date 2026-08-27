@@ -34,7 +34,7 @@ export default function OrderConfirmation({
   shippingAddress,
   items,
   isLoggedInUser = false,
-  siteUrl = 'https://www.sepetmama.com',
+  siteUrl = 'https://www.lezizmama.com',
 }: OrderEmailData) {
   const subtotal = total - shippingFee
   const shortId = orderId.slice(-8).toUpperCase()
@@ -49,9 +49,8 @@ export default function OrderConfirmation({
           {/* Header */}
           <Section style={{ padding: '32px 32px 0', textAlign: 'center' as const }}>
             <Heading as="h1" style={logoStyle}>
-              <span style={{ color: '#f97316' }}>se</span>
-              <span style={{ color: '#2563eb' }}>Pet</span>
-              <span style={{ color: '#f97316' }}>Mama</span>
+              <span style={{ color: '#1B5E4B' }}>Leziz</span>
+              <span style={{ color: '#16241D' }}> Mama</span>
             </Heading>
           </Section>
 
@@ -136,11 +135,11 @@ export default function OrderConfirmation({
           <Section style={{ padding: '0 32px 32px' }}>
             <Text style={footerTextStyle}>
               Sorularınız için bize ulaşın:<br />
-              ✉ <Link href="mailto:info@sepetmama.com" style={linkStyle}>info@sepetmama.com</Link><br />
+              ✉ <Link href="mailto:info@lezizmama.com" style={linkStyle}>info@lezizmama.com</Link><br />
               📞 +90 532 177 3721
             </Text>
             <Text style={footerSmallStyle}>
-              © {new Date().getFullYear()} SepetMama · <Link href={siteUrl} style={linkStyle}>www.sepetmama.com</Link>
+              © {new Date().getFullYear()} Leziz Mama · <Link href={siteUrl} style={linkStyle}>www.lezizmama.com</Link>
             </Text>
           </Section>
         </Container>
@@ -190,8 +189,8 @@ const paragraphStyle = {
   margin: '8px 0',
 }
 const summaryBoxStyle = {
-  background: '#fff7ed',
-  border: '1px solid #fed7aa',
+  background: '#ECF5F0',
+  border: '1px solid #AFD7C6',
   borderRadius: 12,
   padding: '16px 20px',
   margin: '16px 0',
@@ -212,7 +211,7 @@ const summaryValueStyle = {
   margin: '2px 0 0',
 }
 const hrInBoxStyle = {
-  borderColor: '#fed7aa',
+  borderColor: '#AFD7C6',
   margin: '12px 0',
 }
 const itemNameCellStyle = {
@@ -253,15 +252,15 @@ const grandTotalLabelStyle = {
   fontSize: 15,
   color: '#1f2937',
   fontWeight: 800,
-  borderTop: '1px solid #fed7aa',
+  borderTop: '1px solid #AFD7C6',
 }
 const grandTotalValueStyle = {
   padding: '10px 0 0',
   fontSize: 18,
-  color: '#f97316',
+  color: '#1B5E4B',
   textAlign: 'right' as const,
   fontWeight: 800,
-  borderTop: '1px solid #fed7aa',
+  borderTop: '1px solid #AFD7C6',
 }
 const infoBlockStyle = {
   background: '#f9fafb',
@@ -272,7 +271,7 @@ const infoBlockStyle = {
   lineHeight: 1.6,
 }
 const buttonStyle = {
-  background: '#f97316',
+  background: '#1B5E4B',
   color: '#ffffff',
   textDecoration: 'none',
   padding: '12px 28px',
@@ -299,6 +298,6 @@ const footerSmallStyle = {
   margin: '8px 0 0',
 }
 const linkStyle = {
-  color: '#f97316',
+  color: '#1B5E4B',
   textDecoration: 'none',
 }

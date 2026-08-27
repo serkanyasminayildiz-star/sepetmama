@@ -20,7 +20,7 @@ export default function AddToCartButton({ id, slug, name, price, image }: Props)
   return (
     <button
       onClick={handleAdd}
-      className="flex-1 bg-orange-500 hover:bg-orange-600 active:scale-95 transition-all text-white font-extrabold py-3.5 rounded-2xl text-base"
+      className="flex-1 bg-gold hover:bg-gold-dark active:scale-95 transition-all text-goldink font-extrabold py-3.5 rounded-2xl text-base"
     >
       🛒 Sepete Ekle
     </button>

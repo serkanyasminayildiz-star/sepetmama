@@ -1,13 +1,21 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Fraunces, Figtree, Geist_Mono } from "next/font/google";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import JsonLd from "@/components/JsonLd";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+const figtree = Figtree({
+  variable: "--font-figtree",
+  subsets: ["latin", "latin-ext"],
+  display: "swap",
+});
+
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
+  subsets: ["latin", "latin-ext"],
+  display: "swap",
+  style: ["normal", "italic"],
 });
 
 const geistMono = Geist_Mono({
@@ -16,16 +24,16 @@ const geistMono = Geist_Mono({
 });
 
 const siteUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
-const siteName = "SepetMama";
-const defaultTitle = "SepetMama — Kedi & Köpek Mama ve Aksesuar Mağazası";
+const siteName = "Leziz Mama";
+const defaultTitle = "Leziz Mama — Kedi & Köpek Mama ve Aksesuar Mağazası";
 const defaultDescription =
-  "SepetMama'da kedi ve köpek mamaları, ödüller, aksesuarlar uygun fiyatla. Hızlı kargo, güvenli ödeme, 14 gün kolay iade.";
+  "Leziz Mama'da kedi ve köpek mamaları, ödüller, aksesuarlar uygun fiyatla. Hızlı kargo, güvenli ödeme, 14 gün kolay iade.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
     default: defaultTitle,
-    template: "%s | SepetMama",
+    template: "%s | Leziz Mama",
   },
   description: defaultDescription,
   keywords: [
@@ -83,7 +91,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#f97316",
+  themeColor: "#1B5E4B",
 };
 
 export default function RootLayout({
@@ -94,7 +102,7 @@ export default function RootLayout({
   return (
     <html
       lang="tr"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${figtree.variable} ${fraunces.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <JsonLd

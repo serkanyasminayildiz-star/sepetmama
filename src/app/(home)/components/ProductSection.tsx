@@ -51,7 +51,7 @@ function ProductCard({ product }: { product: Product }) {
           )}
         </div>
       </div>
-      <button className="w-full bg-orange-500 hover:bg-orange-600 active:scale-95 transition-all text-white text-[11px] font-extrabold py-1.5">
+      <button className="w-full bg-gold hover:bg-gold-dark active:scale-95 transition-all text-goldink text-[11px] font-extrabold py-1.5">
         + Sepete Ekle
       </button>
     </div>

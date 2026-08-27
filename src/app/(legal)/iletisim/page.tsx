@@ -24,7 +24,7 @@ export default function IletisimPage() {
               <span className="text-orange-500 text-xl">✉️</span>
               <div>
                 <p className="font-extrabold text-gray-800 text-sm">E-posta</p>
-                <p className="text-gray-600 text-sm">info@sepetmama.com</p>
+                <p className="text-gray-600 text-sm">info@lezizmama.com</p>
               </div>
             </div>
             <div className="flex items-start gap-3">

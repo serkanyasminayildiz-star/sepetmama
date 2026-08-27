@@ -166,7 +166,7 @@ export default function CartClient() {
               </span>
             </div>
           </div>
-          <Link href="/odeme" className="block w-full bg-orange-500 hover:bg-orange-600 active:scale-95 transition-all text-white font-extrabold py-3.5 rounded-2xl text-center text-base">
+          <Link href="/odeme" className="block w-full bg-gold hover:bg-gold-dark active:scale-95 transition-all text-goldink font-extrabold py-3.5 rounded-2xl text-center text-base">
             Siparişi Tamamla →
           </Link>
           <Link href="/" className="block w-full text-center text-sm text-orange-500 font-semibold mt-3 hover:underline">

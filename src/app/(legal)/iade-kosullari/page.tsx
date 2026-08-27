@@ -7,7 +7,7 @@ export default function IadeKosullariPage() {
         <div>
           <h2 className="font-extrabold text-gray-800 mb-2">1. İptal Politikası</h2>
           <p className="mb-2">Siparişinizi iptal etmek için, siparişi verdikten sonraki <strong>24 saat</strong> içinde bize bildirmeniz gerekmektedir.</p>
-          <p>İptal işlemi için <strong>info@sepetmama.com</strong> veya <strong>+90 532 177 3721</strong> numaralı hattımızdan bizimle iletişime geçebilirsiniz.</p>
+          <p>İptal işlemi için <strong>info@lezizmama.com</strong> veya <strong>+90 532 177 3721</strong> numaralı hattımızdan bizimle iletişime geçebilirsiniz.</p>
         </div>
         <div>
           <h2 className="font-extrabold text-gray-800 mb-2">2. İade Politikası</h2>
@@ -27,7 +27,7 @@ export default function IadeKosullariPage() {
         </div>
         <div>
           <h2 className="font-extrabold text-gray-800 mb-2">4. İletişim</h2>
-          <p>İptal, iade veya değişim işlemleri için: <strong>info@sepetmama.com</strong> veya <strong>+90 532 177 3721</strong></p>
+          <p>İptal, iade veya değişim işlemleri için: <strong>info@lezizmama.com</strong> veya <strong>+90 532 177 3721</strong></p>
         </div>
       </div>
     </article>

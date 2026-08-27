@@ -7,8 +7,8 @@ import WinBackEmail, { type WinBackEmailData } from '@/emails/WinBackEmail'
 import RewardEmail, { type RewardEmailData } from '@/emails/RewardEmail'
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY
-const EMAIL_FROM = process.env.EMAIL_FROM || 'SepetMama <siparis@sepetmama.com>'
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'info@sepetmama.com'
+const EMAIL_FROM = process.env.EMAIL_FROM || 'Leziz Mama <siparis@lezizmama.com>'
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'info@lezizmama.com'
 
 const resend = RESEND_API_KEY ? new Resend(RESEND_API_KEY) : null
 

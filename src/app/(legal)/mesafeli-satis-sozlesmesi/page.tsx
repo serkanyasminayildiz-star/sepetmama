@@ -7,12 +7,12 @@ export default function MesafeliSatisSozlesmesiPage() {
         <div>
           <h2 className="font-extrabold text-gray-800 mb-2">4. Satıcı Bilgileri</h2>
           <div className="bg-gray-50 rounded-xl p-4 space-y-1">
-            <p><span className="font-semibold">Ünvanı:</span> SepetMama – EV HAYVANLARI, BUNLARIN MAMA VE GIDALARI İLE EŞYALARININ PERAKENDE TİCARETİ</p>
+            <p><span className="font-semibold">Ünvanı:</span> Leziz Mama – EV HAYVANLARI, BUNLARIN MAMA VE GIDALARI İLE EŞYALARININ PERAKENDE TİCARETİ</p>
             <p><span className="font-semibold">Adres:</span> Murat Reis Mah. Şehit Ceysu Ceylan Sok. No: 80/B Konak/İzmir</p>
             <p><span className="font-semibold">Vergi Dairesi:</span> Konak</p>
             <p><span className="font-semibold">Vergi No:</span> 9650295235</p>
             <p><span className="font-semibold">Telefon:</span> +90 532 177 3721</p>
-            <p><span className="font-semibold">E-posta:</span> info@sepetmama.com</p>
+            <p><span className="font-semibold">E-posta:</span> info@lezizmama.com</p>
           </div>
         </div>
         <div>
@@ -24,7 +24,7 @@ export default function MesafeliSatisSozlesmesiPage() {
           <p>İşbu sözleşmeden doğan uyuşmazlıklarda tüketicinin yerleşim yerinin bulunduğu yerdeki tüketici sorunları hakem heyetine veya tüketici mahkemesine başvurulacaktır.</p>
         </div>
         <div className="bg-orange-50 rounded-xl p-4 border border-orange-100">
-          <p className="text-xs text-orange-700">Sözleşmenin tam metnini talep etmek için <a href="mailto:info@sepetmama.com" className="underline">info@sepetmama.com</a> adresine yazabilirsiniz.</p>
+          <p className="text-xs text-orange-700">Sözleşmenin tam metnini talep etmek için <a href="mailto:info@lezizmama.com" className="underline">info@lezizmama.com</a> adresine yazabilirsiniz.</p>
         </div>
       </div>
     </article>

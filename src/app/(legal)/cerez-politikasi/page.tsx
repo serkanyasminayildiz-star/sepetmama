@@ -28,7 +28,7 @@ export default function CerezPolitikasiPage() {
           <p>Tarayıcınızın ayarları üzerinden çerezleri kabul etmeyi veya reddetmeyi seçebilirsiniz.</p>
         </div>
         <div className="bg-orange-50 rounded-xl p-4 border border-orange-100">
-          <p className="font-semibold text-orange-700">İletişim: <a href="mailto:info@sepetmama.com" className="underline">info@sepetmama.com</a></p>
+          <p className="font-semibold text-orange-700">İletişim: <a href="mailto:info@lezizmama.com" className="underline">info@lezizmama.com</a></p>
         </div>
       </div>
     </article>

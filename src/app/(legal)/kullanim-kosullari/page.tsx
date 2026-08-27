@@ -11,7 +11,7 @@ export default function KullanimKosullariPage() {
           { title: '4. İptal, İade ve Değişim', content: 'İptal, iade ve değişim politikalarımız hakkında daha fazla bilgi almak için İptal & İade & Değişim Politikası sayfamızı ziyaret edin.' },
           { title: '5. Gizlilik ve Güvenlik', content: 'Gizlilik politikamızı inceleyerek kişisel bilgilerinizin nasıl işlendiği hakkında bilgi edinin.' },
           { title: '6. Sorumluluk Reddi', content: 'Web sitemizden sunulan içeriklerin doğruluğu ve eksiksizliği konusunda garanti vermemekteyiz.' },
-          { title: '7. İletişim', content: 'Herhangi bir soru veya geri bildirim için info@sepetmama.com adresi üzerinden bizimle iletişime geçebilirsiniz.' },
+          { title: '7. İletişim', content: 'Herhangi bir soru veya geri bildirim için info@lezizmama.com adresi üzerinden bizimle iletişime geçebilirsiniz.' },
         ].map((section) => (
           <div key={section.title}>
             <h2 className="font-extrabold text-gray-800 mb-2">{section.title}</h2>

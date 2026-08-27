@@ -137,7 +137,7 @@ export default function UyelerClient({ members, coupons }: { members: Member[]; 
             <button
               onClick={kuponGonder}
               disabled={gonderiliyor || secili.size === 0}
-              style={{ background: secili.size === 0 || gonderiliyor ? '#C9B79C' : '#E8845A', color: 'white', border: 'none', borderRadius: 10, padding: '10px 18px', fontSize: 13, fontWeight: 700, cursor: secili.size === 0 || gonderiliyor ? 'not-allowed' : 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap' }}
+              style={{ background: secili.size === 0 || gonderiliyor ? '#C9B79C' : '#F2B33D', color: 'white', border: 'none', borderRadius: 10, padding: '10px 18px', fontSize: 13, fontWeight: 700, cursor: secili.size === 0 || gonderiliyor ? 'not-allowed' : 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap' }}
             >
               {gonderiliyor ? 'Gönderiliyor...' : `✉️ Kupon Gönder (${secili.size})`}
             </button>
@@ -152,7 +152,7 @@ export default function UyelerClient({ members, coupons }: { members: Member[]; 
             <thead>
               <tr style={{ background: '#FAF5EF' }}>
                 <th style={{ padding: '12px', textAlign: 'left', width: 40 }}>
-                  <input type="checkbox" checked={tumuSeciliMi} onChange={tumunuToggle} style={{ cursor: 'pointer', accentColor: '#E8845A' }} />
+                  <input type="checkbox" checked={tumuSeciliMi} onChange={tumunuToggle} style={{ cursor: 'pointer', accentColor: '#F2B33D' }} />
                 </th>
                 {['ÜYE', 'E-POSTA', 'TELEFON', 'KAYIT', 'SİPARİŞ', 'HARCAMA'].map((h) => (
                   <th key={h} style={{ padding: '12px', textAlign: 'left', fontSize: 10, fontWeight: 700, color: '#5C3D2E', opacity: 0.5 }}>{h}</th>
@@ -163,16 +163,16 @@ export default function UyelerClient({ members, coupons }: { members: Member[]; 
               {filtreli.length === 0 ? (
                 <tr><td colSpan={7} style={{ padding: '40px', textAlign: 'center', color: '#9C8470' }}>Üye bulunamadı</td></tr>
               ) : filtreli.map((m) => (
-                <tr key={m.id} style={{ borderBottom: '1px solid #F5EFE8', background: secili.has(m.id) ? '#FDF6EE' : 'white' }}>
+                <tr key={m.id} style={{ borderBottom: '1px solid #F5EFE8', background: secili.has(m.id) ? '#F6F3E9' : 'white' }}>
                   <td style={{ padding: '10px 12px' }}>
-                    <input type="checkbox" checked={secili.has(m.id)} onChange={() => satirToggle(m.id)} style={{ cursor: 'pointer', accentColor: '#E8845A' }} />
+                    <input type="checkbox" checked={secili.has(m.id)} onChange={() => satirToggle(m.id)} style={{ cursor: 'pointer', accentColor: '#F2B33D' }} />
                   </td>
                   <td style={{ padding: '10px 12px', fontWeight: 600, color: '#2C1A0E' }}>{m.name || '—'}</td>
                   <td style={{ padding: '10px 12px', color: '#5C3D2E' }}>{m.email}</td>
                   <td style={{ padding: '10px 12px', color: '#5C3D2E', opacity: 0.75 }}>{m.phone || '—'}</td>
                   <td style={{ padding: '10px 12px', color: '#5C3D2E', opacity: 0.75 }}>{fmtDate(m.createdAt)}</td>
                   <td style={{ padding: '10px 12px' }}>
-                    <span style={{ background: m.orderCount > 0 ? '#E8F5E9' : '#F0EBE3', color: m.orderCount > 0 ? '#2E7D32' : '#9C8470', padding: '3px 10px', borderRadius: 50, fontSize: 12, fontWeight: 700 }}>
+                    <span style={{ background: m.orderCount > 0 ? '#E8F5E9' : '#EDF1EB', color: m.orderCount > 0 ? '#2E7D32' : '#9C8470', padding: '3px 10px', borderRadius: 50, fontSize: 12, fontWeight: 700 }}>
                       {m.orderCount}
                     </span>
                   </td>

@@ -45,7 +45,7 @@ export default function HomeProductCard({ id, slug, name, price, salePrice, imag
       </Link>
       <button
         onClick={() => addItem({ id, slug, name, price: displayPrice, image })}
-        className="w-full bg-orange-500 hover:bg-orange-600 active:scale-95 text-white text-xs font-extrabold py-2.5 transition-all flex-shrink-0"
+        className="w-full bg-gold hover:bg-gold-dark active:scale-95 text-goldink text-xs font-extrabold py-2.5 transition-all flex-shrink-0"
       >
         + Sepete Ekle
       </button>

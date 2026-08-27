@@ -6,7 +6,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { getStatusMeta, ORDER_STATUS } from '@/lib/order-status'
 
-const btn = (bg = '#E8845A', extra?: React.CSSProperties): React.CSSProperties => ({
+const btn = (bg = '#F2B33D', extra?: React.CSSProperties): React.CSSProperties => ({
   background: bg, color: 'white', border: 'none', borderRadius: 10,
   padding: '10px 18px', fontSize: 13, fontWeight: 700, cursor: 'pointer',
   fontFamily: 'inherit', whiteSpace: 'nowrap', ...extra,
@@ -65,7 +65,7 @@ export default function SiparislerClient({ orders, searchParams }: any) {
           ...(Object.entries(ORDER_STATUS).map(([k, v]) => [k, `${v.emoji} ${v.label}`])),
         ].map(([val, lbl]) => (
           <button key={val} onClick={() => filtrele(val)}
-            style={{ ...btn(searchParams.durum === val || (!searchParams.durum && val === '') ? '#E8845A' : '#E8D5B7'), color: searchParams.durum === val || (!searchParams.durum && val === '') ? 'white' : '#5C3D2E', padding: '8px 16px', fontSize: 12 }}>
+            style={{ ...btn(searchParams.durum === val || (!searchParams.durum && val === '') ? '#F2B33D' : '#E8D5B7'), color: searchParams.durum === val || (!searchParams.durum && val === '') ? 'white' : '#5C3D2E', padding: '8px 16px', fontSize: 12 }}>
             {lbl}
           </button>
         ))}
@@ -104,8 +104,8 @@ export default function SiparislerClient({ orders, searchParams }: any) {
                 )}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <span style={{ fontFamily: 'Georgia,serif', fontSize: 20, fontWeight: 700, color: '#E8845A' }}>₺{parseFloat(sp.total).toFixed(2)}</span>
-                <Link href={`/admin/siparisler/${sp.id}/fis`} target="_blank" style={{ background: '#FDF6EE', border: '2px solid #E8D5B7', borderRadius: 8, padding: '5px 10px', fontSize: 12, cursor: 'pointer', color: '#5C3D2E', fontWeight: 600, textDecoration: 'none' }}>
+                <span style={{ fontFamily: 'Georgia,serif', fontSize: 20, fontWeight: 700, color: '#F2B33D' }}>₺{parseFloat(sp.total).toFixed(2)}</span>
+                <Link href={`/admin/siparisler/${sp.id}/fis`} target="_blank" style={{ background: '#F6F3E9', border: '2px solid #E8D5B7', borderRadius: 8, padding: '5px 10px', fontSize: 12, cursor: 'pointer', color: '#5C3D2E', fontWeight: 600, textDecoration: 'none' }}>
                   🖨️ Fiş
                 </Link>
                 <button onClick={() => setAcikId(acikId === sp.id ? null : sp.id)}
@@ -120,7 +120,7 @@ export default function SiparislerClient({ orders, searchParams }: any) {
               <div style={{ padding: '18px 20px' }}>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12, marginBottom: 16 }}>
                   {/* Müşteri */}
-                  <div style={{ background: '#FDF6EE', borderRadius: 12, padding: '12px 16px' }}>
+                  <div style={{ background: '#F6F3E9', borderRadius: 12, padding: '12px 16px' }}>
                     <div style={{ fontSize: 10, fontWeight: 700, opacity: 0.5, marginBottom: 6, textTransform: 'uppercase' }}>Müşteri</div>
                     <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 2 }}>{sp.shippingFullName || sp.user?.name || '—'}</div>
                     <div style={{ fontSize: 12, opacity: 0.7 }}>{sp.shippingEmail || sp.user?.email || '—'}</div>
@@ -128,13 +128,13 @@ export default function SiparislerClient({ orders, searchParams }: any) {
                     {!sp.user && <div style={{ fontSize: 10, marginTop: 4, color: '#E65100', fontWeight: 600 }}>👤 Misafir sipariş</div>}
                   </div>
                   {/* Adres */}
-                  <div style={{ background: '#FDF6EE', borderRadius: 12, padding: '12px 16px' }}>
+                  <div style={{ background: '#F6F3E9', borderRadius: 12, padding: '12px 16px' }}>
                     <div style={{ fontSize: 10, fontWeight: 700, opacity: 0.5, marginBottom: 6, textTransform: 'uppercase' }}>Teslimat Adresi</div>
                     <div style={{ fontSize: 13, lineHeight: 1.5 }}>{sp.shippingAddress || sp.address?.address || '—'}</div>
                     {sp.address?.district && <div style={{ fontSize: 12, fontWeight: 600, marginTop: 4 }}>{sp.address.district} / {sp.address.city}</div>}
                   </div>
                   {/* Kargo takip */}
-                  <div style={{ background: '#FDF6EE', borderRadius: 12, padding: '12px 16px' }}>
+                  <div style={{ background: '#F6F3E9', borderRadius: 12, padding: '12px 16px' }}>
                     <div style={{ fontSize: 10, fontWeight: 700, opacity: 0.5, marginBottom: 6, textTransform: 'uppercase' }}>Kargo Takip No</div>
                     <input
                       type="text"
@@ -187,7 +187,7 @@ export default function SiparislerClient({ orders, searchParams }: any) {
                     )
                   })}
                   <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 10, paddingTop: 10, borderTop: '2px solid #E8D5B7' }}>
-                    <div style={{ fontFamily: 'Georgia,serif', fontSize: 18, fontWeight: 700, color: '#E8845A' }}>
+                    <div style={{ fontFamily: 'Georgia,serif', fontSize: 18, fontWeight: 700, color: '#F2B33D' }}>
                       Toplam: ₺{parseFloat(sp.total).toFixed(2)}
                     </div>
                   </div>

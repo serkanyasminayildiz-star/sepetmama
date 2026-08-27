@@ -5,16 +5,34 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
-export default function ProductGrid({ products, total, page, totalPages, slug }: any) {
+interface SearchProduct {
+  id: string
+  slug: string
+  name: string
+  price: string | number
+  salePrice: string | number | null
+  images: { url: string }[]
+}
+
+interface SearchGridProps {
+  products: SearchProduct[]
+  page: number
+  totalPages: number
+  query: string
+}
+
+export default function SearchGrid({ products, page, totalPages, query }: SearchGridProps) {
   const addItem = useCartStore((s) => s.addItem)
   const router = useRouter()
+
+  const goto = (p: number) => router.push(`/arama?q=${encodeURIComponent(query)}&sayfa=${p}`)
 
   return (
     <div>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3">
-        {products.map((product: any) => {
-          const price = parseFloat(product.price)
-          const salePrice = product.salePrice ? parseFloat(product.salePrice) : null
+        {products.map((product) => {
+          const price = parseFloat(String(product.price))
+          const salePrice = product.salePrice ? parseFloat(String(product.salePrice)) : null
           const displayPrice = salePrice ?? price
           const discount = salePrice ? Math.round(((price - salePrice) / price) * 100) : null
           const image = product.images[0]?.url
@@ -51,15 +69,14 @@ export default function ProductGrid({ products, total, page, totalPages, slug }:
         })}
       </div>
 
-      {/* Sayfalama */}
       {totalPages > 1 && (
         <div className="flex justify-center gap-2 mt-6">
           {page > 1 && (
-            <button onClick={() => router.push(`/kategori/${slug}?sayfa=${page - 1}`)} className="bg-white border-2 border-orange-200 text-orange-500 font-extrabold text-sm px-4 py-2 rounded-xl hover:bg-orange-50">← Önceki</button>
+            <button onClick={() => goto(page - 1)} className="bg-white border-2 border-orange-200 text-orange-500 font-extrabold text-sm px-4 py-2 rounded-xl hover:bg-orange-50">← Önceki</button>
           )}
           <span className="bg-orange-500 text-white font-extrabold text-sm px-4 py-2 rounded-xl">{page} / {totalPages}</span>
           {page < totalPages && (
-            <button onClick={() => router.push(`/kategori/${slug}?sayfa=${page + 1}`)} className="bg-white border-2 border-orange-200 text-orange-500 font-extrabold text-sm px-4 py-2 rounded-xl hover:bg-orange-50">Sonraki →</button>
+            <button onClick={() => goto(page + 1)} className="bg-white border-2 border-orange-200 text-orange-500 font-extrabold text-sm px-4 py-2 rounded-xl hover:bg-orange-50">Sonraki →</button>
           )}
         </div>
       )}

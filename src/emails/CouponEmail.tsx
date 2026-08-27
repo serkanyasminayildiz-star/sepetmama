@@ -26,7 +26,7 @@ export default function CouponEmail({
   discountText,
   minOrderText,
   expiresText,
-  siteUrl = 'https://www.sepetmama.com',
+  siteUrl = 'https://www.lezizmama.com',
 }: CouponEmailData) {
   return (
     <Html>
@@ -36,9 +36,8 @@ export default function CouponEmail({
         <Container style={containerStyle}>
           <Section style={{ padding: '32px 32px 0', textAlign: 'center' as const }}>
             <Heading as="h1" style={logoStyle}>
-              <span style={{ color: '#f97316' }}>se</span>
-              <span style={{ color: '#2563eb' }}>Pet</span>
-              <span style={{ color: '#f97316' }}>Mama</span>
+              <span style={{ color: '#1B5E4B' }}>Leziz</span>
+              <span style={{ color: '#16241D' }}> Mama</span>
             </Heading>
           </Section>
 
@@ -73,11 +72,11 @@ export default function CouponEmail({
           <Section style={{ padding: '0 32px 32px' }}>
             <Text style={footerTextStyle}>
               Sorularınız için bize ulaşın:<br />
-              ✉ <Link href="mailto:info@sepetmama.com" style={linkStyle}>info@sepetmama.com</Link><br />
+              ✉ <Link href="mailto:info@lezizmama.com" style={linkStyle}>info@lezizmama.com</Link><br />
               📞 +90 532 177 3721
             </Text>
             <Text style={footerSmallStyle}>
-              © {new Date().getFullYear()} SepetMama · <Link href={siteUrl} style={linkStyle}>www.sepetmama.com</Link>
+              © {new Date().getFullYear()} Leziz Mama · <Link href={siteUrl} style={linkStyle}>www.lezizmama.com</Link>
             </Text>
           </Section>
         </Container>
@@ -120,8 +119,8 @@ const paragraphStyle = {
   margin: '8px 0',
 }
 const couponBoxStyle = {
-  background: '#fff7ed',
-  border: '2px dashed #f97316',
+  background: '#ECF5F0',
+  border: '2px dashed #1B5E4B',
   borderRadius: 16,
   padding: '24px 20px',
   margin: '8px 0',
@@ -130,7 +129,7 @@ const couponBoxStyle = {
 const discountStyle = {
   fontSize: 26,
   fontWeight: 900,
-  color: '#f97316',
+  color: '#1B5E4B',
   margin: '0 0 12px',
 }
 const codeBadgeStyle = {
@@ -150,7 +149,7 @@ const metaStyle = {
   margin: '10px 0 0',
 }
 const buttonStyle = {
-  background: '#f97316',
+  background: '#1B5E4B',
   color: '#ffffff',
   textDecoration: 'none',
   padding: '12px 28px',
@@ -177,6 +176,6 @@ const footerSmallStyle = {
   margin: '8px 0 0',
 }
 const linkStyle = {
-  color: '#f97316',
+  color: '#1B5E4B',
   textDecoration: 'none',
 }

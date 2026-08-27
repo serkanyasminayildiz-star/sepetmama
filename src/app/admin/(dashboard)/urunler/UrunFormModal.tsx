@@ -12,7 +12,7 @@ const s: React.CSSProperties = {
   borderRadius: 10, fontSize: 14, outline: 'none', fontFamily: 'inherit',
   boxSizing: 'border-box', background: 'white', color: '#2C1A0E',
 }
-const btn = (bg = '#E8845A', extra?: React.CSSProperties): React.CSSProperties => ({
+const btn = (bg = '#F2B33D', extra?: React.CSSProperties): React.CSSProperties => ({
   background: bg, color: 'white', border: 'none', borderRadius: 10,
   padding: '10px 18px', fontSize: 13, fontWeight: 700, cursor: 'pointer',
   fontFamily: 'inherit', whiteSpace: 'nowrap', ...extra,
@@ -210,7 +210,7 @@ export default function UrunFormModal({
           <h2 style={{ fontFamily: 'Georgia,serif', fontSize: 18, fontWeight: 700, color: '#5C3D2E', margin: 0 }}>
             {mod === 'yeni' ? '➕ Yeni Ürün Ekle' : '✏️ Ürün Düzenle'}
           </h2>
-          <button onClick={onKapat} disabled={kaydediliyor} style={{ background: '#F0EBE3', border: 'none', fontSize: 20, cursor: kaydediliyor ? 'not-allowed' : 'pointer', borderRadius: 8, width: 36, height: 36, color: '#5C3D2E' }}>✕</button>
+          <button onClick={onKapat} disabled={kaydediliyor} style={{ background: '#EDF1EB', border: 'none', fontSize: 20, cursor: kaydediliyor ? 'not-allowed' : 'pointer', borderRadius: 8, width: 36, height: 36, color: '#5C3D2E' }}>✕</button>
         </div>
 
         {hata && (
@@ -230,7 +230,7 @@ export default function UrunFormModal({
               SEO Adresi <span style={{ opacity: 0.6, fontWeight: 500 }}>(ürün adından otomatik oluşur)</span>
             </label>
             <div style={{ ...s, background: '#FAF5EF', color: '#5C3D2E', opacity: slugOnizleme ? 1 : 0.5, fontSize: 13, overflowX: 'auto', whiteSpace: 'nowrap' }}>
-              sepetmama.com/urun/<strong>{slugOnizleme || '…'}</strong>
+              lezizmama.com/urun/<strong>{slugOnizleme || '…'}</strong>
             </div>
             {mod === 'duzenle' && (
               <div style={{ fontSize: 11, color: '#5C3D2E', opacity: 0.5, marginTop: 4 }}>
@@ -264,7 +264,7 @@ export default function UrunFormModal({
                 <button
                   type="button"
                   onClick={kisaAciklamayiOtomatigeDondur}
-                  style={{ background: '#FDF6EE', border: '1px solid #E8D5B7', borderRadius: 50, padding: '1px 8px', fontSize: 10, fontWeight: 700, color: '#5C3D2E', cursor: 'pointer', fontFamily: 'inherit' }}
+                  style={{ background: '#F6F3E9', border: '1px solid #E8D5B7', borderRadius: 50, padding: '1px 8px', fontSize: 10, fontWeight: 700, color: '#5C3D2E', cursor: 'pointer', fontFamily: 'inherit' }}
                 >
                   ↺ otomatiğe dön
                 </button>
@@ -339,13 +339,13 @@ export default function UrunFormModal({
             </label>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 8 }}>
               {form.images.map((img) => (
-                <div key={img.id} style={{ position: 'relative', aspectRatio: '1', background: '#FDF6EE', borderRadius: 10, overflow: 'hidden', border: '2px solid #E8D5B7' }}>
+                <div key={img.id} style={{ position: 'relative', aspectRatio: '1', background: '#F6F3E9', borderRadius: 10, overflow: 'hidden', border: '2px solid #E8D5B7' }}>
                   <Image src={img.url} alt="" fill style={{ objectFit: 'contain', padding: 4 }} sizes="100px" />
                   <button type="button" onClick={() => resimSil(img.id)} title="Görseli sil" style={{ position: 'absolute', top: 3, right: 3, background: '#C62828', color: 'white', border: 'none', borderRadius: '50%', width: 22, height: 22, cursor: 'pointer', fontSize: 11, fontWeight: 700, lineHeight: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
                 </div>
               ))}
               {yerelResimler.map((r, i) => (
-                <div key={i} style={{ position: 'relative', aspectRatio: '1', background: '#FDF6EE', borderRadius: 10, overflow: 'hidden', border: '2px dashed #E8845A' }}>
+                <div key={i} style={{ position: 'relative', aspectRatio: '1', background: '#F6F3E9', borderRadius: 10, overflow: 'hidden', border: '2px dashed #F2B33D' }}>
                   {/* Yerel önizleme: henüz sunucuya gitmedi, next/image kullanılamaz */}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={r.onizleme} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 4 }} />
@@ -353,7 +353,7 @@ export default function UrunFormModal({
                 </div>
               ))}
               {toplamResim < MAX_IMAGES && (
-                <label style={{ aspectRatio: '1', background: yukleniyor ? '#F0EBE3' : '#FDF6EE', borderRadius: 10, border: '2px dashed #E8D5B7', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: yukleniyor ? 'wait' : 'pointer', fontSize: 28, color: '#E8845A', fontWeight: 700 }}>
+                <label style={{ aspectRatio: '1', background: yukleniyor ? '#EDF1EB' : '#F6F3E9', borderRadius: 10, border: '2px dashed #E8D5B7', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: yukleniyor ? 'wait' : 'pointer', fontSize: 28, color: '#F2B33D', fontWeight: 700 }}>
                   {yukleniyor ? '⏳' : '+'}
                   <input
                     type="file"
@@ -375,7 +375,7 @@ export default function UrunFormModal({
         </div>
 
         <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
-          <button onClick={kaydet} disabled={kaydediliyor} style={{ ...btn(kaydediliyor ? '#C9A88F' : '#E8845A'), flex: 1, padding: '14px', cursor: kaydediliyor ? 'wait' : 'pointer' }}>
+          <button onClick={kaydet} disabled={kaydediliyor} style={{ ...btn(kaydediliyor ? '#C9A88F' : '#F2B33D'), flex: 1, padding: '14px', cursor: kaydediliyor ? 'wait' : 'pointer' }}>
             {kaydediliyor ? '⏳ Kaydediliyor…' : mod === 'yeni' ? '➕ Ürünü Ekle' : '💾 Kaydet'}
           </button>
           <button onClick={onKapat} disabled={kaydediliyor} style={btn('#888')}>İptal</button>

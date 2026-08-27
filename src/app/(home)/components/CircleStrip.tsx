@@ -20,10 +20,10 @@ const CircleItem = ({ item }: { item: typeof circles[0] }) => (
       <div
         className="absolute inset-0 rounded-full animate-spin-ring"
         style={{
-         background: 'conic-gradient(#c2410c, #ea580c, #fed7aa, #c2410c)',
+         background: 'conic-gradient(#0E3227, #123F33, #AFD7C6, #0E3227)',
          padding: '3px',
          borderRadius: '50%',
-         filter: 'drop-shadow(0 0 5px #c2410c)',
+         filter: 'drop-shadow(0 0 5px #0E3227)',
        }}
       >
         <div className="w-full h-full rounded-full bg-white" />

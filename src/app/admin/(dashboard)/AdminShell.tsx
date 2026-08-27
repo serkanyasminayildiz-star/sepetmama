@@ -20,14 +20,14 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
   const pathname = usePathname()
 
   return (
-    <div style={{ minHeight: '100vh', background: '#F0EBE3', fontFamily: 'sans-serif', display: 'flex' }}>
+    <div style={{ minHeight: '100vh', background: '#EDF1EB', fontFamily: 'sans-serif', display: 'flex' }}>
       {/* Sol Menü */}
-      <div style={{ width: 220, background: '#1C0F06', minHeight: '100vh', position: 'fixed', left: 0, top: 0, bottom: 0, overflowY: 'auto', zIndex: 100 }}>
+      <div style={{ width: 220, background: '#0E2A21', minHeight: '100vh', position: 'fixed', left: 0, top: 0, bottom: 0, overflowY: 'auto', zIndex: 100 }}>
         <div style={{ padding: '22px 20px 16px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-          <div style={{ fontFamily: 'Georgia,serif', fontSize: 18, fontWeight: 700, color: '#FDF6EE' }}>
-            se<span style={{ color: '#E8845A' }}>Pet</span>Mama
+          <div style={{ fontFamily: 'Georgia,serif', fontSize: 18, fontWeight: 700, color: '#F6F3E9' }}>
+            Leziz<span style={{ color: '#F2B33D' }}> Mama</span>
           </div>
-          <div style={{ fontSize: 10, color: '#F4C09A', opacity: 0.5, marginTop: 3, textTransform: 'uppercase', letterSpacing: 1 }}>Yönetim Paneli</div>
+          <div style={{ fontSize: 10, color: '#E9C878', opacity: 0.5, marginTop: 3, textTransform: 'uppercase', letterSpacing: 1 }}>Yönetim Paneli</div>
         </div>
         <nav style={{ padding: '10px 8px' }}>
           {menuler.map((m) => {
@@ -37,8 +37,8 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
                 width: '100%', display: 'flex', alignItems: 'center', gap: 9,
                 padding: '10px 14px',
                 background: aktif ? 'rgba(232,132,90,0.18)' : 'none',
-                borderLeft: aktif ? '3px solid #E8845A' : '3px solid transparent',
-                color: aktif ? '#E8845A' : '#FDF6EE',
+                borderLeft: aktif ? '3px solid #F2B33D' : '3px solid transparent',
+                color: aktif ? '#F2B33D' : '#F6F3E9',
                 fontSize: 13, fontWeight: aktif ? 700 : 400,
                 marginBottom: 1, opacity: aktif ? 1 : 0.6,
                 textDecoration: 'none',
@@ -50,7 +50,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
           })}
         </nav>
         <div style={{ padding: '8px', marginTop: 8, borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-          <Link href="/" target="_blank" style={{ display: 'flex', alignItems: 'center', gap: 9, padding: '10px 14px', background: 'rgba(255,255,255,0.04)', borderRadius: 10, color: '#FDF6EE', textDecoration: 'none', fontSize: 13, opacity: 0.5 }}>
+          <Link href="/" target="_blank" style={{ display: 'flex', alignItems: 'center', gap: 9, padding: '10px 14px', background: 'rgba(255,255,255,0.04)', borderRadius: 10, color: '#F6F3E9', textDecoration: 'none', fontSize: 13, opacity: 0.5 }}>
             🏠 Siteye Git
           </Link>
         </div>

@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 
-const btn = (bg = '#E8845A', extra?: React.CSSProperties): React.CSSProperties => ({
+const btn = (bg = '#F2B33D', extra?: React.CSSProperties): React.CSSProperties => ({
   background: bg, color: 'white', border: 'none', borderRadius: 10,
   padding: '10px 18px', fontSize: 13, fontWeight: 700, cursor: 'pointer',
   fontFamily: 'inherit', whiteSpace: 'nowrap', ...extra,
@@ -64,8 +64,8 @@ export default function StokClient({ products, istatistik, tip }: any) {
           ['dusuk', '📉 Düşük (6–10)', istatistik.dusuk],
         ] as [string, string, number][]).map(([t, lbl, sayi]) => (
           <button key={t} onClick={() => filtrele(t)}
-            style={{ ...btn(tip === t ? '#E8845A' : '#E8D5B7'), color: tip === t ? 'white' : '#5C3D2E', padding: '9px 20px', fontSize: 13 }}>
-            {lbl} {sayi > 0 && <span style={{ marginLeft: 6, background: tip === t ? 'rgba(255,255,255,0.3)' : '#E8845A', color: 'white', borderRadius: 50, fontSize: 10, padding: '1px 7px' }}>{sayi}</span>}
+            style={{ ...btn(tip === t ? '#F2B33D' : '#E8D5B7'), color: tip === t ? 'white' : '#5C3D2E', padding: '9px 20px', fontSize: 13 }}>
+            {lbl} {sayi > 0 && <span style={{ marginLeft: 6, background: tip === t ? 'rgba(255,255,255,0.3)' : '#F2B33D', color: 'white', borderRadius: 50, fontSize: 10, padding: '1px 7px' }}>{sayi}</span>}
           </button>
         ))}
       </div>
@@ -93,7 +93,7 @@ export default function StokClient({ products, istatistik, tip }: any) {
                 return (
                   <tr key={urun.id} style={{ borderBottom: '1px solid #F5EFE8' }}>
                     <td style={{ padding: '8px 12px' }}>
-                      <div style={{ width: 44, height: 44, background: '#FDF6EE', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', position: 'relative' }}>
+                      <div style={{ width: 44, height: 44, background: '#F6F3E9', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', position: 'relative' }}>
                         {image ? <Image src={image} alt={urun.name} fill style={{ objectFit: 'contain', padding: 4 }} sizes="44px" /> : <span style={{ fontSize: 18 }}>🐾</span>}
                       </div>
                     </td>
@@ -112,12 +112,12 @@ export default function StokClient({ products, istatistik, tip }: any) {
                         <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
                           <input type="number" value={stokEdit!.deger} onChange={e => setStokEdit(prev => prev ? { ...prev, deger: e.target.value } : null)} autoFocus
                             onKeyDown={e => { if (e.key === 'Enter') stokGuncelle(); if (e.key === 'Escape') setStokEdit(null) }}
-                            style={{ width: 80, padding: '6px 10px', border: '2px solid #E8845A', borderRadius: 8, fontSize: 13, outline: 'none' }} />
+                            style={{ width: 80, padding: '6px 10px', border: '2px solid #F2B33D', borderRadius: 8, fontSize: 13, outline: 'none' }} />
                           <button onClick={stokGuncelle} style={{ ...btn(), padding: '6px 14px', fontSize: 12 }}>✓ Kaydet</button>
                           <button onClick={() => setStokEdit(null)} style={{ ...btn('#888'), padding: '6px 10px', fontSize: 12 }}>✕</button>
                         </div>
                       ) : (
-                        <button onClick={() => setStokEdit({ id: urun.id, deger: String(urun.stock) })} style={{ background: '#FDF6EE', border: '2px solid #E8D5B7', borderRadius: 8, padding: '6px 14px', fontSize: 12, cursor: 'pointer', fontWeight: 600, color: '#5C3D2E' }}>
+                        <button onClick={() => setStokEdit({ id: urun.id, deger: String(urun.stock) })} style={{ background: '#F6F3E9', border: '2px solid #E8D5B7', borderRadius: 8, padding: '6px 14px', fontSize: 12, cursor: 'pointer', fontWeight: 600, color: '#5C3D2E' }}>
                           ✏️ Stok Gir
                         </button>
                       )}

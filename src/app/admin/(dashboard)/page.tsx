@@ -20,7 +20,7 @@ export default async function AdminDashboard() {
   ])
 
   const cards = [
-    { icon: '📦', ad: 'Toplam Ürün', deger: totalProducts, renk: '#E8845A', href: '/admin/urunler' },
+    { icon: '📦', ad: 'Toplam Ürün', deger: totalProducts, renk: '#F2B33D', href: '/admin/urunler' },
     { icon: '🛒', ad: 'Toplam Sipariş', deger: totalOrders, renk: '#8BAF8E', href: '/admin/siparisler' },
     { icon: '⏳', ad: 'Bekleyen Sipariş', deger: pendingOrders, renk: '#E65100', href: '/admin/siparisler' },
     { icon: '📁', ad: 'Toplam Kategori', deger: totalCategories, renk: '#5C3D2E', href: '/admin/kategoriler' },
@@ -47,7 +47,7 @@ export default async function AdminDashboard() {
         <div style={{ background: 'white', borderRadius: 18, padding: 22, boxShadow: '0 4px 16px rgba(92,61,46,0.06)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
             <h3 style={{ fontFamily: 'Georgia,serif', fontSize: 15, fontWeight: 700, color: '#2C1A0E', margin: 0 }}>📉 Stok Uyarıları</h3>
-            <Link href="/admin/stok" style={{ background: '#FDF6EE', border: 'none', borderRadius: 8, padding: '6px 12px', fontSize: 12, cursor: 'pointer', color: '#E8845A', fontWeight: 700, textDecoration: 'none' }}>Tümü →</Link>
+            <Link href="/admin/stok" style={{ background: '#F6F3E9', border: 'none', borderRadius: 8, padding: '6px 12px', fontSize: 12, cursor: 'pointer', color: '#F2B33D', fontWeight: 700, textDecoration: 'none' }}>Tümü →</Link>
           </div>
           {[
             { label: 'Stok Tükendi', deger: outOfStock, renk: '#C62828', bg: '#FFEBEE' },
@@ -73,7 +73,7 @@ export default async function AdminDashboard() {
               { label: '🎟️ Kuponlar', href: '/admin/kuponlar' },
               { label: '🚚 Kargo', href: '/admin/kargo' },
             ].map((m) => (
-              <Link key={m.href} href={m.href} style={{ background: '#FDF6EE', border: '2px solid #E8D5B7', borderRadius: 10, padding: '8px 14px', fontSize: 12, fontWeight: 600, color: '#5C3D2E', cursor: 'pointer', textDecoration: 'none' }}>
+              <Link key={m.href} href={m.href} style={{ background: '#F6F3E9', border: '2px solid #E8D5B7', borderRadius: 10, padding: '8px 14px', fontSize: 12, fontWeight: 600, color: '#5C3D2E', cursor: 'pointer', textDecoration: 'none' }}>
                 {m.label}
               </Link>
             ))}

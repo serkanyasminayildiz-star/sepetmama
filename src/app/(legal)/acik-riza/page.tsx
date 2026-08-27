@@ -16,7 +16,7 @@ export default function AcikRizaPage() {
         <p>Kimlik, iletişim ve işlem güvenliğine ilişkin kişisel verilerimin yukarıdaki amaçlarla işlenmesine açık rıza verdiğimi kabul ve beyan ederim.</p>
         <p>Açık rızamı dilediğim zaman geri çekebileceğimi bildiğimi kabul ederim.</p>
         <div className="bg-orange-50 rounded-xl p-4 border border-orange-100">
-          <p className="font-semibold text-orange-700">İletişim: <a href="mailto:info@sepetmama.com" className="underline">info@sepetmama.com</a></p>
+          <p className="font-semibold text-orange-700">İletişim: <a href="mailto:info@lezizmama.com" className="underline">info@lezizmama.com</a></p>
         </div>
       </div>
     </article>

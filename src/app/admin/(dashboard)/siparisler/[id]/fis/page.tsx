@@ -65,14 +65,13 @@ export default async function FisPage({ params }: { params: Promise<{ id: string
 
       <div className="fis-wrapper" style={{ background: 'white', borderRadius: 12, padding: '40px 48px', boxShadow: '0 4px 24px rgba(92,61,46,0.08)', fontFamily: '-apple-system, system-ui, sans-serif', color: '#1a1a1a', fontSize: 13, lineHeight: 1.5 }}>
         {/* Üst — Logo + sipariş info */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', paddingBottom: 20, borderBottom: '2px solid #E8845A', marginBottom: 24 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', paddingBottom: 20, borderBottom: '2px solid #F2B33D', marginBottom: 24 }}>
           <div>
             <div style={{ fontSize: 28, fontWeight: 900, letterSpacing: -1 }}>
-              <span style={{ color: '#f97316' }}>se</span>
-              <span style={{ color: '#2563eb' }}>Pet</span>
-              <span style={{ color: '#f97316' }}>Mama</span>
+              <span style={{ color: '#1B5E4B' }}>Leziz</span>
+              <span style={{ color: '#16241D' }}> Mama</span>
             </div>
-            <div style={{ fontSize: 11, color: '#666', marginTop: 4 }}>www.sepetmama.com · info@sepetmama.com</div>
+            <div style={{ fontSize: 11, color: '#666', marginTop: 4 }}>www.lezizmama.com · info@lezizmama.com</div>
           </div>
           <div style={{ textAlign: 'right' }}>
             <div style={{ fontSize: 11, color: '#666', textTransform: 'uppercase', letterSpacing: 0.5 }}>Paketleme Fişi</div>
@@ -110,7 +109,7 @@ export default async function FisPage({ params }: { params: Promise<{ id: string
         <div style={{ fontSize: 10, fontWeight: 700, color: '#888', textTransform: 'uppercase', marginBottom: 8 }}>Sipariş İçeriği</div>
         <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: 16, fontSize: 12 }}>
           <thead>
-            <tr style={{ borderBottom: '2px solid #E8845A' }}>
+            <tr style={{ borderBottom: '2px solid #F2B33D' }}>
               <th style={{ textAlign: 'left', padding: '10px 8px', fontSize: 10, fontWeight: 700, color: '#666', textTransform: 'uppercase' }}>Ürün</th>
               <th style={{ textAlign: 'left', padding: '10px 8px', fontSize: 10, fontWeight: 700, color: '#666', textTransform: 'uppercase', width: 100 }}>SKU</th>
               <th style={{ textAlign: 'right', padding: '10px 8px', fontSize: 10, fontWeight: 700, color: '#666', textTransform: 'uppercase', width: 60 }}>Adet</th>
@@ -148,9 +147,9 @@ export default async function FisPage({ params }: { params: Promise<{ id: string
                 {shipping === 0 ? 'Ücretsiz' : `₺${shipping.toFixed(2)}`}
               </span>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderTop: '2px solid #E8845A', marginTop: 4, fontSize: 16, fontWeight: 700 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderTop: '2px solid #F2B33D', marginTop: 4, fontSize: 16, fontWeight: 700 }}>
               <span>Toplam</span>
-              <span style={{ color: '#E8845A' }}>₺{total.toFixed(2)}</span>
+              <span style={{ color: '#F2B33D' }}>₺{total.toFixed(2)}</span>
             </div>
           </div>
         </div>
@@ -170,7 +169,7 @@ export default async function FisPage({ params }: { params: Promise<{ id: string
         <div style={{ marginTop: 40, paddingTop: 20, borderTop: '1px solid #ddd', textAlign: 'center', fontSize: 11, color: '#888', lineHeight: 1.6 }}>
           Bizi tercih ettiğiniz için teşekkür ederiz! 🐾
           <br />
-          Herhangi bir sorunuz olursa <strong>info@sepetmama.com</strong> adresinden bize ulaşabilirsiniz.
+          Herhangi bir sorunuz olursa <strong>info@lezizmama.com</strong> adresinden bize ulaşabilirsiniz.
         </div>
       </div>
     </>

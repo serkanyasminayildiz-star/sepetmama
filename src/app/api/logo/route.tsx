@@ -24,12 +24,12 @@ export async function GET() {
             width: 280,
             height: 280,
             borderRadius: 70,
-            background: '#f97316',
+            background: '#1B5E4B',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             fontSize: 180,
-            boxShadow: '0 12px 30px rgba(249, 115, 22, 0.35)',
+            boxShadow: '0 12px 30px rgba(27, 94, 75, 0.35)',
           }}
         >
           🐾
@@ -38,14 +38,14 @@ export async function GET() {
           style={{
             marginTop: 32,
             fontSize: 64,
-            fontWeight: 900,
+            fontWeight: 800,
             letterSpacing: -1,
             display: 'flex',
+            gap: 14,
           }}
         >
-          <span style={{ color: '#f97316' }}>se</span>
-          <span style={{ color: '#2563eb' }}>Pet</span>
-          <span style={{ color: '#f97316' }}>Mama</span>
+          <span style={{ color: '#1B5E4B' }}>Leziz</span>
+          <span style={{ color: '#16241D' }}>Mama</span>
         </div>
       </div>
     ),

@@ -8,7 +8,7 @@ const s: React.CSSProperties = {
   borderRadius: 10, fontSize: 14, outline: 'none', fontFamily: 'inherit',
   boxSizing: 'border-box', background: 'white', color: '#2C1A0E',
 }
-const btn = (bg = '#E8845A', extra?: React.CSSProperties): React.CSSProperties => ({
+const btn = (bg = '#F2B33D', extra?: React.CSSProperties): React.CSSProperties => ({
   background: bg, color: 'white', border: 'none', borderRadius: 10,
   padding: '10px 18px', fontSize: 13, fontWeight: 700, cursor: 'pointer',
   fontFamily: 'inherit', whiteSpace: 'nowrap', ...extra,
@@ -85,7 +85,7 @@ export default function MarkaClient({ brands }: { brands: string[] }) {
       </h1>
 
       {/* Yeni Marka */}
-      <div style={{ background: 'white', borderRadius: 18, padding: 22, marginBottom: 16, boxShadow: '0 4px 16px rgba(92,61,46,0.06)', border: '2px solid #E8845A' }}>
+      <div style={{ background: 'white', borderRadius: 18, padding: 22, marginBottom: 16, boxShadow: '0 4px 16px rgba(92,61,46,0.06)', border: '2px solid #F2B33D' }}>
         <h2 style={{ fontFamily: 'Georgia,serif', fontSize: 15, fontWeight: 700, color: '#2C1A0E', marginBottom: 14 }}>➕ Yeni Marka Ekle</h2>
         <div style={{ display: 'flex', gap: 10, alignItems: 'flex-end' }}>
           <div style={{ flex: 1 }}>
@@ -115,7 +115,7 @@ export default function MarkaClient({ brands }: { brands: string[] }) {
                 <td style={{ padding: '12px', fontSize: 14, fontWeight: 600 }}>{brand}</td>
                 <td style={{ padding: '12px' }}>
                   <div style={{ display: 'flex', gap: 6 }}>
-                    <button onClick={() => setDuzenle({ eski: brand, yeni: brand })} style={{ background: '#FDF6EE', border: '2px solid #E8D5B7', borderRadius: 8, padding: '5px 10px', fontSize: 12, cursor: 'pointer', fontWeight: 600, color: '#5C3D2E' }}>✏️ Düzenle</button>
+                    <button onClick={() => setDuzenle({ eski: brand, yeni: brand })} style={{ background: '#F6F3E9', border: '2px solid #E8D5B7', borderRadius: 8, padding: '5px 10px', fontSize: 12, cursor: 'pointer', fontWeight: 600, color: '#5C3D2E' }}>✏️ Düzenle</button>
                     <button onClick={() => sil(brand)} style={{ background: '#FFEBEE', border: 'none', borderRadius: 8, padding: '5px 9px', fontSize: 13, cursor: 'pointer', color: '#C62828' }}>🗑️</button>
                   </div>
                 </td>

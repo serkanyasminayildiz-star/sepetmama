@@ -31,7 +31,7 @@ export default function KargoTeslimatPage() {
           </div>
         </div>
         <div className="bg-orange-50 rounded-xl p-4 border border-orange-100">
-          <p className="font-semibold text-orange-700">Sorularınız için: <a href="mailto:info@sepetmama.com" className="underline">info@sepetmama.com</a> | +90 532 177 3721</p>
+          <p className="font-semibold text-orange-700">Sorularınız için: <a href="mailto:info@lezizmama.com" className="underline">info@lezizmama.com</a> | +90 532 177 3721</p>
         </div>
       </div>
     </article>

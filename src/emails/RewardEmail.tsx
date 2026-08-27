@@ -26,7 +26,7 @@ export default function RewardEmail({
   rewardValue,
   minOrder,
   expiresText,
-  siteUrl = 'https://www.sepetmama.com',
+  siteUrl = 'https://www.lezizmama.com',
 }: RewardEmailData) {
   return (
     <Html>
@@ -36,9 +36,8 @@ export default function RewardEmail({
         <Container style={containerStyle}>
           <Section style={{ padding: '32px 32px 0', textAlign: 'center' as const }}>
             <Heading as="h1" style={logoStyle}>
-              <span style={{ color: '#f97316' }}>se</span>
-              <span style={{ color: '#2563eb' }}>Pet</span>
-              <span style={{ color: '#f97316' }}>Mama</span>
+              <span style={{ color: '#1B5E4B' }}>Leziz</span>
+              <span style={{ color: '#16241D' }}> Mama</span>
             </Heading>
           </Section>
 
@@ -77,7 +76,7 @@ export default function RewardEmail({
               <Link href={`${siteUrl}/hesabim`} style={linkStyle}>Hesabım → Kuponlarım</Link>
             </Text>
             <Text style={footerSmallStyle}>
-              © {new Date().getFullYear()} SepetMama · <Link href={siteUrl} style={linkStyle}>www.sepetmama.com</Link>
+              © {new Date().getFullYear()} Leziz Mama · <Link href={siteUrl} style={linkStyle}>www.lezizmama.com</Link>
             </Text>
           </Section>
         </Container>
@@ -104,20 +103,20 @@ const logoStyle = { fontSize: 32, fontWeight: 900, letterSpacing: '-1px', margin
 const titleStyle = { fontSize: 22, fontWeight: 800, color: '#1f2937', margin: '24px 0 12px', textAlign: 'center' as const }
 const paragraphStyle = { fontSize: 14, lineHeight: 1.6, color: '#4b5563', margin: '8px 0' }
 const couponBoxStyle = {
-  background: '#fff7ed', border: '2px dashed #f97316', borderRadius: 16,
+  background: '#ECF5F0', border: '2px dashed #1B5E4B', borderRadius: 16,
   padding: '24px 20px', margin: '8px 0', textAlign: 'center' as const,
 }
-const discountStyle = { fontSize: 26, fontWeight: 900, color: '#f97316', margin: '0 0 12px' }
+const discountStyle = { fontSize: 26, fontWeight: 900, color: '#1B5E4B', margin: '0 0 12px' }
 const codeBadgeStyle = {
   display: 'inline-block', background: '#1f2937', color: '#ffffff', fontFamily: 'monospace',
   fontSize: 20, fontWeight: 800, letterSpacing: '2px', padding: '10px 22px', borderRadius: 10,
 }
 const metaStyle = { fontSize: 12, color: '#9ca3af', margin: '10px 0 0' }
 const buttonStyle = {
-  background: '#f97316', color: '#ffffff', textDecoration: 'none', padding: '12px 28px',
+  background: '#1B5E4B', color: '#ffffff', textDecoration: 'none', padding: '12px 28px',
   borderRadius: 12, fontWeight: 800, fontSize: 14, display: 'inline-block',
 }
 const hrStyle = { borderColor: '#e5e7eb', margin: '0 32px' }
 const footerTextStyle = { fontSize: 12, color: '#6b7280', lineHeight: 1.8, margin: '16px 0 8px', textAlign: 'center' as const }
 const footerSmallStyle = { fontSize: 11, color: '#9ca3af', textAlign: 'center' as const, margin: '8px 0 0' }
-const linkStyle = { color: '#f97316', textDecoration: 'none' }
+const linkStyle = { color: '#1B5E4B', textDecoration: 'none' }

@@ -10,7 +10,7 @@ const s: React.CSSProperties = {
   borderRadius: 10, fontSize: 14, outline: 'none', fontFamily: 'inherit',
   boxSizing: 'border-box', background: 'white', color: '#2C1A0E',
 }
-const btn = (bg = '#E8845A', extra?: React.CSSProperties): React.CSSProperties => ({
+const btn = (bg = '#F2B33D', extra?: React.CSSProperties): React.CSSProperties => ({
   background: bg, color: 'white', border: 'none', borderRadius: 10,
   padding: '10px 18px', fontSize: 13, fontWeight: 700, cursor: 'pointer',
   fontFamily: 'inherit', whiteSpace: 'nowrap', ...extra,
@@ -159,7 +159,7 @@ export default function UrunlerClient({ products, total, sayfa, totalPages, cate
         <h1 style={{ fontFamily: 'Georgia,serif', fontSize: 24, fontWeight: 700, color: '#2C1A0E' }}>
           Ürün Yönetimi <span style={{ fontSize: 14, fontWeight: 400, opacity: 0.5 }}>{total} ürün</span>
         </h1>
-        <button onClick={yeniUrun} style={btn('#E8845A', { padding: '12px 22px', fontSize: 14 })}>
+        <button onClick={yeniUrun} style={btn('#F2B33D', { padding: '12px 22px', fontSize: 14 })}>
           ➕ Yeni Ürün
         </button>
       </div>
@@ -215,14 +215,14 @@ export default function UrunlerClient({ products, total, sayfa, totalPages, cate
                 return (
                   <tr key={urun.id} style={{ borderBottom: '1px solid #F5EFE8' }}>
                     <td style={{ padding: '6px 8px' }}>
-                      <div style={{ width: 44, height: 44, background: '#FDF6EE', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', position: 'relative' }}>
+                      <div style={{ width: 44, height: 44, background: '#F6F3E9', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', position: 'relative' }}>
                         {image ? <Image src={image} alt={urun.name} fill style={{ objectFit: 'contain', padding: 4 }} sizes="44px" /> : <span style={{ fontSize: 18 }}>🐾</span>}
                       </div>
                     </td>
                     <td style={{ padding: '8px 10px', maxWidth: 220 }}>
                       <div style={{ fontWeight: 600, color: '#2C1A0E', fontSize: 12 }}>{urun.name?.substring(0, 50)}{urun.name?.length > 50 ? '…' : ''}</div>
                       {urun.tag && (
-                        <span style={{ display: 'inline-block', marginTop: 4, background: '#FFF1E8', color: '#E8845A', border: '1px solid #F5C9AE', borderRadius: 50, padding: '1px 8px', fontSize: 10, fontWeight: 700 }}>
+                        <span style={{ display: 'inline-block', marginTop: 4, background: '#FFF1E8', color: '#F2B33D', border: '1px solid #F5C9AE', borderRadius: 50, padding: '1px 8px', fontSize: 10, fontWeight: 700 }}>
                           {urun.tag}
                         </span>
                       )}
@@ -231,8 +231,8 @@ export default function UrunlerClient({ products, total, sayfa, totalPages, cate
                     <td style={{ padding: '8px 10px', whiteSpace: 'nowrap' }}>
                       {inlineEdit?.id === urun.id && inlineEdit?.alan === 'price' ? (
                         <div style={{ display: 'flex', gap: 4 }}>
-                          <input type="number" step="0.01" value={inlineEdit.deger} onChange={e => setInlineEdit({ ...inlineEdit, deger: e.target.value })} onKeyDown={e => { if (e.key === 'Enter') inlineKaydet(); if (e.key === 'Escape') setInlineEdit(null) }} autoFocus style={{ width: 80, padding: '4px 6px', border: '2px solid #E8845A', borderRadius: 6, fontSize: 12, outline: 'none' }} />
-                          <button onClick={inlineKaydet} style={{ background: '#E8845A', color: 'white', border: 'none', borderRadius: 6, padding: '4px 8px', fontSize: 11, cursor: 'pointer' }}>✓</button>
+                          <input type="number" step="0.01" value={inlineEdit.deger} onChange={e => setInlineEdit({ ...inlineEdit, deger: e.target.value })} onKeyDown={e => { if (e.key === 'Enter') inlineKaydet(); if (e.key === 'Escape') setInlineEdit(null) }} autoFocus style={{ width: 80, padding: '4px 6px', border: '2px solid #F2B33D', borderRadius: 6, fontSize: 12, outline: 'none' }} />
+                          <button onClick={inlineKaydet} style={{ background: '#F2B33D', color: 'white', border: 'none', borderRadius: 6, padding: '4px 8px', fontSize: 11, cursor: 'pointer' }}>✓</button>
                           <button onClick={() => setInlineEdit(null)} style={{ background: '#eee', border: 'none', borderRadius: 6, padding: '4px 6px', fontSize: 11, cursor: 'pointer' }}>✕</button>
                         </div>
                       ) : (
@@ -245,13 +245,13 @@ export default function UrunlerClient({ products, total, sayfa, totalPages, cate
                     <td style={{ padding: '8px 10px', whiteSpace: 'nowrap' }}>
                       {inlineEdit?.id === urun.id && inlineEdit?.alan === 'salePrice' ? (
                         <div style={{ display: 'flex', gap: 4 }}>
-                          <input type="number" step="0.01" value={inlineEdit.deger} onChange={e => setInlineEdit({ ...inlineEdit, deger: e.target.value })} onKeyDown={e => { if (e.key === 'Enter') inlineKaydet(); if (e.key === 'Escape') setInlineEdit(null) }} autoFocus style={{ width: 80, padding: '4px 6px', border: '2px solid #E8845A', borderRadius: 6, fontSize: 12, outline: 'none' }} />
-                          <button onClick={inlineKaydet} style={{ background: '#E8845A', color: 'white', border: 'none', borderRadius: 6, padding: '4px 8px', fontSize: 11, cursor: 'pointer' }}>✓</button>
+                          <input type="number" step="0.01" value={inlineEdit.deger} onChange={e => setInlineEdit({ ...inlineEdit, deger: e.target.value })} onKeyDown={e => { if (e.key === 'Enter') inlineKaydet(); if (e.key === 'Escape') setInlineEdit(null) }} autoFocus style={{ width: 80, padding: '4px 6px', border: '2px solid #F2B33D', borderRadius: 6, fontSize: 12, outline: 'none' }} />
+                          <button onClick={inlineKaydet} style={{ background: '#F2B33D', color: 'white', border: 'none', borderRadius: 6, padding: '4px 8px', fontSize: 11, cursor: 'pointer' }}>✓</button>
                           <button onClick={() => setInlineEdit(null)} style={{ background: '#eee', border: 'none', borderRadius: 6, padding: '4px 6px', fontSize: 11, cursor: 'pointer' }}>✕</button>
                         </div>
                       ) : (
                         <span onClick={() => setInlineEdit({ id: urun.id, alan: 'salePrice', deger: String(salePrice || '') })} style={{ cursor: 'pointer' }}>
-                          {salePrice ? <span style={{ color: '#E8845A', fontWeight: 700, borderBottom: '1px dashed #ccc' }}>₺{salePrice.toFixed(2)}</span> : <span style={{ color: '#ccc', borderBottom: '1px dashed #eee' }}>—</span>}
+                          {salePrice ? <span style={{ color: '#F2B33D', fontWeight: 700, borderBottom: '1px dashed #ccc' }}>₺{salePrice.toFixed(2)}</span> : <span style={{ color: '#ccc', borderBottom: '1px dashed #eee' }}>—</span>}
                         </span>
                       )}
                     </td>
@@ -259,8 +259,8 @@ export default function UrunlerClient({ products, total, sayfa, totalPages, cate
                     <td style={{ padding: '8px 10px' }}>
                       {inlineEdit?.id === urun.id && inlineEdit?.alan === 'stock' ? (
                         <div style={{ display: 'flex', gap: 4 }}>
-                          <input type="number" value={inlineEdit.deger} onChange={e => setInlineEdit({ ...inlineEdit, deger: e.target.value })} onKeyDown={e => { if (e.key === 'Enter') inlineKaydet(); if (e.key === 'Escape') setInlineEdit(null) }} autoFocus style={{ width: 60, padding: '4px 6px', border: '2px solid #E8845A', borderRadius: 6, fontSize: 12, outline: 'none' }} />
-                          <button onClick={inlineKaydet} style={{ background: '#E8845A', color: 'white', border: 'none', borderRadius: 6, padding: '4px 8px', fontSize: 11, cursor: 'pointer' }}>✓</button>
+                          <input type="number" value={inlineEdit.deger} onChange={e => setInlineEdit({ ...inlineEdit, deger: e.target.value })} onKeyDown={e => { if (e.key === 'Enter') inlineKaydet(); if (e.key === 'Escape') setInlineEdit(null) }} autoFocus style={{ width: 60, padding: '4px 6px', border: '2px solid #F2B33D', borderRadius: 6, fontSize: 12, outline: 'none' }} />
+                          <button onClick={inlineKaydet} style={{ background: '#F2B33D', color: 'white', border: 'none', borderRadius: 6, padding: '4px 8px', fontSize: 11, cursor: 'pointer' }}>✓</button>
                           <button onClick={() => setInlineEdit(null)} style={{ background: '#eee', border: 'none', borderRadius: 6, padding: '4px 6px', fontSize: 11, cursor: 'pointer' }}>✕</button>
                         </div>
                       ) : (
@@ -284,7 +284,7 @@ export default function UrunlerClient({ products, total, sayfa, totalPages, cate
                     </td>
                     <td style={{ padding: '8px 10px' }}>
                       <div style={{ display: 'flex', gap: 5 }}>
-                        <button onClick={() => urunDuzenle(urun)} style={{ background: '#FDF6EE', border: '2px solid #E8D5B7', borderRadius: 8, padding: '5px 10px', fontSize: 12, cursor: 'pointer', fontWeight: 600, color: '#5C3D2E' }}>✏️</button>
+                        <button onClick={() => urunDuzenle(urun)} style={{ background: '#F6F3E9', border: '2px solid #E8D5B7', borderRadius: 8, padding: '5px 10px', fontSize: 12, cursor: 'pointer', fontWeight: 600, color: '#5C3D2E' }}>✏️</button>
                         <button onClick={() => urunSil(urun.id)} style={{ background: '#FFEBEE', border: 'none', borderRadius: 8, padding: '5px 9px', fontSize: 13, cursor: 'pointer', color: '#C62828' }}>🗑️</button>
                       </div>
                     </td>
@@ -301,7 +301,7 @@ export default function UrunlerClient({ products, total, sayfa, totalPages, cate
             <button
               onClick={() => filtrele('sayfa', String(sayfa - 1))}
               disabled={sayfa <= 1}
-              style={{ background: sayfa <= 1 ? '#F0EBE3' : '#FDF6EE', color: sayfa <= 1 ? '#999' : '#5C3D2E', border: '1px solid #E8D5B7', borderRadius: 8, padding: '6px 12px', fontSize: 12, fontWeight: 600, cursor: sayfa <= 1 ? 'not-allowed' : 'pointer', fontFamily: 'inherit' }}
+              style={{ background: sayfa <= 1 ? '#EDF1EB' : '#F6F3E9', color: sayfa <= 1 ? '#999' : '#5C3D2E', border: '1px solid #E8D5B7', borderRadius: 8, padding: '6px 12px', fontSize: 12, fontWeight: 600, cursor: sayfa <= 1 ? 'not-allowed' : 'pointer', fontFamily: 'inherit' }}
             >
               ← Önceki
             </button>
@@ -314,9 +314,9 @@ export default function UrunlerClient({ products, total, sayfa, totalPages, cate
                   key={p}
                   onClick={() => filtrele('sayfa', String(p))}
                   style={{
-                    background: p === sayfa ? '#E8845A' : '#FDF6EE',
+                    background: p === sayfa ? '#F2B33D' : '#F6F3E9',
                     color: p === sayfa ? 'white' : '#5C3D2E',
-                    border: '1px solid ' + (p === sayfa ? '#E8845A' : '#E8D5B7'),
+                    border: '1px solid ' + (p === sayfa ? '#F2B33D' : '#E8D5B7'),
                     borderRadius: 8, padding: '6px 11px', fontSize: 12, fontWeight: 700,
                     cursor: 'pointer', fontFamily: 'inherit', minWidth: 32,
                   }}
@@ -329,7 +329,7 @@ export default function UrunlerClient({ products, total, sayfa, totalPages, cate
             <button
               onClick={() => filtrele('sayfa', String(sayfa + 1))}
               disabled={sayfa >= totalPages}
-              style={{ background: sayfa >= totalPages ? '#F0EBE3' : '#FDF6EE', color: sayfa >= totalPages ? '#999' : '#5C3D2E', border: '1px solid #E8D5B7', borderRadius: 8, padding: '6px 12px', fontSize: 12, fontWeight: 600, cursor: sayfa >= totalPages ? 'not-allowed' : 'pointer', fontFamily: 'inherit' }}
+              style={{ background: sayfa >= totalPages ? '#EDF1EB' : '#F6F3E9', color: sayfa >= totalPages ? '#999' : '#5C3D2E', border: '1px solid #E8D5B7', borderRadius: 8, padding: '6px 12px', fontSize: 12, fontWeight: 600, cursor: sayfa >= totalPages ? 'not-allowed' : 'pointer', fontFamily: 'inherit' }}
             >
               Sonraki →
             </button>

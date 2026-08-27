@@ -36,7 +36,7 @@ const SHIPPING_FEE = '49.90'
 
 // Marka normalizasyonu: TAMAMI BÜYÜK harfli markaları düzgün yaz (PRO PLAN → Pro Plan).
 function normalizeBrand(brand: string | null): string {
-  if (!brand || !brand.trim()) return 'SepetMama'
+  if (!brand || !brand.trim()) return 'Leziz Mama'
   const b = brand.trim()
   if (b === b.toUpperCase()) {
     return b.split(/\s+/).map((w) => w.charAt(0) + w.slice(1).toLowerCase()).join(' ')
@@ -45,7 +45,7 @@ function normalizeBrand(brand: string | null): string {
 }
 
 export async function GET() {
-  const siteUrl = process.env.NEXTAUTH_URL || 'https://www.sepetmama.com'
+  const siteUrl = process.env.NEXTAUTH_URL || 'https://www.lezizmama.com'
 
   const products = await prisma.product.findMany({
     where: { isActive: true },
@@ -78,7 +78,7 @@ export async function GET() {
 
       const title = truncate(p.name, 150)
       const description = truncate(
-        p.description?.trim() || `${p.name} — SepetMama'da uygun fiyatla.`,
+        p.description?.trim() || `${p.name} — Leziz Mama'da uygun fiyatla.`,
         5000
       )
       const link = `${siteUrl}/urun/${p.slug}`
@@ -119,7 +119,7 @@ export async function GET() {
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss xmlns:g="http://base.google.com/ns/1.0" version="2.0">
   <channel>
-    <title>SepetMama</title>
+    <title>Leziz Mama</title>
     <link>${siteUrl}</link>
     <description>Kedi ve köpek mamaları, ödüller, aksesuarlar. Hızlı kargo, güvenli ödeme.</description>
 ${items}

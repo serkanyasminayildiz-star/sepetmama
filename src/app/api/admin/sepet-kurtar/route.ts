@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
   const expiresText = coupon.expiresAt
     ? `Son kullanım: ${coupon.expiresAt.toLocaleDateString('tr-TR')}`
     : undefined
-  const siteUrl = process.env.NEXTAUTH_URL || 'https://www.sepetmama.com'
+  const siteUrl = process.env.NEXTAUTH_URL || 'https://www.lezizmama.com'
 
   const orders = await prisma.order.findMany({
     where: { id: { in: orderIds } },

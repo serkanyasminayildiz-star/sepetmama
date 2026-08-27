@@ -150,7 +150,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params
   const category = await prisma.category.findUnique({ where: { slug } })
   return {
-    title: `${category?.name || 'Kategori'} | SepetMama`,
-    description: `${category?.name} ürünleri SepetMama'da`,
+    // Marka adını layout'taki title template'i ekliyor ("%s | Leziz Mama")
+    title: category?.name || 'Kategori',
+    description: `${category?.name} ürünleri Leziz Mama'da`,
   }
 }

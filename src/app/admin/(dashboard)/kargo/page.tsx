@@ -6,9 +6,9 @@ export default function KargoPage() {
       <div>
         <h1 style={{ fontFamily: 'Georgia,serif', fontSize: 24, fontWeight: 700, color: '#2C1A0E', marginBottom: 20 }}>🚚 Kargo Ayarları</h1>
         <div style={{ background: 'white', borderRadius: 18, padding: 28, boxShadow: '0 4px 16px rgba(92,61,46,0.06)', maxWidth: 520 }}>
-          <div style={{ background: '#FDF6EE', borderRadius: 12, padding: '16px 20px', marginBottom: 20 }}>
+          <div style={{ background: '#F6F3E9', borderRadius: 12, padding: '16px 20px', marginBottom: 20 }}>
             <p style={{ fontSize: 14, color: '#5C3D2E', fontWeight: 600, margin: 0 }}>
-              🚚 Ücretsiz kargo limiti: <span style={{ color: '#E8845A' }}>₺1.000</span>
+              🚚 Ücretsiz kargo limiti: <span style={{ color: '#F2B33D' }}>₺1.000</span>
             </p>
             <p style={{ fontSize: 13, color: '#5C3D2E', opacity: 0.6, marginTop: 6, marginBottom: 0 }}>
               Standart kargo ücreti: <span style={{ fontWeight: 700 }}>₺49,90</span>

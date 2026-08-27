@@ -347,7 +347,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params
   const product = await prisma.product.findUnique({ where: { slug }, select: { name: true, description: true } })
   return {
-    title: `${product?.name || 'Ürün'} | sePetMama`,
+    // Marka adını layout'taki title template'i ekliyor ("%s | Leziz Mama")
+    title: product?.name || 'Ürün',
     description: product?.description || product?.name,
   }
 }

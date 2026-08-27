@@ -92,7 +92,7 @@ export async function POST(req: NextRequest) {
           price: parseFloat(i.price.toString()),
         })),
         isLoggedInUser: !!order.userId,
-        siteUrl: process.env.NEXTAUTH_URL || 'https://www.sepetmama.com',
+        siteUrl: process.env.NEXTAUTH_URL || 'https://www.lezizmama.com',
       }
       await Promise.allSettled([
         sendOrderConfirmation(emailData),
@@ -114,7 +114,7 @@ export async function POST(req: NextRequest) {
               expiresText: reward.expiresAt
                 ? `Son kullanım: ${reward.expiresAt.toLocaleDateString('tr-TR')}`
                 : undefined,
-              siteUrl: process.env.NEXTAUTH_URL || 'https://www.sepetmama.com',
+              siteUrl: process.env.NEXTAUTH_URL || 'https://www.lezizmama.com',
             })
           }
         } catch (err) {

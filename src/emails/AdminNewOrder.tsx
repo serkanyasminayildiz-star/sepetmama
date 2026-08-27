@@ -19,7 +19,7 @@ export default function AdminNewOrder({
   customerPhone,
   shippingAddress,
   items,
-  siteUrl = 'https://www.sepetmama.com',
+  siteUrl = 'https://www.lezizmama.com',
 }: OrderEmailData) {
   const shortId = orderId.slice(-8).toUpperCase()
   const adminUrl = `${siteUrl}/admin/siparisler`
@@ -58,7 +58,7 @@ export default function AdminNewOrder({
                 </tr>
                 <tr>
                   <td style={labelCell}>Toplam</td>
-                  <td style={{ ...valueCell, color: '#f97316', fontWeight: 800, fontSize: 16 }}>
+                  <td style={{ ...valueCell, color: '#1B5E4B', fontWeight: 800, fontSize: 16 }}>
                     ₺{total.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}
                   </td>
                 </tr>
@@ -95,10 +95,10 @@ const containerStyle = {
   borderRadius: 12,
   margin: '0 auto',
   maxWidth: 520,
-  border: '2px solid #f97316',
+  border: '2px solid #1B5E4B',
 }
 const badgeStyle = {
-  background: '#f97316',
+  background: '#1B5E4B',
   color: '#ffffff',
   display: 'inline-block',
   padding: '6px 16px',
@@ -132,7 +132,7 @@ const valueCell = {
   verticalAlign: 'top' as const,
 }
 const buttonPrimary = {
-  background: '#f97316',
+  background: '#1B5E4B',
   color: '#ffffff',
   textDecoration: 'none',
   padding: '10px 20px',
