@@ -22,6 +22,8 @@ export interface OrderEmailData {
   items: { name: string; quantity: number; price: number }[]
   isLoggedInUser?: boolean
   siteUrl?: string
+  /** Kapıda ödeme siparişi — tahsilat teslimatta yapılır */
+  isCashOnDelivery?: boolean
 }
 
 export default function OrderConfirmation({
@@ -35,6 +37,7 @@ export default function OrderConfirmation({
   items,
   isLoggedInUser = false,
   siteUrl = 'https://www.lezizmama.com',
+  isCashOnDelivery = false,
 }: OrderEmailData) {
   const subtotal = total - shippingFee
   const shortId = orderId.slice(-8).toUpperCase()
@@ -49,8 +52,8 @@ export default function OrderConfirmation({
           {/* Header */}
           <Section style={{ padding: '32px 32px 0', textAlign: 'center' as const }}>
             <Heading as="h1" style={logoStyle}>
-              <span style={{ color: '#1B5E4B' }}>Leziz</span>
-              <span style={{ color: '#16241D' }}> Mama</span>
+              <span style={{ color: '#8A3F22' }}>Leziz</span>
+              <span style={{ color: '#2B1810' }}> Mama</span>
             </Heading>
           </Section>
 
@@ -109,6 +112,22 @@ export default function OrderConfirmation({
             </div>
           </Section>
 
+          {/* Kapıda ödeme uyarısı — teslimatta ödenecek tutar net görünsün */}
+          {isCashOnDelivery && (
+            <Section style={{ padding: '0 32px' }}>
+              <div style={codBoxStyle}>
+                <Text style={codTitleStyle}>💵 Kapıda Ödeme</Text>
+                <Text style={codTextStyle}>
+                  Ödemeyi <strong>teslimat sırasında kuryeye</strong> yapacaksınız.
+                  Teslimatta ödenecek tutar:{' '}
+                  <strong style={{ color: '#8A3F22' }}>
+                    ₺{total.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}
+                  </strong>
+                </Text>
+              </div>
+            </Section>
+          )}
+
           {/* Teslimat */}
           <Section style={{ padding: '0 32px' }}>
             <Heading as="h3" style={subTitleStyle}>📦 Teslimat Bilgileri</Heading>
@@ -150,7 +169,7 @@ export default function OrderConfirmation({
 
 // ---- styles ----
 const bodyStyle = {
-  backgroundColor: '#f9fafb',
+  backgroundColor: '#F7F1E6',
   fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
   margin: 0,
   padding: '32px 0',
@@ -189,8 +208,8 @@ const paragraphStyle = {
   margin: '8px 0',
 }
 const summaryBoxStyle = {
-  background: '#ECF5F0',
-  border: '1px solid #AFD7C6',
+  background: '#FBEDDA',
+  border: '1px solid #E8C9A8',
   borderRadius: 12,
   padding: '16px 20px',
   margin: '16px 0',
@@ -211,7 +230,7 @@ const summaryValueStyle = {
   margin: '2px 0 0',
 }
 const hrInBoxStyle = {
-  borderColor: '#AFD7C6',
+  borderColor: '#E8C9A8',
   margin: '12px 0',
 }
 const itemNameCellStyle = {
@@ -252,18 +271,37 @@ const grandTotalLabelStyle = {
   fontSize: 15,
   color: '#1f2937',
   fontWeight: 800,
-  borderTop: '1px solid #AFD7C6',
+  borderTop: '1px solid #E8C9A8',
 }
 const grandTotalValueStyle = {
   padding: '10px 0 0',
   fontSize: 18,
-  color: '#1B5E4B',
+  color: '#8A3F22',
   textAlign: 'right' as const,
   fontWeight: 800,
-  borderTop: '1px solid #AFD7C6',
+  borderTop: '1px solid #E8C9A8',
+}
+const codBoxStyle = {
+  background: '#FBEDDA',
+  border: '1px solid #E8C9A8',
+  borderRadius: 12,
+  padding: '14px 18px',
+  margin: '16px 0 0',
+}
+const codTitleStyle = {
+  fontSize: 14,
+  fontWeight: 800,
+  color: '#2B1810',
+  margin: '0 0 4px',
+}
+const codTextStyle = {
+  fontSize: 13,
+  lineHeight: 1.6,
+  color: '#5A4030',
+  margin: 0,
 }
 const infoBlockStyle = {
-  background: '#f9fafb',
+  background: '#F7F1E6',
   borderRadius: 12,
   padding: '14px 18px',
   fontSize: 13,
@@ -271,7 +309,7 @@ const infoBlockStyle = {
   lineHeight: 1.6,
 }
 const buttonStyle = {
-  background: '#1B5E4B',
+  background: '#8A3F22',
   color: '#ffffff',
   textDecoration: 'none',
   padding: '12px 28px',
@@ -298,6 +336,6 @@ const footerSmallStyle = {
   margin: '8px 0 0',
 }
 const linkStyle = {
-  color: '#1B5E4B',
+  color: '#8A3F22',
   textDecoration: 'none',
 }

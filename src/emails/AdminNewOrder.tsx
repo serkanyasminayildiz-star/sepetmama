@@ -58,7 +58,7 @@ export default function AdminNewOrder({
                 </tr>
                 <tr>
                   <td style={labelCell}>Toplam</td>
-                  <td style={{ ...valueCell, color: '#1B5E4B', fontWeight: 800, fontSize: 16 }}>
+                  <td style={{ ...valueCell, color: '#8A3F22', fontWeight: 800, fontSize: 16 }}>
                     ₺{total.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}
                   </td>
                 </tr>
@@ -85,7 +85,7 @@ export default function AdminNewOrder({
 }
 
 const bodyStyle = {
-  backgroundColor: '#f9fafb',
+  backgroundColor: '#F7F1E6',
   fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
   margin: 0,
   padding: '24px 0',
@@ -95,10 +95,10 @@ const containerStyle = {
   borderRadius: 12,
   margin: '0 auto',
   maxWidth: 520,
-  border: '2px solid #1B5E4B',
+  border: '2px solid #8A3F22',
 }
 const badgeStyle = {
-  background: '#1B5E4B',
+  background: '#8A3F22',
   color: '#ffffff',
   display: 'inline-block',
   padding: '6px 16px',
@@ -132,7 +132,7 @@ const valueCell = {
   verticalAlign: 'top' as const,
 }
 const buttonPrimary = {
-  background: '#1B5E4B',
+  background: '#8A3F22',
   color: '#ffffff',
   textDecoration: 'none',
   padding: '10px 20px',

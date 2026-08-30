@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma'
+import type { Prisma, OrderStatus } from '@prisma/client'
 import AdminShell from '../AdminShell'
 import SiparislerClient from './SiparislerClient'
 
@@ -9,8 +10,8 @@ export default async function SiparislerPage({
 }) {
   const sp = await searchParams
 
-  const where: any = {}
-  if (sp.durum) where.status = sp.durum
+  const where: Prisma.OrderWhereInput = {}
+  if (sp.durum) where.status = sp.durum as OrderStatus
 
   const orders = await prisma.order.findMany({
     where,
@@ -21,6 +22,7 @@ export default async function SiparislerPage({
       shippingFee: true,
       createdAt: true,
       paidAt: true,
+      paymentMethod: true,
       failedReason: true,
       cargoCompany: true,
       cargoTrackingNo: true,

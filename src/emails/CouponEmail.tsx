@@ -36,8 +36,8 @@ export default function CouponEmail({
         <Container style={containerStyle}>
           <Section style={{ padding: '32px 32px 0', textAlign: 'center' as const }}>
             <Heading as="h1" style={logoStyle}>
-              <span style={{ color: '#1B5E4B' }}>Leziz</span>
-              <span style={{ color: '#16241D' }}> Mama</span>
+              <span style={{ color: '#8A3F22' }}>Leziz</span>
+              <span style={{ color: '#2B1810' }}> Mama</span>
             </Heading>
           </Section>
 
@@ -87,7 +87,7 @@ export default function CouponEmail({
 
 // ---- styles ----
 const bodyStyle = {
-  backgroundColor: '#f9fafb',
+  backgroundColor: '#F7F1E6',
   fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
   margin: 0,
   padding: '32px 0',
@@ -119,8 +119,8 @@ const paragraphStyle = {
   margin: '8px 0',
 }
 const couponBoxStyle = {
-  background: '#ECF5F0',
-  border: '2px dashed #1B5E4B',
+  background: '#FBEDDA',
+  border: '2px dashed #8A3F22',
   borderRadius: 16,
   padding: '24px 20px',
   margin: '8px 0',
@@ -129,7 +129,7 @@ const couponBoxStyle = {
 const discountStyle = {
   fontSize: 26,
   fontWeight: 900,
-  color: '#1B5E4B',
+  color: '#8A3F22',
   margin: '0 0 12px',
 }
 const codeBadgeStyle = {
@@ -149,7 +149,7 @@ const metaStyle = {
   margin: '10px 0 0',
 }
 const buttonStyle = {
-  background: '#1B5E4B',
+  background: '#8A3F22',
   color: '#ffffff',
   textDecoration: 'none',
   padding: '12px 28px',
@@ -176,6 +176,6 @@ const footerSmallStyle = {
   margin: '8px 0 0',
 }
 const linkStyle = {
-  color: '#1B5E4B',
+  color: '#8A3F22',
   textDecoration: 'none',
 }

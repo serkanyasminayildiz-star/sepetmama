@@ -12,7 +12,47 @@ const btn = (bg = '#F2B33D', extra?: React.CSSProperties): React.CSSProperties =
   fontFamily: 'inherit', whiteSpace: 'nowrap', ...extra,
 })
 
-export default function SiparislerClient({ orders, searchParams }: any) {
+interface AdminOrderItem {
+  id: string
+  quantity: number
+  price: string
+  product: { id: string; name: string; images: { url: string }[] }
+}
+
+interface AdminOrder {
+  id: string
+  status: string
+  total: string
+  shippingFee: string
+  createdAt: string | Date
+  paidAt: string | Date | null
+  paymentMethod: string
+  failedReason: string | null
+  cargoCompany: string | null
+  cargoTrackingNo: string | null
+  shippingFullName: string | null
+  shippingEmail: string | null
+  shippingPhone: string | null
+  shippingAddress: string | null
+  user: { name: string | null; email: string | null; phone: string | null } | null
+  address: { fullName: string; phone: string; address: string; city: string; district: string } | null
+  items: AdminOrderItem[]
+  /** Sipariş anındaki onay anlık görüntüsü (Json alan) */
+  consents: {
+    kvkk?: boolean
+    mesafeli?: boolean
+    acceptedAt?: string
+    ip?: string
+    userAgent?: string
+  } | null
+}
+
+interface SiparislerClientProps {
+  orders: AdminOrder[]
+  searchParams: { durum?: string }
+}
+
+export default function SiparislerClient({ orders, searchParams }: SiparislerClientProps) {
   const router = useRouter()
   const [acikId, setAcikId] = useState<string | null>(null)
   const [bildirim, setBildirim] = useState('')
@@ -78,7 +118,7 @@ export default function SiparislerClient({ orders, searchParams }: any) {
             <div style={{ fontSize: 48, marginBottom: 12 }}>📭</div>
             <div style={{ fontSize: 16 }}>Bu durumda sipariş yok</div>
           </div>
-        ) : orders.map((sp: any) => (
+        ) : orders.map((sp) => (
           <div key={sp.id} style={{ background: 'white', borderRadius: 18, boxShadow: '0 4px 16px rgba(92,61,46,0.06)', overflow: 'hidden' }}>
             {/* Sipariş başlık */}
             <div style={{ padding: '14px 20px', background: '#FAF5EF', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
@@ -93,13 +133,18 @@ export default function SiparislerClient({ orders, searchParams }: any) {
                     </span>
                   )
                 })()}
+                {sp.paymentMethod === 'CASH_ON_DELIVERY' && (
+                  <span style={{ background: '#FBEDDA', color: '#8A3F22', padding: '2px 9px', borderRadius: 50, fontSize: 11, fontWeight: 700 }}>
+                    💵 Kapıda Ödeme
+                  </span>
+                )}
                 {sp.paidAt ? (
                   <span style={{ background: '#E8F5E9', color: '#2E7D32', padding: '2px 9px', borderRadius: 50, fontSize: 11, fontWeight: 700 }}>
                     💰 Ödendi
                   </span>
                 ) : (
                   <span style={{ background: '#FFF3E0', color: '#E65100', padding: '2px 9px', borderRadius: 50, fontSize: 11, fontWeight: 700 }}>
-                    💳 Ödeme bekleniyor
+                    {sp.paymentMethod === 'CASH_ON_DELIVERY' ? '🚚 Teslimatta tahsil' : '💳 Ödeme bekleniyor'}
                   </span>
                 )}
               </div>
@@ -167,7 +212,7 @@ export default function SiparislerClient({ orders, searchParams }: any) {
                 {/* Sipariş ürünleri */}
                 <div style={{ background: '#F8F4F0', borderRadius: 12, padding: 14, marginBottom: 14 }}>
                   <div style={{ fontSize: 11, fontWeight: 700, opacity: 0.5, marginBottom: 10, textTransform: 'uppercase' }}>Sipariş İçeriği</div>
-                  {sp.items.map((item: any, i: number) => {
+                  {sp.items.map((item, i) => {
                     const image = item.product?.images?.[0]?.url
                     return (
                       <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: i < sp.items.length - 1 ? '1px dashed #E8D5B7' : 'none' }}>

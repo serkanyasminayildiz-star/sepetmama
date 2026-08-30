@@ -3,19 +3,28 @@
 import { useCartStore } from '@/store/cartStore'
 import { useCoupon } from '@/hooks/useCoupon'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 const FREE_SHIPPING = 1000
 const SHIPPING_FEE = 49.90
 
+// Online kart ödemesi geçici olarak kapalı (PayTR hesabı kapandı).
+// Yeni sağlayıcı entegre edilince true yapılacak — kapıda ödeme her durumda açık.
+const ONLINE_PAYMENT_ENABLED = false
+
+type PaymentChoice = 'kapida' | 'online'
+
 export default function OdemeClient() {
-  const { items, total } = useCartStore()
+  const { items, total, clearCart } = useCartStore()
+  const router = useRouter()
   const cartTotal = total()
   const shipping = cartTotal >= FREE_SHIPPING ? 0 : SHIPPING_FEE
 
   const [iframeToken, setIframeToken] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [payment, setPayment] = useState<PaymentChoice>(ONLINE_PAYMENT_ENABLED ? 'online' : 'kapida')
   const [form, setForm] = useState({ name: '', email: '', phone: '', address: '', kvkk: false, mesafeli: false })
 
   // Kupon — sepetten taşınan kod dahil tek kaynaktan
@@ -57,27 +66,36 @@ export default function OdemeClient() {
     else { setError(data.error || 'Ödeme başlatılamadı.') }
   }
 
-  // Ödeme sağlayıcısı geçici olarak devre dışı (PayTR hesabı kapandı — yeni sağlayıcı entegre edilince false yap)
-  const PAYMENT_MAINTENANCE = true
-  if (PAYMENT_MAINTENANCE) {
-    return (
-      <div className="max-w-lg mx-auto bg-white rounded-2xl border border-orange-100 p-8 text-center">
-        <p className="text-4xl mb-3">🛠️</p>
-        <h2 className="text-xl font-extrabold text-gray-800 mb-2">Ödeme sistemimiz kısa süreli bakımda</h2>
-        <p className="text-gray-600 text-sm mb-5">
-          Çok yakında tekrar aktif olacak. Siparişinizi hemen vermek isterseniz WhatsApp veya telefonla size yardımcı olalım.
-        </p>
-        <div className="flex flex-col gap-2">
-          <a href="https://wa.me/905321773721" target="_blank" rel="noopener noreferrer" className="bg-green-500 hover:bg-green-600 text-white font-extrabold py-3 rounded-xl transition-colors">
-            💬 WhatsApp ile Sipariş: 0532 177 3721
-          </a>
-          <a href="tel:+905321773721" className="border-2 border-orange-200 text-orange-600 font-bold py-3 rounded-xl hover:bg-orange-50 transition-colors">
-            📞 Telefonla Ara
-          </a>
-          <Link href="/" className="text-sm text-orange-500 font-semibold mt-2 hover:underline">Alışverişe Devam Et</Link>
-        </div>
-      </div>
-    )
+  const kapidaSiparis = async () => {
+    setLoading(true)
+    setError('')
+    try {
+      const res = await fetch('/api/order/kapida', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          items: items.map((i) => ({ id: i.id, quantity: i.quantity })),
+          shipping: {
+            name: form.name,
+            email: form.email,
+            phone: form.phone,
+            address: form.address,
+          },
+          consents: { kvkk: form.kvkk, mesafeli: form.mesafeli },
+          couponCode: couponCode || undefined,
+        }),
+      })
+      const data = await res.json()
+      if (data.orderId) {
+        clearCart()
+        router.push(`/odeme/basarili?orderId=${data.orderId}&kapida=1`)
+        return
+      }
+      setError(data.error || 'Sipariş oluşturulamadı.')
+    } catch {
+      setError('Bağlantı hatası. Lütfen tekrar deneyin.')
+    }
+    setLoading(false)
   }
 
   if (items.length === 0) {
@@ -221,6 +239,66 @@ export default function OdemeClient() {
           </div>
         </div>
 
+        {/* Ödeme yöntemi */}
+        <div className="bg-white rounded-2xl border border-orange-100 p-4 mb-4">
+          <h2 className="font-extrabold text-gray-800 mb-3 text-sm">Ödeme Yöntemi</h2>
+          <div className="space-y-2">
+            <label
+              className={`flex items-start gap-3 p-3 rounded-xl border-2 cursor-pointer transition-colors ${
+                payment === 'kapida' ? 'border-orange-500 bg-orange-50' : 'border-gray-200 hover:border-orange-200'
+              }`}
+            >
+              <input
+                type="radio"
+                name="odeme"
+                checked={payment === 'kapida'}
+                onChange={() => setPayment('kapida')}
+                className="mt-0.5 accent-orange-500"
+              />
+              <span>
+                <span className="block text-sm font-extrabold text-gray-800">💵 Kapıda Ödeme</span>
+                <span className="block text-xs text-gray-500 mt-0.5">
+                  Ürünü teslim alırken kuryeye nakit veya kartla ödeyin.
+                </span>
+              </span>
+            </label>
+
+            <label
+              className={`flex items-start gap-3 p-3 rounded-xl border-2 transition-colors ${
+                !ONLINE_PAYMENT_ENABLED
+                  ? 'border-gray-200 bg-gray-50 cursor-not-allowed opacity-70'
+                  : payment === 'online'
+                    ? 'border-orange-500 bg-orange-50 cursor-pointer'
+                    : 'border-gray-200 hover:border-orange-200 cursor-pointer'
+              }`}
+            >
+              <input
+                type="radio"
+                name="odeme"
+                disabled={!ONLINE_PAYMENT_ENABLED}
+                checked={payment === 'online'}
+                onChange={() => setPayment('online')}
+                className="mt-0.5 accent-orange-500"
+              />
+              <span>
+                <span className="block text-sm font-extrabold text-gray-800">
+                  🔒 Kredi/Banka Kartı
+                  {!ONLINE_PAYMENT_ENABLED && (
+                    <span className="ml-2 text-[10px] font-bold text-gray-500 bg-gray-200 px-2 py-0.5 rounded-full align-middle">
+                      GEÇİCİ OLARAK KAPALI
+                    </span>
+                  )}
+                </span>
+                <span className="block text-xs text-gray-500 mt-0.5">
+                  {ONLINE_PAYMENT_ENABLED
+                    ? 'Güvenli ödeme sayfasında kartınızla ödeyin.'
+                    : 'Online kart ödemesi kısa süre içinde tekrar açılacak.'}
+                </span>
+              </span>
+            </label>
+          </div>
+        </div>
+
         {error && <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl px-4 py-3 mb-4">{error}</div>}
 
         <div className="bg-white rounded-2xl border border-orange-100 p-4 mb-4 space-y-3">
@@ -249,12 +327,21 @@ export default function OdemeClient() {
         </div>
 
         <button
-          onClick={getToken}
+          onClick={payment === 'kapida' ? kapidaSiparis : getToken}
           disabled={loading || !form.name || !form.email || !form.phone || !form.address || !form.kvkk || !form.mesafeli}
-          className="w-full bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white font-extrabold py-4 rounded-2xl text-base transition-colors"
+          className="w-full bg-gold hover:bg-gold-dark disabled:opacity-50 text-goldink font-extrabold py-4 rounded-2xl text-base transition-colors"
         >
-          {loading ? 'Hazırlanıyor...' : '🔒 Ödemeye Geç'}
+          {loading
+            ? 'Gönderiliyor...'
+            : payment === 'kapida'
+              ? '✅ Siparişi Onayla'
+              : '🔒 Ödemeye Geç'}
         </button>
+        {payment === 'kapida' && (
+          <p className="text-[11px] text-gray-500 text-center mt-2 leading-relaxed">
+            Siparişi onayladığınızda ödeme alınmaz. Ödemeyi teslimat sırasında yaparsınız.
+          </p>
+        )}
       </div>
     </div>
   )

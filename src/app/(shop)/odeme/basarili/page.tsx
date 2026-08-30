@@ -20,6 +20,7 @@ export default async function BasariliPage({ searchParams }: PageProps) {
           id: true,
           status: true,
           total: true,
+          paymentMethod: true,
           items: {
             select: {
               id: true,
@@ -33,6 +34,7 @@ export default async function BasariliPage({ searchParams }: PageProps) {
     : null
 
   const isPending = order?.status === 'PENDING'
+  const isKapida = order?.paymentMethod === 'CASH_ON_DELIVERY'
   const totalNum = order ? parseFloat(order.total.toString()) : 0
   const totalStr = order ? totalNum.toLocaleString('tr-TR', { minimumFractionDigits: 2 }) : null
 
@@ -56,13 +58,23 @@ export default async function BasariliPage({ searchParams }: PageProps) {
       <div className="bg-white rounded-2xl border border-green-100 p-10 text-center max-w-md w-full">
         <p className="text-5xl mb-4">{isPending ? '⏳' : '🎉'}</p>
         <h1 className="text-2xl font-extrabold text-gray-800 mb-2">
-          {isPending ? 'Ödemeniz işleniyor' : 'Ödeme Başarılı!'}
+          {isPending ? 'Ödemeniz işleniyor' : isKapida ? 'Siparişiniz Alındı!' : 'Ödeme Başarılı!'}
         </h1>
         <p className="text-gray-500 mb-6">
           {isPending
             ? 'Banka onayı bekleniyor. Onay tamamlandığında siparişiniz kargoya verilecektir.'
             : 'Siparişiniz alındı. En kısa sürede kargoya verilecektir.'}
         </p>
+
+        {isKapida && (
+          <div className="bg-cream border border-clay/25 rounded-xl p-4 mb-6 text-left">
+            <p className="text-sm font-extrabold text-gray-800 mb-1">💵 Kapıda Ödeme</p>
+            <p className="text-xs text-gray-600 leading-relaxed">
+              Ödemeyi <strong>teslimat sırasında kuryeye</strong> yapacaksınız.
+              Teslimatta ödenecek tutar: <strong>₺{totalStr}</strong>
+            </p>
+          </div>
+        )}
 
         {order && (
           <div className="bg-orange-50 rounded-xl p-4 mb-6 text-left">

@@ -27,6 +27,11 @@ enum CouponType {
   FIXED
 }
 
+enum PaymentMethod {
+  ONLINE
+  CASH_ON_DELIVERY
+}
+
 model User {
   id            String     @id @default(cuid())
   email         String     @unique
@@ -138,6 +143,9 @@ model Order {
 
   paidAt           DateTime?
   failedReason     String?
+
+  // Kapıda ödemede paidAt teslimatta doldurulur (tahsilat kuryede)
+  paymentMethod    PaymentMethod @default(ONLINE)
 
   consents         Json?
 
