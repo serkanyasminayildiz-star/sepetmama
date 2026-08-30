@@ -29,6 +29,11 @@ const defaultTitle = "Leziz Mama — Kedi & Köpek Mama ve Aksesuar Mağazası";
 const defaultDescription =
   "Leziz Mama'da kedi ve köpek mamaları, ödüller, aksesuarlar uygun fiyatla. Hızlı kargo, güvenli ödeme, 14 gün kolay iade.";
 
+// Google Merchant Center site doğrulaması (lezizmama.com).
+// Meta etiket zaten herkese açık olduğu için kodda tutuluyor — env'e
+// bağımlı olmadan her deploy'da basılsın; eski env değerleri de korunur.
+const MERCHANT_VERIFICATION = "WPdD7OgCA0ekJN3-nUgbrgVdFW7LpRMiIzN-Sv8KTHc";
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
@@ -91,9 +96,14 @@ export const metadata: Metadata = {
   },
   verification: {
     google: [
-      process.env.GOOGLE_SITE_VERIFICATION,
-      process.env.GOOGLE_SITE_VERIFICATION_MERCHANT,
-    ].filter((v): v is string => Boolean(v)),
+      ...new Set(
+        [
+          process.env.GOOGLE_SITE_VERIFICATION,
+          process.env.GOOGLE_SITE_VERIFICATION_MERCHANT,
+          MERCHANT_VERIFICATION,
+        ].filter((v): v is string => Boolean(v))
+      ),
+    ],
   },
 };
 
