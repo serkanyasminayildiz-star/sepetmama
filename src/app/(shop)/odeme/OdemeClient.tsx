@@ -26,13 +26,12 @@ export default function OdemeClient() {
   const cartTotal = total()
   const shipping = cartTotal >= FREE_SHIPPING ? 0 : SHIPPING_FEE
 
-  const [iframeToken, setIframeToken] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [payment, setPayment] = useState<PaymentChoice>(
     ONLINE_PAYMENT_ENABLED ? 'online' : 'kapida'
   )
-  const [form, setForm] = useState({ name: '', email: '', phone: '', address: '', kvkk: false, mesafeli: false })
+  const [form, setForm] = useState({ name: '', email: '', phone: '', address: '', city: '', kvkk: false, mesafeli: false })
 
   // Kupon — sepetten taşınan kod dahil tek kaynaktan
   const { couponCode, discount, error: couponError, loading: couponLoading, apply: applyCoupon, remove: removeCoupon } = useCoupon(cartTotal)
@@ -44,33 +43,38 @@ export default function OdemeClient() {
   }
   const grandTotal = Math.max(0, cartTotal - discount + shipping)
 
-  const getToken = async () => {
+  // Online ödeme: iyzico Checkout Form. Sipariş sunucuda PENDING oluşur,
+  // kullanıcı iyzico'nun ödeme sayfasına yönlendirilir.
+  const odemeyeGec = async () => {
     setLoading(true)
     setError('')
-
-    const res = await fetch('/api/paytr/token', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        items: items.map((i) => ({ id: i.id, quantity: i.quantity })),
-        shipping: {
-          name: form.name,
-          email: form.email,
-          phone: form.phone,
-          address: form.address,
-        },
-        consents: {
-          kvkk: form.kvkk,
-          mesafeli: form.mesafeli,
-        },
-        couponCode: couponCode || undefined,
-      }),
-    })
-
-    const data = await res.json()
+    try {
+      const res = await fetch('/api/iyzico/init', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          items: items.map((i) => ({ id: i.id, quantity: i.quantity })),
+          shipping: {
+            name: form.name,
+            email: form.email,
+            phone: form.phone,
+            address: form.address,
+          },
+          city: form.city,
+          consents: { kvkk: form.kvkk, mesafeli: form.mesafeli },
+          couponCode: couponCode || undefined,
+        }),
+      })
+      const data = await res.json()
+      if (data.paymentPageUrl) {
+        window.location.href = data.paymentPageUrl
+        return
+      }
+      setError(data.error || 'Ödeme başlatılamadı.')
+    } catch {
+      setError('Bağlantı hatası. Lütfen tekrar deneyin.')
+    }
     setLoading(false)
-    if (data.token) { setIframeToken(data.token) }
-    else { setError(data.error || 'Ödeme başlatılamadı.') }
   }
 
   const kapidaSiparis = async () => {
@@ -147,20 +151,6 @@ export default function OdemeClient() {
     )
   }
 
-  if (iframeToken) {
-    return (
-      <div className="bg-white rounded-2xl border border-orange-100 p-4">
-        <iframe
-          src={`https://www.paytr.com/odeme/guvenli/${iframeToken}`}
-          width="100%"
-          height="600"
-          frameBorder="0"
-          style={{ border: 'none', borderRadius: '12px' }}
-        />
-      </div>
-    )
-  }
-
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <div className="bg-white rounded-2xl border border-orange-100 p-6">
@@ -183,11 +173,21 @@ export default function OdemeClient() {
             </div>
           ))}
           <div>
+            <label style={{ display: 'block', fontSize: '12px', fontWeight: '800', color: '#374151', marginBottom: '4px' }}>İl</label>
+            <input
+              type="text"
+              value={form.city}
+              onChange={(e) => setForm({ ...form, city: e.target.value })}
+              placeholder="Örn. İzmir"
+              style={{ width: '100%', border: '1.5px solid #d1d5db', borderRadius: '12px', padding: '12px 16px', fontSize: '14px', color: '#000', outline: 'none' }}
+            />
+          </div>
+          <div>
             <label style={{ display: 'block', fontSize: '12px', fontWeight: '800', color: '#374151', marginBottom: '4px' }}>Adres</label>
             <textarea
               value={form.address}
               onChange={(e) => setForm({ ...form, address: e.target.value })}
-              placeholder="Teslimat adresiniz"
+              placeholder="Mahalle, sokak, no, ilçe"
               rows={3}
               style={{ width: '100%', border: '1.5px solid #d1d5db', borderRadius: '12px', padding: '12px 16px', fontSize: '14px', color: '#000', outline: 'none', resize: 'none' }}
             />
@@ -368,8 +368,8 @@ export default function OdemeClient() {
         </div>
 
         <button
-          onClick={payment === 'kapida' ? kapidaSiparis : getToken}
-          disabled={loading || !form.name || !form.email || !form.phone || !form.address || !form.kvkk || !form.mesafeli}
+          onClick={payment === 'kapida' ? kapidaSiparis : odemeyeGec}
+          disabled={loading || !form.name || !form.email || !form.phone || !form.address || !form.city || !form.kvkk || !form.mesafeli}
           className="w-full bg-gold hover:bg-gold-dark disabled:opacity-50 text-goldink font-extrabold py-4 rounded-2xl text-base transition-colors"
         >
           {loading

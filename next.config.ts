@@ -1,6 +1,9 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
+  // iyzipay kaynaklarını fs.readdirSync + dinamik require ile yüklüyor;
+  // Turbopack bunu statik çözemediği için paket sunucuda bundle dışı bırakılır.
+  serverExternalPackages: ['iyzipay'],
   images: {
     remotePatterns: [
       {
@@ -9,7 +12,11 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'sepetmama.com',
+        hostname: 'lezizmama.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.lezizmama.com',
       },
     ],
   },
