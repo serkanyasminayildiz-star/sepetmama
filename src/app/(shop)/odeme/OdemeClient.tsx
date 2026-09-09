@@ -6,12 +6,17 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
+import {
+  ONLINE_PAYMENT_ENABLED,
+  CASH_ON_DELIVERY_ENABLED,
+  ANY_PAYMENT_ENABLED,
+  SUPPORT_WHATSAPP,
+  SUPPORT_PHONE,
+  SUPPORT_PHONE_DISPLAY,
+} from '@/lib/payment-config'
+
 const FREE_SHIPPING = 1000
 const SHIPPING_FEE = 49.90
-
-// Online kart ödemesi geçici olarak kapalı (PayTR hesabı kapandı).
-// Yeni sağlayıcı entegre edilince true yapılacak — kapıda ödeme her durumda açık.
-const ONLINE_PAYMENT_ENABLED = false
 
 type PaymentChoice = 'kapida' | 'online'
 
@@ -24,7 +29,9 @@ export default function OdemeClient() {
   const [iframeToken, setIframeToken] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [payment, setPayment] = useState<PaymentChoice>(ONLINE_PAYMENT_ENABLED ? 'online' : 'kapida')
+  const [payment, setPayment] = useState<PaymentChoice>(
+    ONLINE_PAYMENT_ENABLED ? 'online' : 'kapida'
+  )
   const [form, setForm] = useState({ name: '', email: '', phone: '', address: '', kvkk: false, mesafeli: false })
 
   // Kupon — sepetten taşınan kod dahil tek kaynaktan
@@ -96,6 +103,38 @@ export default function OdemeClient() {
       setError('Bağlantı hatası. Lütfen tekrar deneyin.')
     }
     setLoading(false)
+  }
+
+  // Hiçbir ödeme yöntemi açık değil — müşteriyi boş bırakmadan sipariş hattına yönlendir
+  if (!ANY_PAYMENT_ENABLED) {
+    return (
+      <div className="max-w-lg mx-auto bg-white rounded-2xl border border-orange-100 p-8 text-center">
+        <p className="text-4xl mb-3">🛠️</p>
+        <h2 className="text-xl font-extrabold text-gray-800 mb-2">Ödeme sistemimiz kısa süreli bakımda</h2>
+        <p className="text-gray-600 text-sm mb-5">
+          Çok yakında tekrar aktif olacak. Siparişinizi hemen vermek isterseniz WhatsApp veya telefonla size yardımcı olalım.
+        </p>
+        <div className="flex flex-col gap-2">
+          <a
+            href={SUPPORT_WHATSAPP}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-green-500 hover:bg-green-600 text-white font-extrabold py-3 rounded-xl transition-colors"
+          >
+            💬 WhatsApp ile Sipariş: {SUPPORT_PHONE_DISPLAY}
+          </a>
+          <a
+            href={`tel:${SUPPORT_PHONE}`}
+            className="border-2 border-orange-200 text-orange-600 font-bold py-3 rounded-xl hover:bg-orange-50 transition-colors"
+          >
+            📞 Telefonla Ara
+          </a>
+          <Link href="/" className="text-sm text-orange-500 font-semibold mt-2 hover:underline">
+            Alışverişe Devam Et
+          </Link>
+        </div>
+      </div>
+    )
   }
 
   if (items.length === 0) {
@@ -243,25 +282,27 @@ export default function OdemeClient() {
         <div className="bg-white rounded-2xl border border-orange-100 p-4 mb-4">
           <h2 className="font-extrabold text-gray-800 mb-3 text-sm">Ödeme Yöntemi</h2>
           <div className="space-y-2">
-            <label
-              className={`flex items-start gap-3 p-3 rounded-xl border-2 cursor-pointer transition-colors ${
-                payment === 'kapida' ? 'border-orange-500 bg-orange-50' : 'border-gray-200 hover:border-orange-200'
-              }`}
-            >
-              <input
-                type="radio"
-                name="odeme"
-                checked={payment === 'kapida'}
-                onChange={() => setPayment('kapida')}
-                className="mt-0.5 accent-orange-500"
-              />
-              <span>
-                <span className="block text-sm font-extrabold text-gray-800">💵 Kapıda Ödeme</span>
-                <span className="block text-xs text-gray-500 mt-0.5">
-                  Ürünü teslim alırken kuryeye nakit veya kartla ödeyin.
+            {CASH_ON_DELIVERY_ENABLED && (
+              <label
+                className={`flex items-start gap-3 p-3 rounded-xl border-2 cursor-pointer transition-colors ${
+                  payment === 'kapida' ? 'border-orange-500 bg-orange-50' : 'border-gray-200 hover:border-orange-200'
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="odeme"
+                  checked={payment === 'kapida'}
+                  onChange={() => setPayment('kapida')}
+                  className="mt-0.5 accent-orange-500"
+                />
+                <span>
+                  <span className="block text-sm font-extrabold text-gray-800">💵 Kapıda Ödeme</span>
+                  <span className="block text-xs text-gray-500 mt-0.5">
+                    Ürünü teslim alırken kuryeye nakit veya kartla ödeyin.
+                  </span>
                 </span>
-              </span>
-            </label>
+              </label>
+            )}
 
             <label
               className={`flex items-start gap-3 p-3 rounded-xl border-2 transition-colors ${

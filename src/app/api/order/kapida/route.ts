@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { auth } from '@/auth'
 import { prepareOrder, type CartItemInput, type ShippingInput, type ConsentsInput } from '@/lib/order/prepare'
 import { sendOrderConfirmation, sendAdminNotification } from '@/lib/email/send'
+import { CASH_ON_DELIVERY_ENABLED } from '@/lib/payment-config'
 
 /**
  * Kapıda ödeme siparişi.
@@ -12,6 +13,14 @@ import { sendOrderConfirmation, sendAdminNotification } from '@/lib/email/send'
  * ödeme alındığında admin panelinden işaretlenir.
  */
 export async function POST(req: NextRequest) {
+  // Yöntem kapalıyken endpoint'e doğrudan POST atılabileceği için burada da kilitli
+  if (!CASH_ON_DELIVERY_ENABLED) {
+    return NextResponse.json(
+      { error: 'Kapıda ödeme şu anda kullanılamıyor.' },
+      { status: 403 }
+    )
+  }
+
   try {
     const body = await req.json()
     const items: CartItemInput[] = body.items
