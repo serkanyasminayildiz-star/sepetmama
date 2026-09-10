@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import IyzicoBadge from '@/components/IyzicoBadge'
 
 export default function Footer() {
   return (
@@ -45,6 +46,11 @@ export default function Footer() {
             <p className="text-[10px] text-[#CBAA8C] mt-1 leading-relaxed">Pazartesi – Cumartesi<br />09:00 – 18:00</p>
           </div>
         </div>
+      </div>
+
+      {/* Ödeme güvenliği — iyzico kart markaları bandı */}
+      <div className="border-t border-[#9A5433] pt-4 pb-3">
+        <IyzicoBadge variant="band-white" className="h-6 sm:h-7 w-auto mx-auto sm:mx-0 opacity-95" />
       </div>
 
       <div className="border-t border-[#9A5433] pt-4 flex flex-col sm:flex-row justify-between items-center gap-2">

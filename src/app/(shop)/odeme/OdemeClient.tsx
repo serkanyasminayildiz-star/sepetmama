@@ -5,6 +5,7 @@ import { useCoupon } from '@/hooks/useCoupon'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import IyzicoBadge from '@/components/IyzicoBadge'
 
 import {
   ONLINE_PAYMENT_ENABLED,
@@ -332,12 +333,19 @@ export default function OdemeClient() {
                 </span>
                 <span className="block text-xs text-gray-500 mt-0.5">
                   {ONLINE_PAYMENT_ENABLED
-                    ? 'Güvenli ödeme sayfasında kartınızla ödeyin.'
+                    ? 'Ödeme, iyzico’nun güvenli sayfasında alınır. Kart bilgileriniz bizimle paylaşılmaz.'
                     : 'Online kart ödemesi kısa süre içinde tekrar açılacak.'}
                 </span>
+                <IyzicoBadge
+                  variant="pay-with"
+                  className={`h-5 w-auto mt-2 ${ONLINE_PAYMENT_ENABLED ? '' : 'opacity-45 grayscale'}`}
+                />
               </span>
             </label>
           </div>
+
+          {/* Kart markaları — güvenli ödeme sinyali */}
+          <IyzicoBadge variant="band-colored" className="h-5 w-auto mt-3 mx-auto opacity-90" />
         </div>
 
         {error && <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl px-4 py-3 mb-4">{error}</div>}
