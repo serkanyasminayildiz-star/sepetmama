@@ -7,8 +7,8 @@
  * seçenek görünmese bile endpoint'e doğrudan POST atılabileceği için.
  */
 
-/** Online kart ödemesi (PayTR hesabı kapandı; yeni sağlayıcıda true yapılacak) */
-export const ONLINE_PAYMENT_ENABLED = false
+/** Online kart ödemesi — iyzico Checkout Form (2026-09-18 canlıya alındı) */
+export const ONLINE_PAYMENT_ENABLED = true
 
 /** Kapıda ödeme (kargo tahsilat maliyeti nedeniyle kapatıldı) */
 export const CASH_ON_DELIVERY_ENABLED = false

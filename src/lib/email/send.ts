@@ -7,6 +7,7 @@ import WinBackEmail, { type WinBackEmailData } from '@/emails/WinBackEmail'
 import RewardEmail, { type RewardEmailData } from '@/emails/RewardEmail'
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY
+// EMAIL_FROM env'i tanımlı değil; gönderici Resend'de doğrulanmış lezizmama.com domaininden
 const EMAIL_FROM = process.env.EMAIL_FROM || 'Leziz Mama <siparis@lezizmama.com>'
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'info@lezizmama.com'
 
