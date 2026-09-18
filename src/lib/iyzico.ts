@@ -14,8 +14,16 @@ const Iyzipay = require('iyzipay')
 const API_KEY = process.env.IYZICO_API_KEY
 const SECRET_KEY = process.env.IYZICO_SECRET_KEY
 // Varsayılan sandbox: env eksikse yanlışlıkla canlı ortama istek gitmesin
-// Vercel'de IYZICO_BASE_URL adıyla tanımlı; IYZICO_URI geriye dönük uyumluluk için
-const URI = process.env.IYZICO_BASE_URL || process.env.IYZICO_URI || 'https://sandbox-api.iyzipay.com'
+// Vercel'de IYZICO_BASE_URL adıyla tanımlı; IYZICO_URI geriye dönük uyumluluk için.
+// Env'e protokolsüz ("api.iyzipay.com") ya da sonu "/" ile girilirse SDK isteği
+// bozuluyor — burada normalize edilir.
+function normalizeUri(raw: string | undefined): string {
+  let u = (raw || '').trim()
+  if (!u) return 'https://sandbox-api.iyzipay.com'
+  if (!/^https?:\/\//i.test(u)) u = 'https://' + u
+  return u.replace(/\/+$/, '')
+}
+const URI = normalizeUri(process.env.IYZICO_BASE_URL || process.env.IYZICO_URI)
 
 export const IYZICO_CONFIGURED = Boolean(API_KEY && SECRET_KEY)
 export const IYZICO_IS_LIVE = URI.includes('//api.iyzipay.com')

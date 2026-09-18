@@ -26,6 +26,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Ödeme altyapısı yapılandırılmamış.' }, { status: 500 })
   }
 
+  // catch bloğunda erişilebilsin: exception olursa sipariş PENDING'de asılı kalmasın
+  let createdOrderId: string | null = null
+
   try {
     const body = await req.json()
     const items: CartItemInput[] = body.items
@@ -79,6 +82,7 @@ export async function POST(req: NextRequest) {
       },
       include: { items: { include: { product: { select: { name: true } } } } },
     })
+    createdOrderId = order.id
 
     // iyzico kuralı: basketItems fiyat toplamı `price` ile birebir eşleşmeli.
     // Kargo ve indirim `paidPrice` üzerinden yansıtılır.
@@ -150,8 +154,17 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ paymentPageUrl: result.paymentPageUrl, orderId: order.id })
   } catch (err) {
-    const msg = err instanceof Error ? err.message : 'Beklenmedik hata'
-    console.error('[iyzico] init hatası:', msg)
+    const msg = err instanceof Error ? `${err.name}: ${err.message}` : 'Beklenmedik hata'
+    console.error('[iyzico] init hatası:', msg, err instanceof Error ? err.stack : '')
+    // Sipariş oluşmuşsa PENDING'de asılı bırakma; sebebi kayda geç (admin panelinde görünür)
+    if (createdOrderId) {
+      await prisma.order
+        .update({
+          where: { id: createdOrderId },
+          data: { status: 'CANCELLED', failedReason: `iyzico init exception: ${msg}`.slice(0, 500) },
+        })
+        .catch((e) => console.error('[iyzico] iptal işaretlenemedi:', e))
+    }
     return NextResponse.json({ error: 'Ödeme başlatılamadı. Lütfen tekrar deneyin.' }, { status: 500 })
   }
 }
