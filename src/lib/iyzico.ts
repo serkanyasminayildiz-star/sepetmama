@@ -105,30 +105,76 @@ function authHeader(rnd: string, path: string, bodyJson: string): string {
   return 'IYZWSv2 ' + Buffer.from(params).toString('base64')
 }
 
+/**
+ * Node fetch'in "TypeError: fetch failed" mesajı asıl sebebi gizler; gerçek
+ * hata (ECONNRESET, ETIMEDOUT, sertifika...) `cause` zincirindedir.
+ */
+export function describeNetworkError(err: unknown): string {
+  const parts: string[] = []
+  let cur: unknown = err
+  for (let i = 0; i < 5 && cur; i++) {
+    if (cur instanceof Error) {
+      const code = (cur as NodeJS.ErrnoException).code
+      parts.push(`${cur.name}${code ? `[${code}]` : ''}: ${cur.message}`)
+      cur = (cur as { cause?: unknown }).cause
+    } else {
+      parts.push(String(cur))
+      break
+    }
+  }
+  return parts.join(' ← ')
+}
+
+const REQUEST_TIMEOUT_MS = 20_000
+const RETRY_DELAYS_MS = [400, 1200] // toplam 3 deneme
+
+/**
+ * iyzico'ya imzalı POST. Ağ hatasında (istek hiç ulaşmadı / yanıt gelmedi)
+ * tekrar dener — canlı veride 18.09'da her 3 denemede 1'i geçiyordu.
+ * iyzico'dan bir yanıt geldiyse (hatalı bile olsa) tekrar DENENMEZ.
+ * Init isteğinin tekrarı güvenlidir: tahsilat yalnızca token kullanılınca olur,
+ * kullanılmayan token zararsızdır.
+ */
 async function post<T>(path: string, body: Record<string, unknown>): Promise<T> {
   if (!IYZICO_CONFIGURED) {
     // Sessizce başarısız olmak yerine net hata: env eksikse hemen görülsün
     throw new Error('IYZICO_API_KEY / IYZICO_SECRET_KEY tanımlı değil')
   }
-  const rnd = randomString()
   // İmzalanan ve gönderilen gövde AYNI string olmalı
   const bodyJson = JSON.stringify(body)
-  const res = await fetch(BASE_URL + path, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: authHeader(rnd, path, bodyJson),
-      'x-iyzi-rnd': rnd,
-      'x-iyzi-client-version': 'iyzipay-node-2.0.69',
-    },
-    body: bodyJson,
-  })
-  const text = await res.text()
-  try {
-    return JSON.parse(text) as T
-  } catch {
-    throw new Error(`iyzico beklenmeyen yanıt (HTTP ${res.status}): ${text.slice(0, 200)}`)
+
+  let lastErr: unknown
+  for (let attempt = 0; attempt <= RETRY_DELAYS_MS.length; attempt++) {
+    if (attempt > 0) {
+      await new Promise((r) => setTimeout(r, RETRY_DELAYS_MS[attempt - 1]))
+    }
+    const rnd = randomString() // her denemede yeni rastgele anahtar + imza
+    let res: Response
+    try {
+      res = await fetch(BASE_URL + path, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: authHeader(rnd, path, bodyJson),
+          'x-iyzi-rnd': rnd,
+          'x-iyzi-client-version': 'iyzipay-node-2.0.69',
+        },
+        body: bodyJson,
+        signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+      })
+    } catch (err) {
+      lastErr = err
+      console.warn(`[iyzico] ağ hatası (deneme ${attempt + 1}/${RETRY_DELAYS_MS.length + 1}):`, describeNetworkError(err))
+      continue
+    }
+    const text = await res.text()
+    try {
+      return JSON.parse(text) as T
+    } catch {
+      throw new Error(`iyzico beklenmeyen yanıt (HTTP ${res.status}): ${text.slice(0, 200)}`)
+    }
   }
+  throw new Error(`iyzico'ya ulaşılamadı (${RETRY_DELAYS_MS.length + 1} deneme): ${describeNetworkError(lastErr)}`)
 }
 
 /** iyzico ödeme sayfasını başlatır; token + yönlendirilecek URL döner. */
