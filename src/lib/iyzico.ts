@@ -126,7 +126,7 @@ export function describeNetworkError(err: unknown): string {
 }
 
 const REQUEST_TIMEOUT_MS = 20_000
-const RETRY_DELAYS_MS = [400, 1200] // toplam 3 deneme
+const RETRY_DELAYS_MS = [1000, 3000] // toplam 3 deneme
 
 /**
  * iyzico'ya imzalı POST. Ağ hatasında (istek hiç ulaşmadı / yanıt gelmedi)
@@ -158,6 +158,10 @@ async function post<T>(path: string, body: Record<string, unknown>): Promise<T> 
           Authorization: authHeader(rnd, path, bodyJson),
           'x-iyzi-rnd': rnd,
           'x-iyzi-client-version': 'iyzipay-node-2.0.69',
+          // Her istekte taze TCP bağlantısı: sıcak serverless fonksiyonun
+          // havuzda tuttuğu bayat keep-alive bağlantısı iyzico tarafında çoktan
+          // kapanmış oluyor → "read ECONNRESET" (canlı veri 18-20.09).
+          Connection: 'close',
         },
         body: bodyJson,
         signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
