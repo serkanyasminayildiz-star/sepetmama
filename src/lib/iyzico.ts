@@ -30,6 +30,7 @@ export const IYZICO_IS_LIVE = BASE_URL.includes('//api.iyzipay.com')
 
 const INIT_PATH = '/payment/iyzipos/checkoutform/initialize/ecom'
 const RETRIEVE_PATH = '/payment/iyzipos/checkoutform/auth/ecom/detail'
+const PAYMENT_DETAIL_PATH = '/payment/detail'
 
 export interface IyzicoBasketItem {
   id: string
@@ -192,6 +193,34 @@ export function initCheckoutForm(request: CheckoutFormInitRequest): Promise<Chec
  */
 export function retrieveCheckoutForm(token: string): Promise<CheckoutFormRetrieveResult> {
   return post<CheckoutFormRetrieveResult>(RETRIEVE_PATH, { locale: 'tr', token })
+}
+
+export interface PaymentDetailResult {
+  status: 'success' | 'failure'
+  errorMessage?: string
+  errorCode?: string
+  paymentStatus?: string
+  paymentId?: string
+  paidPrice?: string
+  currency?: string
+  conversationId?: string
+  basketId?: string
+}
+
+/**
+ * Siparişin iyzico'da ödenip ödenmediğini sorgular.
+ *
+ * Callback kaçarsa (ağ kopması, kullanıcı sayfayı kapatması) sipariş PENDING'de
+ * kalır ama para çekilmiş olabilir. Init'te `conversationId` olarak sipariş
+ * id'si gönderildiği için ödemeyi buradan eşleştirebiliyoruz — token saklamaya
+ * gerek kalmadan.
+ */
+export function retrievePaymentByOrderId(orderId: string): Promise<PaymentDetailResult> {
+  return post<PaymentDetailResult>(PAYMENT_DETAIL_PATH, {
+    locale: 'tr',
+    conversationId: orderId,
+    paymentConversationId: orderId,
+  })
 }
 
 export const IYZICO_CONSTANTS = {
