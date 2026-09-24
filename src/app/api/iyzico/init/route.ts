@@ -152,6 +152,14 @@ export async function POST(req: NextRequest) {
       )
     }
 
+    // Token'ı sakla: callback'te ödeme doğrulanamazsa (ağ hatası) siparişi
+    // bununla buluruz. Yazamamak ödemeyi engellememeli.
+    if (result.token) {
+      await prisma.order
+        .update({ where: { id: order.id }, data: { paymentToken: result.token } })
+        .catch((e) => console.error('[iyzico] token kaydedilemedi:', order.id, e))
+    }
+
     return NextResponse.json({ paymentPageUrl: result.paymentPageUrl, orderId: order.id })
   } catch (err) {
     const msg = err instanceof Error ? `${err.name}: ${err.message}` : 'Beklenmedik hata'

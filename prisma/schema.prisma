@@ -147,6 +147,10 @@ model Order {
   // Kapıda ödemede paidAt teslimatta doldurulur (tahsilat kuryede)
   paymentMethod    PaymentMethod @default(ONLINE)
 
+  // iyzico Checkout Form token'ı — callback'te ödeme doğrulanamazsa (ağ hatası)
+  // siparişi tahminle değil bu alanla buluruz
+  paymentToken     String?       @unique
+
   consents         Json?
 
   status          OrderStatus @default(PENDING)

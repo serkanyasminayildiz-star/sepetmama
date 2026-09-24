@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { retrieveCheckoutForm } from '@/lib/iyzico'
+import { retrieveCheckoutForm, describeNetworkError } from '@/lib/iyzico'
 import { sendOrderConfirmation, sendAdminNotification, sendRewardEmail } from '@/lib/email/send'
 import { createRewardCoupon, REWARD_MIN_ORDER } from '@/lib/reward'
 
@@ -32,7 +32,23 @@ export async function POST(req: NextRequest) {
   try {
     result = await retrieveCheckoutForm(token)
   } catch (err) {
-    console.error('[iyzico] retrieve hatası:', err)
+    // KRİTİK: Müşteri ödemiş olabilir ama doğrulayamıyoruz (ECONNRESET vb.).
+    // Sipariş PENDING kalır — ASLA iptal edilmez, para çekilmiş olabilir.
+    // iz bırak ki mutabakat bu siparişi yakalasın ve panelde görünsün.
+    const detay = describeNetworkError(err)
+    console.error('[iyzico] callback retrieve hatası:', detay)
+    // Siparişi token'dan bul (init'te kaydedildi) — tahmin yok
+    try {
+      await prisma.order.updateMany({
+        where: { paymentToken: token, status: 'PENDING' },
+        data: {
+          failedReason:
+            `Ödeme doğrulanamadı (callback): ${detay}. Ödeme alınmış olabilir — /api/admin/odeme-mutabakat ile kontrol edin.`.slice(0, 500),
+        },
+      })
+    } catch (e) {
+      console.error('[iyzico] callback hata kaydı yazılamadı:', e)
+    }
     return NextResponse.redirect(`${siteUrl}/odeme/basarisiz`, { status: 303 })
   }
 
