@@ -12,7 +12,9 @@ export default async function AdminDashboard() {
     criticalStock,
   ] = await Promise.all([
     prisma.product.count(),
-    prisma.order.count(),
+    // Gerçek siparişler: ödeme sayfasında vazgeçilenler (PENDING) ve başarısız
+    // denemeler (CANCELLED) sipariş sayılmaz
+    prisma.order.count({ where: { status: { notIn: ['PENDING', 'CANCELLED'] } } }),
     prisma.order.count({ where: { status: 'PENDING' } }),
     prisma.category.count(),
     prisma.product.count({ where: { stock: 0, isActive: true } }),
@@ -22,7 +24,7 @@ export default async function AdminDashboard() {
   const cards = [
     { icon: '📦', ad: 'Toplam Ürün', deger: totalProducts, renk: '#F2B33D', href: '/admin/urunler' },
     { icon: '🛒', ad: 'Toplam Sipariş', deger: totalOrders, renk: '#8BAF8E', href: '/admin/siparisler' },
-    { icon: '⏳', ad: 'Bekleyen Sipariş', deger: pendingOrders, renk: '#E65100', href: '/admin/siparisler' },
+    { icon: '⏳', ad: 'Yarım Kalan Ödeme', deger: pendingOrders, renk: '#E65100', href: '/admin/siparisler?durum=PENDING' },
     { icon: '📁', ad: 'Toplam Kategori', deger: totalCategories, renk: '#5C3D2E', href: '/admin/kategoriler' },
   ]
 

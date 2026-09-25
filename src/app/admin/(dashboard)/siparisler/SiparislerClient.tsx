@@ -101,7 +101,7 @@ export default function SiparislerClient({ orders, searchParams }: SiparislerCli
       {/* Durum filtreleri */}
       <div style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
         {[
-          ['', 'Tümü'],
+          ['', '🛒 Siparişler'],
           ...(Object.entries(ORDER_STATUS).map(([k, v]) => [k, `${v.emoji} ${v.label}`])),
         ].map(([val, lbl]) => (
           <button key={val} onClick={() => filtrele(val)}

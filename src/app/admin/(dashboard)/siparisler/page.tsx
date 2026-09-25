@@ -10,8 +10,13 @@ export default async function SiparislerPage({
 }) {
   const sp = await searchParams
 
-  const where: Prisma.OrderWhereInput = {}
-  if (sp.durum) where.status = sp.durum as OrderStatus
+  // Varsayılan liste = gerçek siparişler. Ödeme sayfasını açıp vazgeçen her
+  // ziyaretçi PENDING kayıt bırakıyor, başarısız denemeler de CANCELLED oluyor;
+  // bunlar listeyi şişirip gerçek siparişleri gizliyordu. İkisine de kendi
+  // sekmesinden ulaşılır.
+  const where: Prisma.OrderWhereInput = sp.durum
+    ? { status: sp.durum as OrderStatus }
+    : { status: { notIn: ['PENDING', 'CANCELLED'] } }
 
   const orders = await prisma.order.findMany({
     where,

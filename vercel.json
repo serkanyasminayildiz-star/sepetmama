@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/odeme-mutabakat",
+      "schedule": "0 * * * *"
+    }
+  ]
+}
