@@ -87,6 +87,9 @@ export interface CheckoutFormRetrieveResult {
   /** Bizim gönderdiğimiz sipariş id'si */
   basketId?: string
   conversationId?: string
+  /** Sepet tutarı — bizim gönderdiğimiz `price` (vade farkı HARİÇ) */
+  price?: string
+  /** Müşteriden tahsil edilen — taksitte vade farkı DAHİL, price'tan yüksek olur */
   paidPrice?: string
   currency?: string
   fraudStatus?: number
@@ -201,6 +204,9 @@ export interface PaymentDetailResult {
   errorCode?: string
   paymentStatus?: string
   paymentId?: string
+  /** Sepet tutarı (vade farkı hariç) */
+  price?: string
+  /** Tahsil edilen (taksitte vade farkı dahil) */
   paidPrice?: string
   currency?: string
   conversationId?: string

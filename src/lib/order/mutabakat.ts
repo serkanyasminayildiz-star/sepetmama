@@ -26,7 +26,13 @@ export async function odemeMutabakati(
 
   const pendings = await prisma.order.findMany({
     where: {
-      status: 'PENDING',
+      // PENDING: callback kaçmış olabilir.
+      // Tutar uyuşmazlığıyla iptal edilenler: taksit vade farkı yüzünden
+      // yanlışlıkla iptal edilmiş, parası alınmış sipariş olabilir (03.10 dersi).
+      OR: [
+        { status: 'PENDING' },
+        { status: 'CANCELLED', paidAt: null, failedReason: { contains: 'Tutar uyuşmazlığı' } },
+      ],
       paymentMethod: 'ONLINE',
       createdAt: { gte: new Date(Date.now() - gunSayisi * 24 * 60 * 60 * 1000) },
     },
@@ -69,9 +75,12 @@ export async function odemeMutabakati(
     }
 
     // Tutar kontrolü — eşleşmiyorsa asla otomatik onaylama
+    // Taksitte paidPrice vade farkı içerir; sepet tutarı `price` ile karşılaştır
     const odenen = parseFloat(sonuc.paidPrice || '0')
+    const sepet = parseFloat(sonuc.price || '0')
     const beklenen = parseFloat(order.total.toString())
-    if (Math.abs(odenen - beklenen) > 0.01) {
+    satir.sepetTutari = sepet || null
+    if (sepet > 0 ? Math.abs(sepet - beklenen) > 0.01 : odenen + 0.01 < beklenen) {
       satir.durum = 'TUTAR_UYUSMUYOR'
       rapor.push(satir)
       continue
@@ -90,7 +99,8 @@ export async function odemeMutabakati(
             if (upd.count === 0) throw new Error(`Stok yetersiz: ${item.productId}`)
           }
           await tx.order.update({
-            where: { id: order.id, status: 'PENDING' }, // yarış koşulu: callback araya girmişse dokunma
+            // yarış koşulu: callback araya girip onayladıysa dokunma
+            where: { id: order.id, status: { in: ['PENDING', 'CANCELLED'] }, paidAt: null },
             data: { status: 'CONFIRMED', paidAt: new Date() },
           })
           if (order.couponId) {
