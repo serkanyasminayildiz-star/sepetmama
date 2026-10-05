@@ -101,7 +101,8 @@ export async function odemeMutabakati(
           await tx.order.update({
             // yarış koşulu: callback araya girip onayladıysa dokunma
             where: { id: order.id, status: { in: ['PENDING', 'CANCELLED'] }, paidAt: null },
-            data: { status: 'CONFIRMED', paidAt: new Date() },
+            // Onaylanınca eski hata notu kalmamalı — panelde "Hata" olarak görünüyordu
+            data: { status: 'CONFIRMED', paidAt: new Date(), failedReason: null },
           })
           if (order.couponId) {
             await tx.coupon.update({ where: { id: order.couponId }, data: { usedCount: { increment: 1 } } })

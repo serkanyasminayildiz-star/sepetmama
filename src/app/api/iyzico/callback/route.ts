@@ -123,7 +123,7 @@ export async function POST(req: NextRequest) {
       }
       await tx.order.update({
         where: { id: order.id },
-        data: { status: 'CONFIRMED', paidAt: new Date() },
+        data: { status: 'CONFIRMED', paidAt: new Date(), failedReason: null },
       })
       if (order.couponId) {
         await tx.coupon.update({
