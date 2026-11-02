@@ -87,16 +87,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.redirect(`${siteUrl}/odeme/basarisiz?orderId=${order.id}`, { status: 303 })
   }
 
-  // Tutar doğrulaması.
-  // DİKKAT: taksitli ödemede iyzico `paidPrice`a vade farkı ekler (sepetten
-  // yüksek olur). Karşılaştırma sepet tutarı `price` ile yapılır; `price`
-  // gelmezse tahsil edilen tutarın siparişten AZ olmaması yeterlidir.
-  // (03.10'da taksitli bir sipariş bu yüzden iptal edilip ₺3.627 tahsilat
-  //  karşılıksız kalmıştı.)
+  // Tutar doğrulaması: tahsil edilen tutar siparişten AZ olmamalı.
+  // Sepet tutarı `price` ile karşılaştırılamaz, iki yönde de sapıyor:
+  //  • taksitte iyzico paidPrice'a vade farkı ekler → price'tan yüksek olur
+  //    (03.10: taksitli sipariş iptal edilip ₺3.627 tahsilat karşılıksız kaldı),
+  //  • kuponlu siparişte price indirimsiz sepet toplamıdır → paidPrice'tan
+  //    yüksek olur (07.10: ₺200 ödül kuponlu ₺13.760'lık sipariş iptal edildi).
+  // Sapmayan tek alan paidPrice; kontrol onun üzerinden yapılır.
   const paid = parseFloat(result.paidPrice || '0')
   const basket = parseFloat(result.price || '0')
   const expected = parseFloat(order.total.toString())
-  const tutarSorunlu = basket > 0 ? Math.abs(basket - expected) > 0.01 : paid + 0.01 < expected
+  const tutarSorunlu = paid + 0.01 < expected
   if (tutarSorunlu) {
     console.error('[iyzico] tutar uyuşmazlığı:', { orderId: order.id, basket, paid, expected })
     await prisma.order.update({

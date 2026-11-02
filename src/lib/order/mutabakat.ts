@@ -74,13 +74,15 @@ export async function odemeMutabakati(
       continue
     }
 
-    // Tutar kontrolü — eşleşmiyorsa asla otomatik onaylama
-    // Taksitte paidPrice vade farkı içerir; sepet tutarı `price` ile karşılaştır
+    // Tutar kontrolü: tahsil edilen tutar siparişten AZ olmamalı.
+    // Sepet tutarı `price` ile karşılaştırılamaz — iki yönde de sapıyor:
+    // taksitte paidPrice vade farkıyla price'tan yüksek, kuponlu siparişte
+    // price indirimsiz sepet toplamı olduğu için paidPrice'tan yüksek olur.
     const odenen = parseFloat(sonuc.paidPrice || '0')
     const sepet = parseFloat(sonuc.price || '0')
     const beklenen = parseFloat(order.total.toString())
     satir.sepetTutari = sepet || null
-    if (sepet > 0 ? Math.abs(sepet - beklenen) > 0.01 : odenen + 0.01 < beklenen) {
+    if (odenen + 0.01 < beklenen) {
       satir.durum = 'TUTAR_UYUSMUYOR'
       rapor.push(satir)
       continue
